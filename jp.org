@@ -1,0 +1,137 @@
+# -*- coding: utf-8 -*-
+#+Title: 日本語・Japanisch
+#+Author: Göran Kirchner
+#+Language: de
+
+#+Startup: showall
+#+Options: toc:nil tex:t H:4 num:4 todo:nil pri:nil tags:nil ^:nil ':t \n:nil stat:nil
+#+Property: header-args :cache yes
+#+Exclude_Tags: noexport
+#+BIND: org-latex-tables-centered nil
+
+#+Setupfile: ./inc/theme-readtheorg.setup
+#+INCLUDE: "./inc/preamble-handout.org"
+
+#+BEGIN_SRC elisp :results silent :exports none
+(defun my-org-export-change-options (plist backend)
+  (cond 
+    ((equal backend 'html)
+     (plist-put plist :with-toc t)
+     (plist-put plist :section-numbers nil))
+    ((equal backend 'latex)
+     (plist-put plist :with-toc t)
+     (plist-put plist :section-numbers t)))
+  plist)
+(add-to-list 'org-export-filter-options-functions 'my-org-export-change-options)
+(setq org-html-htmlize-output-type 'css)
+(setq org-latex-tables-centered nil)
+#+END_SRC
+
+#+BEGIN_SRC latex :exports results
+\ifxetex
+  \newcommand{\textls}[2][5]{%
+    \begingroup\addfontfeatures{LetterSpace=#1}#2\endgroup
+  }
+  \renewcommand{\allcapsspacing}[1]{\textls[15]{#1}}
+  \renewcommand{\smallcapsspacing}[1]{\textls[10]{#1}}
+  \renewcommand{\allcaps}[1]{\textls[15]{\MakeTextUppercase{#1}}}
+  \renewcommand{\smallcaps}[1]{\smallcapsspacing{\scshape\MakeTextLowercase{#1}}}
+  \renewcommand{\textsc}[1]{\smallcapsspacing{\textsmallcaps{#1}}}
+\fi
+#+END_SRC
+
+#+Latex_Header: \usepackage{xeCJK}
+# #+Latex: \setCJKmainfont[BoldFont=STHeiti,ItalicFont=STKaiti]{STSong}
+#+Latex_Header: \setCJKmainfont{YuKyokasho} % for \rmfamily
+#+Latex_Header: \setCJKsansfont{YuGothic} % for \sffamily
+# #+Latex_header: \usepackage{CJKutf8}
+#+Latex_Header: \usepackage{booktabs}
+#+Latex_Header: \usepackage[normalem]{ulem}
+#+Latex_Header: \usepackage{soul}
+#+Latex_Header: \setstcolor{red}
+#+LATEX_HEADER: \usepackage{csquotes}
+#+LATEX_HEADER: \usepackage{hyphenat}
+#+LATEX_HEADER: \usepackage[
+#+LATEX_HEADER:   citestyle=authoryear, %numeric-comp, %authoryear, %verbose,
+#+Latex_Header:   bibstyle=authoryear,
+#+LATEX_HEADER:   autocite=inline,
+#+LATEX_HEADER:   natbib=true,
+#+LATEX_HEADER:   backend=biber
+#+LATEX_HEADER: ]{biblatex}
+
+# #+LATEX_HEADER: \addbibresource[datatype=bibtex]{judo.bib}
+
+# #+Latex_Header: \setmainfont{TeX Gyre Pagella}
+# #+Latex_Header: \setmainfont[Renderer=Basic, Numbers=OldStyle, Scale = 1.0]{TeX Gyre Pagella}
+# #+Latex_Header: \setsansfont[Renderer=Basic, Scale=0.90]{TeX Gyre Heros}
+# #+Latex_Header: \setmonofont[Renderer=Basic]{TeX Gyre Cursor}
+
+#+Latex: \newpage
+* Kanji [0/2]
+
+** TODO N5 [0/2]
+
+*** TODO 雨
+
+#+Name:rain
+| 1 | sign    | 雨                           |
+| 1 | imi     | rain                         |
+| 1 | onyomi  | ウ                           |
+| 1 | kunyomi | あめ・あま                   |
+| 1 | strokes | 8                            |
+| 1 | mnemo   | Rain falls from a big cloud. |
+
+*** TODO 田
+
+#+Name:field
+| 2 | sign    | 田                                            |
+| 2 | imi     | field                                         |
+| 2 | onyomi  | デン                                          |
+| 2 | kunyomi | た                                            |
+| 2 | strokes | 5　                                           |
+| 2 | mnemo   | The rice paddy is laid out to be grid-shaped. |
+
+** TODO N4
+
+** All                                                             :noexport:
+
+#+name: signs
+- rain
+- field
+
+#+BEGIN_SRC emacs-lisp :var tables=signs :exports results :cache yes
+(mapcan (lambda (x) (org-babel-ref-resolve (first x))) tables)
+#+END_SRC
+
+#+RESULTS[377662094b9a6f26bdf922f6ba9d4be518f7226f]:
+| 1 | sign    | 雨                                            |
+| 1 | imi     | rain                                          |
+| 1 | onyomi  | ウ                                            |
+| 1 | kunyomi | あめ・あま                                    |
+| 1 | strokes | 8                                             |
+| 1 | mnemo   | Rain falls from a big cloud.                  |
+| 2 | sign    | 田                                            |
+| 2 | imi     | field                                         |
+| 2 | onyomi  | デン                                          |
+| 2 | kunyomi | た                                            |
+| 2 | strokes | 5　                                           |
+| 2 | mnemo   | The rice paddy is laid out to be grid-shaped. |
+
+* Vokabeln
+
+
+* Gramatik
+
++------------+-----------+----------+----------+-------------+
+|            |             Singular            | Plural      |
+|            +-----------+----------+----------+-------------+
+|            | Masculine | Neuter   | Feminine | All genders |
++------------+-----------+----------+----------+-------------+
+| Nominative | *der*     | *das*    | *die*    | *die*       |
+| Accusative | *den*     | *das*    | *die*    | *die*       |
+| Dative     | *dem*     | *dem*    | *der*    | *denen*     |
+| Genitive   | *dessen*  | *dessen* | *deren*  | *deren*     |
++------------+-----------+----------+----------+-------------+
+
+* Links
+

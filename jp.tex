@@ -1,0 +1,218 @@
+% Created 2019-02-15 Fri 21:12
+% Intended LaTeX compiler: pdflatex
+\documentclass[justified, a4paper, notitlepage, captions=tableheading, nobib]{tufte-handout}
+        \usepackage{color}
+        \usepackage{amssymb}
+        \usepackage{amsmath}
+        \usepackage{gensymb}
+        \usepackage{nicefrac}
+        \usepackage{units}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{grffile}
+\usepackage{longtable}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{amssymb}
+\usepackage{capt-of}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage{fontspec}
+\usepackage[EU1]{fontenc}
+\usepackage{polyglossia}
+\setmainlanguage[babelshorthands=true]{german}
+\usepackage{atbegshi}
+\usepackage{footnote}
+\usepackage{minitoc}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{fancyvrb}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{array}
+\usepackage{listings}
+\usepackage{rotating}
+\usepackage{multicol}
+\usepackage{pdflscape}
+\usepackage{ctable}
+\usepackage{parskip}
+\usepackage{anysize}
+\usepackage{supertabular}
+\usepackage{minted}
+\usepackage{gensymb}
+\usepackage{nicefrac}
+\usepackage{units}
+\usepackage{siunitx}
+\usepackage{marginfix}
+\usepackage{hyphenat}
+\usepackage{float}
+\usepackage{placeins}
+\usepackage{tabu}
+\usepackage{tabulary}
+\usepackage{tocloft}
+\usepackage{titlesec}
+\usepackage{upquote}
+\usepackage{pdfpages}
+\usepackage{tabulary}
+\usepackage{minted}
+\newgeometry{left=0.12\paperwidth,top=1in,headsep=2\baselineskip,
+textwidth=0.7\paperwidth,marginparsep=1ex,marginparwidth=0.1\paperwidth,
+textheight=44\baselineskip,headheight=\baselineskip}
+\usepackage{ifluatex}
+\ifluatex
+\newcommand{\textls}[2][5]{%
+\begingroup\addfontfeatures{LetterSpace=#1}#2\endgroup
+}
+\renewcommand{\allcapsspacing}[1]{\textls[15]{#1}}
+\renewcommand{\smallcapsspacing}[1]{\textls[10]{#1}}
+\renewcommand{\allcaps}[1]{\textls[15]{\MakeTextUppercase{#1}}}
+\renewcommand{\smallcaps}[1]{\smallcapsspacing{\scshape\MakeTextLowercase{#1}}}
+\renewcommand{\textsc}[1]{\smallcapsspacing{\textsmallcaps{#1}}}
+\fi
+\definecolor{darkblue}{rgb}{0,0,.5}
+\definecolor{darkgreen}{rgb}{0,.5,0}
+\definecolor{islamicgreen}{rgb}{0.0, 0.56, 0.0}
+\definecolor{darkred}{rgb}{0.5,0,0}
+\definecolor{mintedbg}{rgb}{0.95,0.95,0.95}
+\definecolor{arsenic}{rgb}{0.23, 0.27, 0.29}
+\definecolor{prussianblue}{rgb}{0.0, 0.19, 0.33}
+\definecolor{coolblack}{rgb}{0.0, 0.18, 0.39}
+\definecolor{cobalt}{rgb}{0.0, 0.28, 0.67}
+\definecolor{moonstoneblue}{rgb}{0.45, 0.66, 0.76}
+\definecolor{aliceblue}{rgb}{0.94, 0.97, 1.0}
+\hypersetup{colorlinks=true, breaklinks=true, linkcolor=coolblack, anchorcolor=blue, citecolor=islamicgreen, filecolor=blue,  menucolor=blue,  urlcolor=violet}
+\renewcommand\thefootnote{\textcolor{darkred}{\arabic{footnote}}}
+\renewcommand{\theFancyVerbLine}{\sffamily\textcolor[rgb]{0.7,0.7,0.7}{\tiny\arabic{FancyVerbLine}}}
+\setcounter{secnumdepth}{2}
+\titleformat{\section}{\normalfont\Large\bfseries\color{black}} {\llap{\colorbox{coolblack}{\parbox{1.5cm}{\hfill\color{white}\thesection}}}}{1em}{}[]
+\titleformat{\subsection}{\normalfont\large\bfseries\color{black}} {\llap{\colorbox{aliceblue}{\parbox{1.5cm}{\hfill\color{coolblack}\thesubsection}}}}{1em}{}[]
+\titleformat{\paragraph}{\normalfont\large\bfseries\color{black}} {}{1em}{}[]
+\titleformat{\subparagraph}{\normalfont\large\bfseries\color{black}} {}{1em}{}[]
+\makeatletter
+% Paragraph indentation and separation for normal text
+\renewcommand{\@tufte@reset@par}{%
+\setlength{\RaggedRightParindent}{0.0pc}%
+\setlength{\JustifyingParindent}{0.0pc}%
+\setlength{\parindent}{0pc}%
+\setlength{\parskip}{6pt}%
+}
+\@tufte@reset@par
+% Paragraph indentation and separation for marginal text
+\renewcommand{\@tufte@margin@par}{%
+\setlength{\RaggedRightParindent}{0.0pc}%
+\setlength{\JustifyingParindent}{0.0pc}%
+\setlength{\parindent}{0.0pc}%
+\setlength{\parskip}{3pt}%
+}
+\makeatother
+\usepackage{xeCJK}
+\setCJKmainfont{YuKyokasho} % for \rmfamily
+\setCJKsansfont{YuGothic} % for \sffamily
+\usepackage{booktabs}
+\usepackage[normalem]{ulem}
+\usepackage{soul}
+\setstcolor{red}
+\usepackage{csquotes}
+\usepackage{hyphenat}
+\usepackage[
+citestyle=authoryear, %numeric-comp, %authoryear, %verbose,
+bibstyle=authoryear,
+autocite=inline,
+natbib=true,
+backend=biber
+]{biblatex}
+\author{Göran Kirchner}
+\date{\today}
+\title{日本語・Japanisch}
+\hypersetup{
+ pdfauthor={Göran Kirchner},
+ pdftitle={日本語・Japanisch},
+ pdfkeywords={},
+ pdfsubject={},
+ pdfcreator={Emacs 26.1 (Org mode 9.2.1)}, 
+ pdflang={Germanb}}
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\ifxetex
+  \newcommand{\textls}[2][5]{%
+    \begingroup\addfontfeatures{LetterSpace=#1}#2\endgroup
+  }
+  \renewcommand{\allcapsspacing}[1]{\textls[15]{#1}}
+  \renewcommand{\smallcapsspacing}[1]{\textls[10]{#1}}
+  \renewcommand{\allcaps}[1]{\textls[15]{\MakeTextUppercase{#1}}}
+  \renewcommand{\smallcaps}[1]{\smallcapsspacing{\scshape\MakeTextLowercase{#1}}}
+  \renewcommand{\textsc}[1]{\smallcapsspacing{\textsmallcaps{#1}}}
+\fi
+
+\newpage
+\section{Kanji }
+\label{sec:org833dc47}
+
+\subsection{N5 }
+\label{sec:org576135d}
+
+\paragraph{雨}
+\label{sec:org4364250}
+
+\label{tab:org12a0672}
+\begin{tabular}{rll}
+1 & sign & 雨\\
+1 & imi & rain\\
+1 & onyomi & ウ\\
+1 & kunyomi & あめ・あま\\
+1 & strokes & 8\\
+1 & mnemo & Rain falls from a big cloud.\\
+\end{tabular}
+
+\paragraph{田}
+\label{sec:org1426dcb}
+
+\label{tab:orgfca04e6}
+\begin{tabular}{rll}
+2 & sign & 田\\
+2 & imi & field\\
+2 & onyomi & デン\\
+2 & kunyomi & た\\
+2 & strokes & 5　\\
+2 & mnemo & The rice paddy is laid out to be grid-shaped.\\
+\end{tabular}
+
+\subsection{N4}
+\label{sec:orgd055184}
+
+\section{Vokabeln}
+\label{sec:org7951571}
+
+
+\section{Gramatik}
+\label{sec:org1a42a68}
+
+\begin{tabular}{|l|l|l|l|l|}
+\hline
+ & \multicolumn{3}{l|}{Singular} & Plural \\
+\cline{2-5}
+ & Masculine & Neuter & Feminine & All genders \\
+\hline
+Nominative & *der* & *das* & *die* & *die* \\
+Accusative & *den* & *das* & *die* & *die* \\
+Dative & *dem* & *dem* & *der* & *denen* \\
+Genitive & *dessen* & *dessen* & *deren* & *deren* \\
+\hline
+\end{tabular}
+
+\section{Links}
+\label{sec:org52dfce8}
+\end{document}
