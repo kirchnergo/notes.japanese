@@ -4,11 +4,10 @@
 #+Language: de
 
 #+Startup: showall
-#+Options: toc:nil tex:t H:4 num:4 todo:nil pri:nil tags:nil ^:nil ':t \n:nil stat:nil
+#+Options: toc:nil H:4 num:4 todo:nil pri:nil tags:nil ^:nil ':t \n:nil stat:nil tex:t
 #+Property: header-args :cache yes
 #+Exclude_Tags: noexport
 #+BIND: org-latex-tables-centered nil
-
 #+Setupfile: ./inc/theme-readtheorg.setup
 #+INCLUDE: "./inc/preamble-handout.org"
 
@@ -45,6 +44,8 @@
 #+Latex_Header: \setCJKmainfont{YuKyokasho} % for \rmfamily
 #+Latex_Header: \setCJKsansfont{YuGothic} % for \sffamily
 # #+Latex_header: \usepackage{CJKutf8}
+#+Latex_Header: \usepackage{ruby}
+#+Latex_Header: \renewcommand{\rubysep}{-0.2ex}
 #+Latex_Header: \usepackage{booktabs}
 #+Latex_Header: \usepackage[normalem]{ulem}
 #+Latex_Header: \usepackage{soul}
@@ -59,79 +60,219 @@
 #+LATEX_HEADER:   backend=biber
 #+LATEX_HEADER: ]{biblatex}
 
-# #+LATEX_HEADER: \addbibresource[datatype=bibtex]{judo.bib}
+#+LATEX_HEADER: \addbibresource[datatype=bibtex]{jp.bib}
 
 # #+Latex_Header: \setmainfont{TeX Gyre Pagella}
 # #+Latex_Header: \setmainfont[Renderer=Basic, Numbers=OldStyle, Scale = 1.0]{TeX Gyre Pagella}
 # #+Latex_Header: \setsansfont[Renderer=Basic, Scale=0.90]{TeX Gyre Heros}
 # #+Latex_Header: \setmonofont[Renderer=Basic]{TeX Gyre Cursor}
 
+#+Latex_Header:\newcommand\tu[2]{%
+#+Latex_Header:  \leavevmode
+#+Latex_Header:  \vtop{\offinterlineskip
+#+Latex_Header:    \halign{%
+#+Latex_Header:      \hfil##\hfil\cr % center
+#+Latex_Header:      \strut#2\cr
+#+Latex_Header:      \noalign{\kern-.1ex}
+#+Latex_Header:      \dynscriptsize\strut#1\cr
+#+Latex_Header:    }%
+#+Latex_Header:  }%
+#+Latex_Header:}
+
+#+Latex_Header: \newcommand\us[2]{$\underset{\text{\footnotesize #2}}{\text{\huge #1}}$}
+#+Latex_Header: \newcommand{\kk}[4]{
+#+Latex_Header:  %\colorbox{green!20}{
+#+Latex_Header:   \begin{minipage}{1.2cm}
+#+Latex_Header:    \centering
+#+Latex_Header:      \\[.5\baselineskip]
+#+Latex_Header:      {\scriptsize{#3}・\scriptsize{#4}}
+#+Latex_Header:      \\[.2\baselineskip]
+#+Latex_Header:      {\huge{#1}}%
+#+Latex_Header:      \\[-.2\baselineskip]
+#+Latex_Header:      {{#2}}\\[1.2\baselineskip]
+#+Latex_Header:   \end{minipage}
+#+Latex_Header:  %}
+#+Latex_Header: }
+
 #+Latex: \newpage
-* Kanji [0/2]
+* Kanji [0/3]
 
-** TODO N5 [0/2]
+** TODO Tafel [0/5]
 
-*** TODO 雨
+*** TODO N5
 
-#+Name:rain
-| 1 | sign    | 雨                           |
-| 1 | imi     | rain                         |
-| 1 | onyomi  | ウ                           |
-| 1 | kunyomi | あめ・あま                   |
-| 1 | strokes | 8                            |
-| 1 | mnemo   | Rain falls from a big cloud. |
+#+Attr_Latex: :align ccccc :booktabs nil
+| \kk{日}{Sonne}{ニチ}{ひ} | \kk{月}{Mond}{ゲツ}{つき} |   |   |   |
+| \kk{田}{Feld}{デン}{た}  | \kk{雨}{Regen}{ウ}{あめ}  |   |   |   |
 
-*** TODO 田
+*** TODO N4
 
-#+Name:field
-| 2 | sign    | 田                                            |
-| 2 | imi     | field                                         |
-| 2 | onyomi  | デン                                          |
-| 2 | kunyomi | た                                            |
-| 2 | strokes | 5　                                           |
-| 2 | mnemo   | The rice paddy is laid out to be grid-shaped. |
+*** TODO N3
 
-** TODO N4
+*** TODO N2
 
-** All                                                             :noexport:
+*** TODO N1
+
+** TODO Details
+
+*** TODO N5 [0/2]
+
+ #+begin_note
+ Test.
+ #+end_note
+
+**** 日
+
+ #+Name:sun
+ | 1 | sign    | 日         |
+ | 1 | imi     | sun        |
+ | 1 | onyomi  | ニチ・ジツ |
+ | 1 | kunyomi | ひ・か     |
+ | 1 | strokes | 4          |
+ | 1 | mnemo   | ..         |
+ #+TBLFM: $1=1
+
+ #+Name:sun-ex
+ | 日曜日 | 　にちようび | Sunday | \ruby{日曜日}{にちようび}に\ruby{友人}{ゆうじん}に\ruby{会}{あl}う。 |
+
+
+**** 月
+
+ #+Name:moon
+ | 2 | sign    | 月         |
+ | 2 | imi     | moon       |
+ | 2 | onyomi  | ゲツ・ガツ |
+ | 2 | kunyomi | つき       |
+ | 2 | strokes | 4          |
+ | 2 | mnemo   | ..         |
+ #+TBLFM: $1=2
+
+**** TODO 雨
+
+ #+Name:rain
+ | 3 | sign    | 雨                           |
+ | 3 | imi     | rain                         |
+ | 3 | onyomi  | ウ                           |
+ | 3 | kunyomi | あめ・あま                   |
+ | 3 | strokes | 8                            |
+ | 3 | mnemo   | Rain falls from a big cloud. |
+ #+TBLFM: $1=3
+
+**** TODO 田
+
+ #+Name:field
+ | 4 | sign    | 田                                            |
+ | 4 | imi     | field                                         |
+ | 4 | onyomi  | デン                                          |
+ | 4 | kunyomi | た                                            |
+ | 4 | strokes | 5　                                           |
+ | 4 | mnemo   | The rice paddy is laid out to be grid-shaped. |
+ #+TBLFM: $1=4
+
+*** TODO N4
+
+** TODO All                                                        :noexport:
 
 #+name: signs
+- sun
+- moon
 - rain
 - field
 
-#+BEGIN_SRC emacs-lisp :var tables=signs :exports results :cache yes
+#+BEGIN_SRC emacs-lisp :var tables=signs :exports results :cache no
 (mapcan (lambda (x) (org-babel-ref-resolve (first x))) tables)
 #+END_SRC
 
-#+RESULTS[377662094b9a6f26bdf922f6ba9d4be518f7226f]:
-| 1 | sign    | 雨                                            |
-| 1 | imi     | rain                                          |
-| 1 | onyomi  | ウ                                            |
-| 1 | kunyomi | あめ・あま                                    |
-| 1 | strokes | 8                                             |
-| 1 | mnemo   | Rain falls from a big cloud.                  |
-| 2 | sign    | 田                                            |
-| 2 | imi     | field                                         |
-| 2 | onyomi  | デン                                          |
-| 2 | kunyomi | た                                            |
-| 2 | strokes | 5　                                           |
-| 2 | mnemo   | The rice paddy is laid out to be grid-shaped. |
+#+RESULTS:
+| 1 | sign    | 日                                            |
+| 1 | imi     | sun                                           |
+| 1 | onyomi  | ニチ・ジツ                                    |
+| 1 | kunyomi | ひ・か                                        |
+| 1 | strokes | 4                                             |
+| 1 | mnemo   | ..                                            |
+| 2 | sign    | 月                                            |
+| 2 | imi     | moon                                          |
+| 2 | onyomi  | ゲツ・ガツ                                    |
+| 2 | kunyomi | つき                                          |
+| 2 | strokes | 4                                             |
+| 2 | mnemo   | ..                                            |
+| 3 | sign    | 雨                                            |
+| 3 | imi     | rain                                          |
+| 3 | onyomi  | ウ                                            |
+| 3 | kunyomi | あめ・あま                                    |
+| 3 | strokes | 8                                             |
+| 3 | mnemo   | Rain falls from a big cloud.                  |
+| 4 | sign    | 田                                            |
+| 4 | imi     | field                                         |
+| 4 | onyomi  | デン                                          |
+| 4 | kunyomi | た                                            |
+| 4 | strokes | 5　                                           |
+| 4 | mnemo   | The rice paddy is laid out to be grid-shaped. |
 
-* Vokabeln
+* Vokabeln [0/4]
 
+** TODO Assimil
 
-* Gramatik
+** TODO Linguaphone
 
-+------------+-----------+----------+----------+-------------+
-|            |             Singular            | Plural      |
-|            +-----------+----------+----------+-------------+
-|            | Masculine | Neuter   | Feminine | All genders |
-+------------+-----------+----------+----------+-------------+
-| Nominative | *der*     | *das*    | *die*    | *die*       |
-| Accusative | *den*     | *das*    | *die*    | *die*       |
-| Dative     | *dem*     | *dem*    | *der*    | *denen*     |
-| Genitive   | *dessen*  | *dessen* | *deren*  | *deren*     |
-+------------+-----------+----------+----------+-------------+
+** TODO Grundstudium
+ 
+** TODO Grundkurs
+
+* Gramatik [0/1]
+
+** TODO Verbflexion [0/5]
+
+*** TODO Konsonantische Verben
+
+| 1 | 本を読む。                | lex. Grundform | Präs./Futur |
+|   | Ich lese ein Buch.        |                |             |
+| 2 | 本を読みます。            | masu-Form      | Präs./Futur |
+|   | Ich lese ein Buch.        |                |             |
+| 3 | 本を読んだ。              | informell      | Perfekt     |
+|   | Ich las ein Buch          |                |             |
+| 4 | 本を読みました。          | höflich        | Perfekt     |
+|   | Ich las ein Buch          |                |             |
+| 5 | 本を読んでいます。        | te-Form        | Aspekte     |
+|   | Ich lese gerade ein Buch. |                |             |
+
+*** TODO Vokalische Verben
+
+*** TODO Flexion der i-Adjektive
+
+|            |       | lexik. Grundf. |      | desu/masu-Form |      |
+|------------+-------+----------------+------+----------------+------|
+|            |       | aff.           | neg. | aff.           | neg. |
+|------------+-------+----------------+------+----------------+------|
+| prädik.    | Präs. |                |      |                |      |
+|            | Perf. |                |      |                |      |
+| adnom.     | Präs. |                |      |                |      |
+|            | Perf. |                |      |                |      |
+| Halbschluß |       |                |      |                |      |
+| te         |       |                |      |                |      |
+| tara       |       |                |      |                |      |
+| ba         |       |                |      |                |      |
+
+*** TODO Flexion der na-Adjektive
+
+*** TODO Verbendungen
+
+** Partikel [0/3]
+
+*** TODO Gegenstand (ha/ga)
+
+*** TODO Tatort (ni/de/wo)
+
+*** TODO Begrümdung (kara/node/de)
 
 * Links
+
+
+#+Latex: \newpage
+# #+Latex: \begin{fullwidth}
+#+Latex: \nocite{*}
+#+LATEX: \printbibliography
+#+Latex: \addcontentsline{toc}{section}{\bibname}
+# #+Latex: \end{fullwidth}
+
 

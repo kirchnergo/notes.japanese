@@ -1,4 +1,4 @@
-% Created 2019-02-15 Fri 21:12
+% Created 2019-02-16 Sat 14:50
 % Intended LaTeX compiler: pdflatex
 \documentclass[justified, a4paper, notitlepage, captions=tableheading, nobib]{tufte-handout}
         \usepackage{color}
@@ -118,6 +118,8 @@ textheight=44\baselineskip,headheight=\baselineskip}
 \usepackage{xeCJK}
 \setCJKmainfont{YuKyokasho} % for \rmfamily
 \setCJKsansfont{YuGothic} % for \sffamily
+\usepackage{ruby}
+\renewcommand{\rubysep}{-0.2ex}
 \usepackage{booktabs}
 \usepackage[normalem]{ulem}
 \usepackage{soul}
@@ -131,6 +133,32 @@ autocite=inline,
 natbib=true,
 backend=biber
 ]{biblatex}
+\addbibresource[datatype=bibtex]{jp.bib}
+\newcommand\tu[2]{%
+\leavevmode
+\vtop{\offinterlineskip
+\halign{%
+\hfil##\hfil\cr % center
+\strut#2\cr
+\noalign{\kern-.1ex}
+\dynscriptsize\strut#1\cr
+}%
+}%
+}
+\newcommand\us[2]{$\underset{\text{\footnotesize #2}}{\text{\huge #1}}$}
+\newcommand{\kk}[4]{
+%\colorbox{green!20}{
+\begin{minipage}{1.2cm}
+\centering
+\\[.5\baselineskip]
+{\scriptsize{#3}・\scriptsize{#4}}
+\\[.2\baselineskip]
+{\huge{#1}}%
+\\[-.2\baselineskip]
+{{#2}}\\[1.2\baselineskip]
+\end{minipage}
+%}
+}
 \author{Göran Kirchner}
 \date{\today}
 \title{日本語・Japanisch}
@@ -159,60 +187,185 @@ backend=biber
 
 \newpage
 \section{Kanji }
-\label{sec:org833dc47}
+\label{sec:orgbccab90}
 
-\subsection{N5 }
-\label{sec:org576135d}
+\subsection{Tafel }
+\label{sec:orgd3f718f}
 
-\paragraph{雨}
-\label{sec:org4364250}
+\paragraph{N5}
+\label{sec:org83d7a9c}
 
-\label{tab:org12a0672}
+\begin{tabular}{ccccc}
+\kk{日}{Sonne}{ニチ}{ひ} & \kk{月}{Mond}{ゲツ}{つき} &  &  & \\
+\kk{田}{Feld}{デン}{た} & \kk{雨}{Regen}{ウ}{あめ} &  &  & \\
+\end{tabular}
+
+\paragraph{N4}
+\label{sec:org9526b1b}
+
+\paragraph{N3}
+\label{sec:org5bbb476}
+
+\paragraph{N2}
+\label{sec:orgb7a8e6f}
+
+\paragraph{N1}
+\label{sec:orgb9b7429}
+
+\subsection{Details}
+\label{sec:orgcf4a4cb}
+
+\paragraph{N5 }
+\label{sec:org8089f09}
+
+\begin{note}
+Test.
+\end{note}
+
+\subparagraph{日}
+\label{sec:org7cf8084}
+
+\label{tab:orgb010d78}
 \begin{tabular}{rll}
-1 & sign & 雨\\
-1 & imi & rain\\
-1 & onyomi & ウ\\
-1 & kunyomi & あめ・あま\\
-1 & strokes & 8\\
-1 & mnemo & Rain falls from a big cloud.\\
+1 & sign & 日\\
+1 & imi & sun\\
+1 & onyomi & ニチ・ジツ\\
+1 & kunyomi & ひ・か\\
+1 & strokes & 4\\
+1 & mnemo & ..\\
 \end{tabular}
 
-\paragraph{田}
-\label{sec:org1426dcb}
+\label{tab:org2cfbe21}
+\begin{tabular}{llll}
+日曜日 & 　にちようび & Sunday & \ruby{日曜日}{にちようび}に\ruby{友人}{ゆうじん}に\ruby{会}{あl}う。\\
+\end{tabular}
 
-\label{tab:orgfca04e6}
+
+\subparagraph{月}
+\label{sec:org94e229a}
+
+\label{tab:orge6e647b}
 \begin{tabular}{rll}
-2 & sign & 田\\
-2 & imi & field\\
-2 & onyomi & デン\\
-2 & kunyomi & た\\
-2 & strokes & 5　\\
-2 & mnemo & The rice paddy is laid out to be grid-shaped.\\
+2 & sign & 月\\
+2 & imi & moon\\
+2 & onyomi & ゲツ・ガツ\\
+2 & kunyomi & つき\\
+2 & strokes & 4\\
+2 & mnemo & ..\\
 \end{tabular}
 
-\subsection{N4}
-\label{sec:orgd055184}
+\subparagraph{雨}
+\label{sec:org00e0858}
 
-\section{Vokabeln}
-\label{sec:org7951571}
-
-
-\section{Gramatik}
-\label{sec:org1a42a68}
-
-\begin{tabular}{|l|l|l|l|l|}
-\hline
- & \multicolumn{3}{l|}{Singular} & Plural \\
-\cline{2-5}
- & Masculine & Neuter & Feminine & All genders \\
-\hline
-Nominative & *der* & *das* & *die* & *die* \\
-Accusative & *den* & *das* & *die* & *die* \\
-Dative & *dem* & *dem* & *der* & *denen* \\
-Genitive & *dessen* & *dessen* & *deren* & *deren* \\
-\hline
+\label{tab:org2005dfd}
+\begin{tabular}{rll}
+3 & sign & 雨\\
+3 & imi & rain\\
+3 & onyomi & ウ\\
+3 & kunyomi & あめ・あま\\
+3 & strokes & 8\\
+3 & mnemo & Rain falls from a big cloud.\\
 \end{tabular}
+
+\subparagraph{田}
+\label{sec:org6464f67}
+
+\label{tab:org7636da4}
+\begin{tabular}{rll}
+4 & sign & 田\\
+4 & imi & field\\
+4 & onyomi & デン\\
+4 & kunyomi & た\\
+4 & strokes & 5　\\
+4 & mnemo & The rice paddy is laid out to be grid-shaped.\\
+\end{tabular}
+
+\paragraph{N4}
+\label{sec:orgd1cbb04}
+
+\section{Vokabeln }
+\label{sec:org35ca1bf}
+
+\subsection{Assimil}
+\label{sec:orgf79a7af}
+
+\subsection{Linguaphone}
+\label{sec:org3b0e20c}
+
+\subsection{Grundstudium}
+\label{sec:org144747c}
+
+\subsection{Grundkurs}
+\label{sec:org1d6ce29}
+
+\section{Gramatik }
+\label{sec:orgacd30de}
+
+\subsection{Verbflexion }
+\label{sec:org64e7793}
+
+\paragraph{Konsonantische Verben}
+\label{sec:org61dc7a9}
+
+\begin{tabular}{rlll}
+1 & 本を読む。 & lex. Grundform & Präs./Futur\\
+ & Ich lese ein Buch. &  & \\
+2 & 本を読みます。 & masu-Form & Präs./Futur\\
+ & Ich lese ein Buch. &  & \\
+3 & 本を読んだ。 & informell & Perfekt\\
+ & Ich las ein Buch &  & \\
+4 & 本を読みました。 & höflich & Perfekt\\
+ & Ich las ein Buch &  & \\
+5 & 本を読んでいます。 & te-Form & Aspekte\\
+ & Ich lese gerade ein Buch. &  & \\
+\end{tabular}
+
+\paragraph{Vokalische Verben}
+\label{sec:orgd541f29}
+
+\paragraph{Flexion der i-Adjektive}
+\label{sec:org162fb5d}
+
+\begin{tabular}{llllll}
+ &  & lexik. Grundf. &  & desu/masu-Form & \\
+\hline
+ &  & aff. & neg. & aff. & neg.\\
+\hline
+prädik. & Präs. &  &  &  & \\
+ & Perf. &  &  &  & \\
+adnom. & Präs. &  &  &  & \\
+ & Perf. &  &  &  & \\
+Halbschluß &  &  &  &  & \\
+te &  &  &  &  & \\
+tara &  &  &  &  & \\
+ba &  &  &  &  & \\
+\end{tabular}
+
+\paragraph{Flexion der na-Adjektive}
+\label{sec:orgd133e5a}
+
+\paragraph{Verbendungen}
+\label{sec:org3aed703}
+
+\subsection{Partikel }
+\label{sec:org8a31caf}
+
+\paragraph{Gegenstand (ha/ga)}
+\label{sec:orgd1d327b}
+
+\paragraph{Tatort (ni/de/wo)}
+\label{sec:org41c08c8}
+
+\paragraph{Begrümdung (kara/node/de)}
+\label{sec:org69ba1d5}
 
 \section{Links}
-\label{sec:org52dfce8}
+\label{sec:org299c174}
+
+
+\newpage
+
+\nocite{*}
+\printbibliography
+\addcontentsline{toc}{section}{\bibname}
 \end{document}
