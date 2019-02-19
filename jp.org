@@ -43,6 +43,8 @@
 # #+Latex: \setCJKmainfont[BoldFont=STHeiti,ItalicFont=STKaiti]{STSong}
 #+Latex_Header: \setCJKmainfont{YuKyokasho} % for \rmfamily
 #+Latex_Header: \setCJKsansfont{YuGothic} % for \sffamily
+#+Latex_Header: \setCJKmonofont{Hiragino Maru Gothic ProN}
+#+Latex_Header: \setCJKfamilyfont{cjk-vert}[Script=CJK,RawFeature=vertical]{YuKyokasho} % vertical font assignment
 # #+Latex_header: \usepackage{CJKutf8}
 #+Latex_Header: \usepackage{ruby}
 #+Latex_Header: \renewcommand{\rubysep}{-0.2ex}
@@ -113,7 +115,7 @@
 
 *** TODO N1
 
-** TODO Details
+** TODO Details [0/5]
 
 *** TODO N5 [0/2]
 
@@ -170,7 +172,10 @@
  #+TBLFM: $1=4
 
 *** TODO N4
-
+*** TODO N3
+*** TODO N2
+*** TODO N1
+#+Latex: \newpage
 ** TODO All                                                        :noexport:
 
 #+name: signs
@@ -209,6 +214,26 @@
 | 4 | strokes | 5　                                           |
 | 4 | mnemo   | The rice paddy is laid out to be grid-shaped. |
 
+#+Latex: \newpage
+* Mnemonics
+
+** Piktogramme
+
+*** Natur
+
+*** Mensch
+
+*** Körper
+
+*** Tiere
+
+*** Haus & Hof
+
+*** Waffen & Werkzeuge
+
+*** Abstrakta
+
+#+Latex: \newpage
 * Vokabeln [0/4]
 
 ** TODO Assimil
@@ -219,22 +244,54 @@
  
 ** TODO Grundkurs
 
+#+Latex: \newpage
 * Gramatik [0/1]
 
 ** TODO Verbflexion [0/5]
 
 *** TODO Konsonantische Verben
 
-| 1 | 本を読む。                | lex. Grundform | Präs./Futur |
-|   | Ich lese ein Buch.        |                |             |
-| 2 | 本を読みます。            | masu-Form      | Präs./Futur |
-|   | Ich lese ein Buch.        |                |             |
-| 3 | 本を読んだ。              | informell      | Perfekt     |
-|   | Ich las ein Buch          |                |             |
-| 4 | 本を読みました。          | höflich        | Perfekt     |
-|   | Ich las ein Buch          |                |             |
-| 5 | 本を読んでいます。        | te-Form        | Aspekte     |
-|   | Ich lese gerade ein Buch. |                |             |
+|  1 | 本を読む。                 | Ich lese ein Buch.                   | Präs./Futur, lex. Grundform |
+|  2 | 本を読みます。             | Ich lese ein Buch.                   | Präs./Futur, masu-Form      |
+|  3 | 本を読んだ。               | Ich las ein Buch.                    | Perfekt, informell          |
+|  4 | 本を読みました。           | Ich las ein Buch.                    | Perfekt, höflich            |
+|  5 | 本を読んでいます。         | Ich lese gerade ein Buch.            | Aspekte, te-Form            |
+|  6 | 本を読んでしまう。         |                                      | "                           |
+|  7 | 本を読んである。           |                                      | "                           |
+|  8 | 本を読んでおく。           |                                      | "                           |
+|  9 | 本を読んできた。           |                                      | "                           |
+| 10 | 本を読んでいく。           |                                      | "                           |
+| 11 | 本を読んでみる。           |                                      | " (Versuch, Probe)          |
+| 12 | 本を読んで下さい。         |                                      | Bitte                       |
+| 13 | 本を読みなさい。           |                                      | Imperativ                   |
+| 14 | 本を読め。                 |                                      | "                           |
+| 15 | 本を読もう。               |                                      | Absicht, Wille              |
+| 16 | 本を読みましょう。         |                                      | Vorschlag, Aufforderung     |
+| 17 | 本を読むでしょう。         |                                      | Vermutung                   |
+| 18 | 本を読んだことがある。     |                                      | Erfahrung                   |
+| 19 | 本を読んだほうがいい。     |                                      | Empfehlung                  |
+| 20 | 本を読みたい。             |                                      | Wunsch                      |
+| 21 | 本を読んでほしい。         |                                      | "                           |
+| 22 | 本を読んだり…              |                                      | Exemplativ, Aufzählung      |
+| 23 | 本を読んでもいい。         |                                      | Erlaubnis                   |
+| 24 | 本を読まなければならねい。 |                                      | Pflicht, Zwang              |
+| 25 | 本を読んではいけない。     |                                      | Verbot                      |
+| 26 | 本を読まなくてもいい。     | Du brauchst das Buch nicht zu lesen. | Erlassung                   |
+| 27 | 本が読める。               | Ich kann Bücher lesen.               | Potential                   |
+| 28 | 本を読むことにする。       | Ich werde etwas lesen.               | Entschluß                   |
+| 29 | 本を読むことになった。     | Es ergab sich, daß ich Bücher las.   | äußerer Umstand             |
+| 30 | 本を読むそうだ。           | Es heißt, er liest.                  | Hörensagen                  |
+| 31 | 本を読みそうだ。           | Mir scheint, er liest ein Buch.      | Anschein                    |
+| 32 | 本を読まれた。             | Der hat mein Buch gelesen.           | Passiv                      |
+| 33 | 本を読ませた。             | Ich ließ ihn das Buch lesen.         | Kausativ                    |
+| 34 | 本を読ませられた。         | Ich mußte das Buch lesen.            | Kausativpassiv              |
+| 35 | 本を読めば。               | Wenn man liest ...                   | Konditional                 |
+| 36 | 本を読んだら。             | Wenn/falls man liest ...             | "                           |
+| 37 | 本を読むなら。             | Wenn/falls du liest ...              | "                           |
+| 38 | 本を読んであげる。         | Ich lese dir aus dem Buch vor.       | Besitzwechsel               |
+| 39 | 本を読んでくれた。         | Er las mir aus dem Buch vor.         | "                           |
+| 40 | 本を読んでもらった。       | Er las mir aus dem Buch vor.         | "                           |
+| 41 | 本を読んでいただく。       | Er liest mir aus dem Buch vor.　     | "                           |
 
 *** TODO Vokalische Verben
 
@@ -265,8 +322,35 @@
 
 *** TODO Begrümdung (kara/node/de)
 
+#+Latex: \newpage
+* Texte
+
+#+Latex: \begin{center}
+#+Latex: \rotatebox{-90}{
+#+Latex: \begin{minipage}{0.35\textwidth}
+
+#+Latex:  \CJKfamily{cjk-vert} %setting font locally
+*三一 \ruby{坂上是則}{さかのうえのこれのり}*
+#+Latex: \\[2\baselineskip]
+朝ぼらけ
+#+Latex: \\[0.5\baselineskip]
+\ruby{有明}{ありあけ}の月と　見るまでに
+#+Latex: \\[0.5\baselineskip]
+\ruby{吉野}{よしの}の里に　ふれる\ruby{白雪}{しらゆき}
+#+Latex: \end{minipage}
+#+Latex: }
+#+Latex: \end{center}
+
+#+Latex: \begin{verbatim}
+このテキストは、別のフォントを持つことになります。
+This is a verbatim environment with mono-space font
+#+Latex: \end{verbatim}
+
+#+Latex: \newpage
 * Links
 
+- [[https://www-user.tu-chemnitz.de/~heha/j/buchtext/Index.htm][Grundkurs der modernen japanischen Sprache]]
+- [[https://omp.ub.rub.de/index.php/RUB/catalog/book/31][Japanisch-Grundkurs in 2 Teilen mit Lehr- und Lernmaterialien]]
 
 #+Latex: \newpage
 # #+Latex: \begin{fullwidth}
