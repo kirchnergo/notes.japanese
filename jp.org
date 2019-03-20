@@ -81,140 +81,1077 @@
 #+Latex_Header:  }%
 #+Latex_Header:}
 
+#+Latex_Header: \usepackage{setspace}
 #+Latex_Header: \newcommand\us[2]{$\underset{\text{\footnotesize #2}}{\text{\huge #1}}$}
-#+Latex_Header: \newcommand{\kk}[4]{
-#+Latex_Header:  %\colorbox{green!20}{
-#+Latex_Header:   \begin{minipage}{1.2cm}
-#+Latex_Header:    \centering
-#+Latex_Header:      \\[.5\baselineskip]
-#+Latex_Header:      {\scriptsize{#3}・\scriptsize{#4}}
+#+Latex_Header: \newcommand{\kk}[5]{
+#+Latex_Header: %\colorbox{green!20}{
+#+Latex_Header: \begin{minipage}[t]{1.8cm}
+#+Latex_Header:      \centering
+#+Latex_Header: %     \\[.0\baselineskip]
+#+Latex_Header:      {\scriptsize{#3}・\tiny{#4}}
 #+Latex_Header:      \\[.2\baselineskip]
 #+Latex_Header:      {\huge{#1}}%
-#+Latex_Header:      \\[-.2\baselineskip]
-#+Latex_Header:      {{#2}}\\[1.2\baselineskip]
-#+Latex_Header:   \end{minipage}
-#+Latex_Header:  %}
+#+Latex_Header:      \setstretch{.8}\\[-.0\baselineskip]
+#+Latex_Header:      {{\color{DarkGreen}\scriptsize #2}}\setstretch{.6}\\[-.0\baselineskip]
+#+Latex_Header:      {{\color{Mulberry}\tiny #5}}\setstretch{.5}\\[-.3\baselineskip]
+#+Latex_Header: \par\end{minipage}%
+#+Latex_Header: %}
 #+Latex_Header: }
 
 #+Latex: \newpage
-* Kanji [0/3]
+* Kanji [1/3]
 
-** TODO Tafel [0/5]
+** DONE List of Jōyō Kanji (常用) [9/10]
+   CLOSED: [2019-03-16 Sat 09:46]
 
-*** TODO N5
+*** DONE Auszug aus Wikipedia
+    CLOSED: [2019-03-16 Sat 09:46]
 
-#+Attr_Latex: :align ccccc :booktabs nil
-| \kk{日}{Sonne}{ニチ}{ひ} | \kk{月}{Mond}{ゲツ}{つき} |   |   |   |
-| \kk{田}{Feld}{デン}{た}  | \kk{雨}{Regen}{ウ}{あめ}  |   |   |   |
+#+Name: tab-joyo-wiki-xlsx
+#+Begin_Src R :headers t :results value :cache t :exports code
+library(htmltab)
+library(openxlsx)
+joyo <- "https://en.wikipedia.org/wiki/List_of_j%C5%8Dy%C5%8D_kanji"
+kanji <- htmltab(joyo, 2, stringsAsFactors=FALSE, rm_nodata_cols=FALSE, header=0)
+kanji[,9] <- gsub("([^a-z(]*)([(a-z].*)", "\\1", kanji[,9])
+kanji$R1 <- gsub("([^、]*)、([^、]*).*", "\\1", kanji[,9])
+kanji$R2 <- gsub("([^、]*)、([^、]*).*", "\\2", kanji[,9])
+kanji$R2[kanji$R2==kanji$R1] <- ""
+colnames(kanji) <- c("#", "Kanji", "Old", "Radical", "Strokes", 
+  "Grade", "Year", "Meaning", "Readings", "R1", "R2")
 
-*** TODO N4
+wb <- createWorkbook()
+addWorksheet(wb, "Joyo-Kanji")
+writeDataTable(wb, 1, x=kanji[-c(1),], colNames=TRUE, bandedRows=TRUE)
+saveWorkbook(wb, "joyo-kanji.xlsx", overwrite=TRUE)
+#+End_Src
 
-*** TODO N3
+#+RESULTS[ad8451415bf125f00b16099ec6bf6fbb0bbb1bf7]: tab-joyo-wiki-xlsx
+: 1
 
-*** TODO N2
+#+Name: tab-joyo-wiki-list
+#+Begin_Src R :cache nil :exports results :colnames no :colnames yes
+library(tidyr)
+library(dplyr)
+library(openxlsx)
+kanji <- read.xlsx(xlsxFile = "joyo-kanji.xlsx", sheet = "Joyo-Kanji")
+#kanji2 <- kanji[c(1,2,6,8,10,11)]
+#kanji3 <- kanji2 %>% filter(Grade==g) %>% arrange(Grade,Kanji)
+kanji4 <- kanji[c(1:6,8,10)]
+kanji4[is.na(kanji4)] <- ""
+kanji5 <- kanji4 %>% head(12)
+#+End_Src
 
-*** TODO N1
+#+TBLNAME: joyo
+#+Caption: [[https://en.wikipedia.org/wiki/List_of_j%C5%8Dy%C5%8D_kanji][List of jōyō kanji]]
+#+Attr_Latex: :booktabs t
+#+RESULTS: tab-joyo-wiki-list
+|  # | Kanji | Old | Radical | Strokes | Grade | Meaning   | Readings                 |
+|----+-------+-----+---------+---------+-------+-----------+--------------------------|
+|  1 | 亜    | 亞  | 二      |       7 | S     | sub-      | ア                       |
+|  2 | 哀    |     | 口      |       9 | S     | pathetic  | アイ、あわ-れ、あわ-れむ |
+|  3 | 挨    |     | 手      |      10 | S     | push open | アイ                     |
+|  4 | 愛    |     | 心      |      13 | 4     | love      | アイ                     |
+|  5 | 曖    |     | 日      |      17 | S     | not clear | アイ                     |
+|  6 | 悪    | 惡  | 心      |      11 | 3     | bad       | アク、オ、わる-い        |
+|  7 | 握    |     | 手      |      12 | S     | grip      | アク、にぎ-る            |
+|  8 | 圧    | 壓  | 土      |       5 | 5     | pressure  | アツ                     |
+|  9 | 扱    |     | 手      |       6 | S     | handle    | あつか-う                |
+| 10 | 宛    |     | 宀      |       8 | S     | allocate  | あ-てる                  |
+| 11 | 嵐    |     | 山      |      12 | S     | storm     | あらし                   |
+| 12 | 安    |     | 宀      |       6 | 3     | cheap     | アン、やす-い            |
 
-** TODO Details [0/5]
+#+Name: tab-joyo-wiki-grade-stats
+#+Begin_Src R :cache nil :exports results :colnames n
+library(dplyr)
+library(openxlsx)
+kanji <- read.xlsx(xlsxFile = "joyo-kanji.xlsx", sheet = "Joyo-Kanji")
+kanji %>% group_by(Grade) %>% summarize(n()) %>% t()
+#+End_Src
 
-*** TODO N5 [0/2]
+#+Caption: Verteilung nach /Grade/
+#+Attr_Latex: :booktabs t
+#+RESULTS: tab-joyo-wiki-grade-stats
+|  1 |   2 |   3 |   4 |   5 |   6 |    S |
+| 80 | 160 | 200 | 200 | 185 | 181 | 1130 |
+
+*** TODO Übersetzung ins Deutsche
+
+- Google Translate
+  - R:
+  - org-mode:
+- Yandex Translate
+  - R:
+
+#+begin_comment
+
+#+BEGIN_SRC elisp
+;(google-translate-request "en" "de" "Dies ist ein Test")
+(setq a (google-translate--request "en" "de" "push open"))
+(setq b (elt a 0))
+#+END_SRC
+
+#+RESULTS[769a0895de96cd3fe8e027a7b5ec35ea1626565d]:
+: 91
+
+#+Name: mjoyo-1
+#+Begin_Src mathematica :var min=101 max=150 :noweb-ref mjoyo
+kanjilist = Import["joyo-kanji.xlsx", "XLSX"];
+meanings = kanjilist // First // Rest // Part[#, 8] & /@ # &;
+meanings // Take[#, {min,max}] & // StringRiffle[#, ":"] &
+#+End_src
+
+#+RESULTS[fc86ef9d4eeb46b63bd8b621f7c41eee83744597]: mjoyo-1
+: perform:affinity:glossy:dirty:king:concave:center:respond:outward journey:push:flourishing:Europe:assault:cherry tree:venerable old man:heart:side:hill:roof:hundred million:recollection:timidity:uneasiness:the latter:I, we:wholesale:sound:grace:warm:calm:below:change:fire:add:possible:temporary:what:flower:excellent:value:fruit:river:torment:section:rack:summer:house:luggage:splendor:confectionery
+
+#+Name: joyo-translate-1
+#+Begin_Src translate :cache t :dest de :var joyo=mjoyo-1
+joyo
+#+End_src
+
+#+RESULTS[ac2e8ea532977b488c3a466732cf297db9b326a6]: joyo-translate-1
+: durchführen: Affinität: glänzend: schmutzig: König: konkav: Mitte: Antwort: Hinfahrt: Schieben: Gedeihen: Europa: Angriff: Kirschbaum: ehrwürdiger alter Mann: Herz: Seite: Hügel: Dach: Hundert Millionen: Erinnerung: Scheu: Unruhe letztere: Ich, wir: Großhandel: Ton: Anmut: warm: ruhig: unten: Veränderung: Feuer: hinzufügen: möglich: temporär: was: Blume: ausgezeichnet: Wert: Frucht: Fluss: Qual: Abschnitt: Gestell: Sommer: Haus: Gepäck: Pracht: Süßwaren
+
+#+Name: joyo-translate-csv-1
+#+Begin_Src R :var joyo=joyo-translate-1 :file joyo-kanji-5.csv
+gsub(":", "\n", joyo) 
+#+End_src
+
+#+RESULTS[ae55d362d6b1a4e47b424671d2c3c755b0fa338d]: joyo-translate-csv-1
+[[file:joyo-kanji-5.csv]]
+
+#+Name: mjoyo-2
+#+Begin_Src mathematica :var min=601 max=1200 :noweb-ref mjoyo
+kanjilist = Import["joyo-kanji.xlsx", "XLSX"];
+meanings = kanjilist // First // Rest // Part[#, 8] & /@ # &;
+meanings // Take[#, {min,max}] & // StringRiffle[#, ":"] &
+#+End_src
+
+#+RESULTS[5ec406fbb52a43477dd1d1800f65dd819c606283]: mjoyo-2
+: inlet:think:go:pit:filial piety:confront:aggression:grow late:effect:happiness:arrest:agreement:marquis:thick:constancy:deluge:emperor:deep red:laid waste:outskirts:incense:climate:school:till:cruise:tribute:descend:tall, expensive:health:withdraw:close up:yellow:throat:disconcerted:harbor:stiff:strangle:paragraph:gutter:mineral:construct:hawser:fermentation:draft:entertain:equilibrium:steel:lecture:subscription:beg:number:fit:torture:sturdy:be proud:overpowering:overcome:tell:valley:engrave:country:black:cereals:cruel:prison:bone:horse:crowded:times:now:become distressed:descendants:rancor:root:marriage:mix:mark:dark blue:soul:ground-breaking:sociable:left (direction):help:sand:investigate:sand:tempt:distinction:lie:chain:sit:sprain:genius:again:disaster:wife:form:smash:superintend:plantation:coloring:pick:settle:festival:purification:thin:vegetable:most:judge:bond:sponsor:obstruct:year-end:ride:occasion:cape (geography):exist:lumber:dose:wealth:guilt:promontory:make:plane:previous:fence:cord:scheme:vinegar:squeeze:confused:blossom:counter for books:tag:printing:temple:be imminent:kill:guess:snapshot:grate:miscellaneous:dish:three:mountain:participate:scaffold:silkworm:wretched:give birth:umbrella:scatter:calculate:acid:approve:remainder:kill by slicing:temporarily:gentleman:child:branch:stop:family name:do:history:director:four:market:arrow:delicious:death:thread:climax:pay respects:intention:me:use:thorn:begin:older sister:branch:welfare:limb:figure:think:finger:carry out:expert:selfish:paper:fat:look at:purple:poetry:tooth:heir:test:poem:resources:domesticate:document:feminine:seriousness:grant:consult with:indicate:letter:Buddhist temple:next:ear:oneself:becoming:child:abstract thing:waiter:govern:hold:time:nourishing:mercy:resign:magnet:bait:emperor's seal:deer:style:discriminating:axis:seven:scold:lose:room:rapidly:tenacious:damp:envy:lacquer:quality:truth:turf:copy:company:car:cottage:someone:shoot:throw away:pardon:diagonal:boil:intercept:apologize:wicked:snake:shaku:borrow:bartending:explanation:baron:young:weak:loneliness:hand:master:protect:vermilion:take:hunt:neck:particularly:pearl:alcoholic drink:tumor:kind:gist:longevity:accept:curse:instruct:demand:Confucian:trees:take in:captured:state:boat:excel:circumference:religion:pick up:autumn:stinking:discipline:sleeve:end:feel ashamed:learn:week:concerning:masses:collect:distress:repay:ugly:kick:attack:ten:soup:allot:dwelling:tender:heavy:obey:astringent:gun:animal:vertical:uncle:celebrate:inn:graceful:solemn:shrink:cram school:ripen:exit:mention:art:genius:springtime:wink:10-day period (of the month):patrol:shield:quasi-:martyrdom:genuine:sequential:obey:standard:wet:abide by:dispose:first:place:write:commoner:hot:government office:thong:various:woman:likeness:help:preface:confer:gradually:exclude:small:measuring box:few:summon:artisan:bed:extract:resemblance:esteem:beckon:acquiesce:rise up:pine:marsh:shining:wee hours:leader:extinguish:symptoms:auspicious:appellation:laugh:chant:sell:ford:chapter:introduce:sue:win:manipulate:sparkle:bake:char:nitrate:cosmetics:imperial edict:evidence:elephant:wound:exhort:illuminate:detailed:patent:hurt:desire:collide:prize:reparation:reef:bell:up:length:superfluous:clause:form:ride:castle:clean:surplus:normal:feelings:place:tatami mat:steam:straw rope:lot:lass:lock:defer:brew:color:wipe:eat, meal:plant:augment:decorate:contact:entrust:weave:employment:embarrass:buttocks:heart:say:lengthen:retainer:core:body:spicy:encroach:trust:haven:god:lips:with child:shake:immersed:true:needle:deep:sire:advance:forest:checkup:lie down:humility:new:examine:quake:fuel:parent:person:blade:humanity:exhaust:swift:tremendously:camp:inquire:kidney:by all means:diagram:water:blow:droop:cook:commander:chic:decline:infer:drunk:consummate:drowsy:ear:follow:marrow:hinge:adore:number:set:cedar:cuff:measurement:rapids:just so:well:world:correct:life:become:west:voice:control:surname:subjugate:gender:blue:adjusted:politics:star:animal sacrifice:government ministry:uncanny:departed:pure:prosper:bridegroom:clear up:power:holy:sincerity:refined:manufacture:vow:quiet:solicit:put in order:be disillusioned:tax:evening:reject:stone:red:long ago:chop:seat:stature:vessels:pity:grieve:blame:tracks:accumulate:exploits:enroll:cut:fold:bungling:stealth:contact:establish:snow:vicarious:node:theory:tongue:discontinue:thousand:river:hermit:fortune telling:previous:proclaim:specialty:spring:shallow:wash:dye:fan:plug:rotation:boat:war:broil:envy:gland:discussion:tread:paper:coin:submerge:line:transition:choose:recommend:slender:fresh:whole:in front:good:so:Zen
+
+#+Name: joyo-translate-2
+#+Begin_Src translate :cache t :dest de :var joyo=mjoyo-2
+joyo
+#+End_src
+
+#+RESULTS[830e0ed553cf6c087020f2367595e30a721e7376]: joyo-translate-2
+: Einlauf: denken: los: Grube: Frömmigkeit: Konfrontation: Aggression: spät wachsen: Wirkung: Glück: Verhaftung: Vereinbarung: Marquis: dick: Konstanz: Flut: Kaiser: tiefrot: abgelagert: Rand: Räucherstäbchen: Klima: Schule: bis: Kreuzfahrt: Tribut: Abstieg: hoch, teuer: Gesundheit: zurückziehen: Nahaufnahme: gelb: Hals: verstört: Hafen: steif: strangle: Absatz: Rinne: Mineral: Konstrukt: Trosse: Gärung: Zug: Entertain: Gleichgewicht: Stahl : Vortrag: Abo: Bitte: Anzahl: Passform: Folter: robust: sei stolz: überwältigend: überwinden: erzählen: Tal: gravieren: Land: schwarz: Getreide: grausam: Gefängnis: Knochen: Pferd: voll: mal: jetzt: jetzt verzweifelt : Nachkommen: Rancor: Wurzel: Ehe: Mix: Note: dunkelblau: Seele: bahnbrechend: kontaktfreudig: links (Richtung): Hilfe: Sand: untersuchen: Sand: Versuchung: Unterscheidung: Lüge: Kette: Sitz: Verstauchung: Genie : wieder: Desaster: Frau: Form: Smash: Superintend: Plantage: Färbung: Pick: Siedlung: Festival: Reinigung: dünn: Gemüse: meist: Richter: Bindung: Sponsor: Hindernis: Jahresende: Fahrt: Gelegenheit: Umhang (Geographie ): vorhanden: Holz: Dosis: Reichtum: Schuld: Vorgebirge: Marke: Flugzeug: Vorherige: zB Fe Nce: Cord: Schema: Essig: Squeeze: verwirrt: Blüte: Zähler für Bücher: Tag: Druck: Tempel: unmittelbar bevorstehen: Töten: Vermutung: Momentaufnahme: Rost: Diverses: Gericht: Drei: Berg: Teilnehmen: Gerüst: Seidenraupe: elendig : gebären: regenschirm: streuen: berechnen: säure: genehmigen: rest: töten durch schneiden: vorübergehend: herr: kind: zweig: halt: familienname: do: geschichte: regisseur: vier: markt: pfeil: lecker: tod: faden : Höhepunkt: Respekt zahlen: Absicht: Ich: Verwendung: Dorn: Anfang: ältere Schwester: Zweig: Wohlbefinden: Gliedmaße: Figur: Denken: Finger: Durchführung: Experte: Egoismus: Papier: Fett: Schau mal: Purpur: Poesie: Zahn : heir: test: Gedicht: Ressourcen: domestiziert: Dokument: weiblich: Ernst: Zuschuss: Rücksprache mit: angeben: Brief: Buddhistischer Tempel: nächstes: Ohr: sich selbst: Werden: Kind: abstraktes Ding: Kellner: regieren: Halten: Zeit: nähren: Erbarmen: resignieren: Magnet: Köder: Kaisersiegel: Hirsch: Stil: diskriminierend: Achse: sieben: schimpfen: verlieren: Raum: schnell: hartnäckig: feucht: Neid: Lack: Qualität: Wahrheit: Rasen: Kopie: Firma: Auto : Hütte: Jemand: schießen: wegwerfen: Verzeihung: Diagonale: Kochen: Intercept: Entschuldigung: böse: s nake: shaku: leihen: bartending: erklärung: baron: jung: schwach: einsamkeit: hand: master: schützen: vermilion: take: jagd: neck: besonders: perle: alkoholisches getränk: tumor: art: gist: langlebigkeit: akzeptieren: fluch Konfuzianer: Bäume: Mitnehmen: Staat: Boot: Excel: Umfang: Religion: Abholung: Herbst: Stinken: Disziplin: Ärmel: Ende: Schämen: Lernen: Woche: Betrifft: Massen: Sammeln: Bedrängnis: Rückzahlung: hässlich: Tritt: Angriff: zehn: Suppe: Zuteilung: Wohnung: zart: schwer: Gehorsam: adstringierend: Waffe: Tier: vertikal: Onkel: Feiern: Gasthaus: anmutig: feierlich: schrumpfen: cram Schule: reifen: verlassen : Erwähnung: Kunst: Genie: Frühling: Wink: 10-Tage-Zeitraum (des Monats): Patrouille: Schild: Quasi: Martyrium: Echt: Sequenziell: Obey: Standard: Nass: Beibehalten: Entsorgen: Zuerst: Ort: Schreiben : commoner: heiß: Regierungsbüro: Tanga: verschiedene: Frau: Figur: Hilfe: Vorwort: Vermittlung: allmählich: ausschließen: klein: Messbox: wenige: Beschwörung: Handwerker: Bett: Auszug: Ähnlichkeit: Wertschätzung: Beckon: Acquisece: Aufstieg up: Kiefer: Sumpf: Leuchtend: kleine Stunden: Führer: Löschen: Symptome: günstig: Appellation: Lachen: Gesang: Verkaufen: ford: kapitel: einführen: sue: win: manipulate: sparkle: back: char: nitrate: kosmetik: kaiserliches edikt: beweis: elefant: wunde: ermahnen: beleuchten: detailliert: patent: verletzt: wunsch: kollidieren: preis: reparatur: riff : Glocke: hoch: Länge: überflüssig: Klausel: Form: Fahrt: Burg: sauber: Überschuss: normal: Gefühle: Ort: Tatami-Matte: Dampf: Strohseil: Lot: Lass: Schloss: Verschiebung: Aufschieben: Gebräu: Farbe: Wischen: Essen , Mahlzeit: Pflanze: Vergrößerung: Verzieren: Kontakt: Vertrauen: Weben: Einsatz: Peinlichkeit: Gesäß: Herz: Sagen: Verlängern: Halter: Kern: Körper: würzig: Eindringen: Vertrauen: Hafen: Gott: Lippen: Mit Kind: Schütteln: Eintauchen: Richtig: Nadel: Tief: Vater: Voraus: Wald: Nachuntersuchung: Liegen: Demut: Neu: Untersuchen: Beben: Kraftstoff: Eltern: Person: Klinge: Menschheit: Auspuff: Schnell: enorm: Lager: Erkundigen: Niere: bei alles bedeutet: Diagramm: Wasser: Schlag: Herabfallen: Kochen: Kommandant: Chic: Niedergang: Schlußfolgerung: Betrunken: Vollbringen: Schläfrigkeit: Ohr: Folgen: Mark: Scharnier: Liebes: Nummer: Satz: Zeder: Manschette: Maß: Stromschnellen: gerade also: gut: welt: richtig: leben: werden: west: stimme: kontrolle: Nachname: unterwerfen: geschlecht: blau: angepasst: politik: stern: tieropfer: regierung min istry: unheimlich: abgegangen: rein: wohlhabend: Bräutigam: klar: Macht: heilig: Aufrichtigkeit: verfeinert: Herstellung: Gelübde: ruhig: erbitten: in Reihenfolge bringen: enttäuscht sein: Steuern: Abend: Ablehnen: Stein: Rot: vor langer Zeit : hacken: Sitz: Statur: Gefäße: Mitleid: Trauer: Schuld: Spuren: Anhäufen: Exploits: Einschreiben: Schnitt: Falzen: Verstümmeln: Stealth: Kontakt: Feststellen: Schnee: Stellvertreter: Knoten: Theorie: Zunge: Unterbrechen: Tausend: Fluss : Einsiedler: Wahrsagerei: Vorherige: Bekanntmachung: Spezialität: Frühling: Flach: Waschen: Farbstoff: Lüfter: Stecker: Rotation: Boot: Krieg: Grill: Neid: Drüse: Diskussion: Lauffläche: Papier: Münze: Untertauchen: Linie: Übergang: wählen: empfehlen: schlank: frisch: ganz: vorne: gut: so: zen
+
+#+Name: joyo-translate-csv-2
+#+Begin_Src R :var joyo=joyo-translate-2 :file joyo-kanji-2.csv
+gsub(":", "\n", joyo)
+#+End_src
+
+#+RESULTS[da320b2c1d121c406b7f79f41ac12e4b195d65e1]: joyo-translate-csv-2
+[[file:joyo-kanji-2.csv]]
+
+
+#+Name: mjoyo-3
+#+Begin_Src mathematica :var min=1201 max=1800 :noweb-ref mjoyo
+kanjilist = Import["joyo-kanji.xlsx", "XLSX"];
+meanings = kanjilist // First // Rest // Part[#, 8] & /@ # &;
+meanings // Take[#, {min,max}] & // StringRiffle[#, ":"] &
+#+End_src
+
+#+RESULTS[eb2bfc1e2900716a6d6be60eae255003cbaf4184]: mjoyo-3
+: steadily:tray:darning:aim at:thwart:ancestor:tariff:elementary:set aside:coarse:association:alienate:sue:model:go upstream:cornerstone:pair:robust:early:conflict:run:play music:mutual:villa:grass:send:warehouse:search:insert:mulberry:nest:sweep:cadet:formerly:refreshing:window:create:miss:get thin:interment:attire:Buddhist priest:concept:stratum:whole:encounter:vat:remains:maneuver:parch:frost:boisterous:seaweed:create:statue:increase:hate:warehouse:presents:entrails:instant:bundle:foot:stimulate:rule:breath:capture:fast:side:fathom:vulgar:tribe:belong:burglar:continue:graduate:rate:suppose:village:grandchild:revered:loss:humble:other:many:luxury:hit:gentle:saliva:degenerate:lazy:burdensome:thick:opposite:body:resistant:wait:neglect:womb:retreat:sash:peaceful:piled high:sack:apprehend:exchange:lend:group:stagnate:condition:be crowned with:large:substitute:pedestal:ordinal number prefix:topic:waterfall:home:choose:swamp:eminent:clear (the land):consign:laundry:consent:voiced:however:attain:undress:rob:shelf:who (question word):cinnabar:daybreak:shouldering:simple:charcoal:gall bladder:grope:thin:short:sigh:edge:rip:nativity:forge:group:male:steps:cut off:bullet:warmth:discuss:podium:ground:pond:know:value:shame:(to) do:slow:stupid:immature:put:fine (not coarse):bamboo:livestock:pursue:amass:fabricate:regularity:plug up:tea:wear:legitimate wife:middle:relationship:insect:open sea:mid-air:loyalty:pluck:pour:daytime:pillar:inmost:sake:casting:stop-over:renowned:savings:ward:condolences:government office:portent, trillion:town:long:challenge:account book:stretch:carve:stare:angling:place on the head:bird:morning:paste:transcend:intestines:hop:indications:ridicule:tide:lucidity:investigate:listen:penal:straight:imperial order:make progress:sink:rare:majestic plural:exhibit:fare:tranquilize:follow:oak:crash:pass through:pain:hillock:pickling:two-mat area:claw:crane:low:display:courts:younger brother:decide:bottom:resist:residence:pavilion:upright:sovereign:revise:garden:relay:halt:spy:dike:present:extent:rowboat:tighten:abandon:mud:target:flute:pinch:drip:suitable:enemy:drown:transfer:philosophy:iron:penetrate:remove:heaven:code:shop:point:expand:annexed:revolve:fill in:rice paddy:transmit:Mr.:electricity:Big Dipper:spit:jealousy:junior:route:metropolis:transit:paint:gamble:soil:guy:toil:degrees:angry:sword:winter:lamp:hit:throw:beans:east:arrival:escape:overthrow:frozen:T'ang:island:peach tree:chastise:transparent:group:lament:steal:pottery:pagoda:board:ridgepole:hot water:pox:climb:answer:class:cylinder:unite:rice plant:step:sugar:head:mimeograph:wisteria:fight:inflation:same:den:trunk:move:public chamber:juvenile:road:work:copper:guide:pupil:mountain peak:hide:special:acquire:coach:benevolence:fervent:poison:alone:read:horse chestnut:convex:stab:deliver:barracks:pork:suddenly:covet:dull:cloudy weather:bowl of food:what:what:inside:pear tree:riddle:pot:south:soft:difficult:two:nun:two (falsification prevention):scent:meat:rainbow:day:enter:milk:urine:responsibility:pregnancy:endure:recognize:rather:heat:year:thought:twist:sticky:burn:trouble:settlement:ability:brain:farming:concentrated:grasp:wave:sect:rend:hegemony:horse:old woman:insult:worship:counter for cupfuls:back:lungs:haiku:distribute:repudiate:failure:abolish:comrade:sell:double:ume (Japanese apricot):cultivate:obeisance:mediator:buy:compensation:white:chief:clap:overnight:urge:peel:liner:Dr.:dilute:wheat:vague:truss:explode:box:chopsticks:farm:texture:eight:bowl:departure:hair of the head:fell:slip out:penalty:clique:anti-:half:spread out:crime:sail:pan-:consort:judge:slope:heights:board:printing block:squad:paddy-ridge:generally:marketing:blemish:meal:conveyor:anxiety:partition:pattern:luxuriant:clan:nightfall:one's turn:barbarian:tray:compare:skin:queen:negate:criticism:he:expose:fertilizer:negative:lowly:fly:exhausted:secret:incur:sad:front door:expense:tombstone:quit:evade:tail:eyebrow:beauty:provide:delicate:nose:knee:elbow:equal:without fail:ooze:writing brush:princess:hundred:ice:express:bag:ballot:evaluate:drift:signpost:seedling:second (part of time):sick:sketch:cat:article:seacoast:poor:V.I.P.:repeatedly:cleverness:flower pot:non-:husband:father:attach:linen:aid:urban prefecture:dreadful:mound:affixed:obituary:lose:proceed:floating:lady:token:rich:universal:rot:spread:skin:levy:musical score:scorn:military:part:dance:seal:wind:prostrated:clothes:vice:breadth:again:luck:abdomen:duplicate:capsize:pay:seethe:Buddha:thing:flour:distract:atmosphere:erupt:tomb:aroused:stirred up:part, minute of time:writing:hear:third class:flat:soldier:join:line-up:design:highness:closed:fence:cash:abuse:cover:mochi rice cake
+
+#+Name: joyo-translate-3
+#+Begin_Src translate :cache t :dest de :var joyo=mjoyo-3
+joyo
+#+End_src
+
+#+RESULTS[a748229c888fb91cace2bd1cfe67265e942c7ccd]: joyo-translate-3
+: stetig: Tablett: stopfen: zielen auf: vereiteln: ancestor: tarif: elementar: beiseite legen: grob: verband: entfremden: sue: modell: go upstream: eckstein: paar: robust: früh: konflikt: run: musizieren: gegenseitig: Villa: Gras: Senden: Lager: Suche: Einfügen: Maulbeere: Nest: Schwung: Kadett: Früher: Erneuerung: Fenster: Erstellen: Miss: Werden Sie dünn: Begräbnis: Kleidung: Buddhistischer Priester: Konzept: Schicht: Ganzes: Begegnung: Bottich: Überreste: Manöver: Parch: Frost: Lump: Algen: Kreation: Statue: Erhöhung: Hass: Lager: Geschenke: Eingeweide: Sofort: Bündel: Fuß: Stimulieren: Regel: Atem: Fangen: Schnell: Seite: Faden: vulgär: Stamm: gehören: Einbrecher: weiter: Absolvent: Rate: Angenommen: Dorf: Enkel: verehrt: Verlust: bescheiden: andere: viele: Luxus: Hit: sanft: Speichel: entartet: faul: schwer: dick: gegenüber: Körper: beständig: warten: Vernachlässigung: Mutterleib: Rückzug: Schärpe: friedlich: Stapeln Hoch: Sack: Festhalten: Tauschen: Verleihen: Gruppe: Stagnieren: Zustand: wird gekrönt mit: Groß: Ersatz: Sockel: Ordinalzahl Präfix: Thema: Wasserfall: Home: Wählen Sie: Sumpf : eminent: klar (das Land): Sendung: Wäsche: Zustimmung: stimmhaft: aber: att ain: entkleiden: rob: shelf: who (Fragewort): Zinnober: Tagesanbruch: Schulter: einfach: Holzkohle: Gallenblase: Taille: dünn: kurz: Seufzer: Rand: Rippe: Geburt: Gruppe: männlich: Schritte: Schnitt off: bullet: Wärme: diskutieren: Podium: Boden: Teich: wissen: Wert: Schande: (to) do: langsam: dumm: unreif: put: fein (nicht grob): Bambus: Vieh: verfolgen: amass: fabrizieren: Regelmäßigkeit : Plug up: Tee: Abnutzung: legitime Frau: Mitte: Beziehung: Insekt: offenes Meer: Mitte: Luft: Loyalität: Zupfen: Puder: Pour: Tag: Pfeil: Inmost: Sake: Casting: Zwischenstopp: berühmt: Einsparungen: Ward: Kondolenzen: Regierungsbüro: Vorzeichen, Billion: Stadt: lang: Herausforderung: Kontobuch: Strecke: Carve: Stare: Angeln: Platz auf dem Kopf: Vogel: Morgen: Paste: Transzendieren: Darm: Hopfen: Indikationen: Spott: Gezeiten: Klarheit : untersuchen: hören: Strafe: gerade: Reichsordnung: Fortschritt machen: Senke: selten: majestätisch Plural: Exponat: Preis: beruhigen: folgen: Eiche: Absturz: Passieren: Schmerz: Hügel: Beizen: zwei Matten Fläche: Kralle: Kran: niedrig: Anzeige: Gerichte: jüngerer Bruder: entscheiden: unten: widerstehen: Wohnsitz: Pavillon: aufrecht: souverän: überarbeiten: Garten: re legen: halt: Spion: Deich: Gegenwart: Umfang: Ruderboot: festziehen: aufgeben: Schlamm: Ziel: Flöte: Prise: Tropf: geeignet: Feind: ertrinken: Transfer: Philosophie: Eisen: eindringen: entfernen: Himmel: Code: Shop: Punkt: erweitern: beigefügt: Drehen: Ausfüllen: Reisfeld: Senden: Herr: Strom: Großer Wagen: Spucke: Eifersucht: Junior: Route: Metropole: Transit: Farbe: Glücksspiel: Boden: Typ: Wut: Grad: Wütend: Schwert: Winter: Lampe: Treffer: Wurf: Bohnen: Osten: Ankunft: Flucht: Sturz: gefroren: T'ang: Insel: Pfirsichbaum: Keuschheit: durchsichtig: Gruppe: Klage: Stahl: Töpfern: Pagode: Brett: First: heiß Wasser: Pocken: Klettern: Antwort: Klasse: Zylinder: Unite: Reispflanze: Schritt: Zucker: Kopf: Mimeograph: Glyzinien: Kampf: Inflation: Gleiche: Höhle: Rumpf: Umzug: Öffentliche Kammer: Jugendliche: Straße: Arbeit: Kupfer: Wegweiser: Schüler: Berggipfel: Verstecken: Spezial: Erwerb: Trainer: Wohlwollen: Inbrunst: Gift: allein: Lesen: Rosskastanie: Konvex: Stich: Liefern: Kasernen: Schweinefleisch: plötzlich: Begierde: langweilig: trübes Wetter: Schüssel mit Essen : was: was: innen: Birnbaum: Rätsel: Topf: Süden: weich: schwierig: zwei: Nonne: zwei (Fälschungsprävention): Duft: Fleisch: Regenbogen: Tag: Eingabe: Milch: Urin: Verantwortung: Schwangerschaft: ertragen: erkennen: eher: Hitze: Jahr: Gedanke: Drehung: klebrig: brennen: Ärger: Besiedlung: Fähigkeit: Gehirn: Landwirtschaft: konzentriert: Griff: Welle: Sekte: Zerren: Hegemonie: Pferd: alte Frau: Beleidigung : Anbetung: Zähler für Becher: Rücken: Lunge: Haiku: Verteilen: Ablehnen: Misserfolg: abschaffen: Kamerad: Verkauf: Doppel: Ume (japanische Aprikose): Kultivieren: Gehorsam: Mediator: Kaufen: Entschädigung: Weiß: Chef: Schlag: über Nacht : Drang: schälen: Liner: Dr.: verdünnen: Weizen: vage: Traversen: explodieren: Box: Essstäbchen: Farm: Textur: Acht: Schüssel: Abfahrt: Kopfhaar: Fallen: Herausrutschen: Strafe: Clique: Anti- Verbreitet: Verbrechen: Segel: Pan: Konsort: Richter: Steigung: Höhen: Brett: Druckblock: Kader: Paddy-First: allgemein: Marketing: Schönheitsfehler: Mahlzeit: Förderband: Angst: Trennwand: Muster: üppig: Clan: Einbruch der Nacht: Einer ist an der Reihe: Barbar: Tablett: Vergleich: Haut: Königin: Negieren: Kritik: Er: Aussetzen: Dünger: Negativ: Niedrig: Fliegen: Erschöpft: Geheimnis: Eintreten: Traurig: Haustür: Kosten: Grabstein: Beenden: Ausweichen: Schwanz: Augenbraue: Schönheit: Versorgen: Zart: Nase: Knie: Ellenbogen: Gleich: Ohne Fehler: Schlamm: Schreibpinsel: Prin Hundert: Hundert: Eis: Express: Beutel: Stimmzettel: Bewerten: Drift: Wegweiser: Sämling: Zweiter (Teilzeit): krank: Skizze: Katze: Artikel: Seeküste: schlecht: VIP: wiederholt: Cleverness: Blumentopf: Nicht- : Ehemann: Vater: beifügen: Leinen: Beihilfe: Stadtpräfektur: schrecklich: Hügel: angebracht: Nachruf: verlieren: Fortfahren: Schwimmen: Dame: Zeichen: Reich: Universal: Fäulnis: Verbreitung: Haut: Abgabe: Musiknote: Verachtung: Militär : Teil: Tanz: Seehund: Wind: niedergeschlagen: Kleidung: Laster: Weite: wieder: Glück: Bauch: Duplikat: kentern: bezahlen: Sitzen: Buddha: Ding: Mehl: Ablenkung: Atmosphäre: Ausbruch: Grab: Erregung: Aufgerührt: Teil, Minute: Schreiben: Hören: 3. Klasse: Wohnung: Soldat: Join: Aufstellung: Design: Hoheit: geschlossen: Zaun: Bargeld: Missbrauch: Abdeckung: Mochi-Reiskuchen
+
+#+Name: joyo-translate-csv-3
+#+Begin_Src R :var joyo=joyo-translate-3 :file joyo-kanji-3.csv
+gsub(":", "\n", joyo)
+#+End_src
+
+#+RESULTS[a4206c97c90a846d2f2bcf0315c870223b77bf19]: joyo-translate-csv-3
+[[file:joyo-kanji-3.csv]]
+
+
+#+Name: mjoyo-4
+#+Begin_Src mathematica :var min=1801 max=2136 :noweb-ref mjoyo
+kanjilist = Import["joyo-kanji.xlsx", "XLSX"];
+meanings = kanjilist // First // Rest // Part[#, 8] & /@ # &;
+meanings // Take[#, {min,max}] & // StringRiffle[#, ":"] & 
+#+End_src
+
+#+RESULTS[f9943d074b2a76dce138c9453a669caf053c52dc]: mjoyo-4
+: rice:wall:sphere:mannerism:separate:ignore:one-sided:environs:return:change:partial:everywhere:compile:valve:convenience:exertion:walk:preserve:suckle:catch:supplement:pavement:mother:recruit:grave:pining:livelihood:register:direction:wrap:perfume:home country:observance:treasure:embrace:release:method:bubbles:placenta:salary:emulate:summit:cannon:crumble:visit:report:bee:bountiful:sated:praise:sew:deceased:scarce:busy:boy:disturb:forget:prevent:tassel:obese:so-and-so:risk:divide:spinning:hope:bystander:cap:rod:trade:appearance:outburst:swell:conspire:cheek:north:tree:crude:breed:harmonious:me:black ink:slap:drown:rise:ditch:book:bustle:flip:mediocre:basin:hemp:chafe:grind:witch:every:younger sister:sheet of...:foolish:bury:curtain:membrane:pillow:or again:end:rub:ten thousand:full:ridicule:cartoon:not yet:flavor:fascination:headland:secrecy:honey:vein:exquisite:people:sleep:halberd:duty:nothing:dream:fog:daughter:name:fate:bright:astray:dark:alliance:inscription:chirp:destroy:excuse:face:cotton:noodles:overgrown:imitation:hair:delusion:blind:decrease:fierce:netting:eye:silence:gates:family crest:question:melting:night:field:all the more:unlucky:service:promise:translate:medicine:leap:darkness:reason:oil:metaphor:pleasure:rebuke:transport:healing:solely:friend:have:courage:seclude:permanence:mail:boil:furthermore:abundant:play:male:entice:melancholy:dissolve:superior:give:in advance:leave over:reputation:deposit:infancy:use:sheep:bewitching:ocean:need:contain:commonplace:hoist:swing:leaf:sunshine:melt:loins:formal title:boil (medical):jump:kiln:foster:embrace:noh chanting:day of the week:repress:fertility:bathe:longing:the following:wing:crush:naked:gauze:come:thunder:trust:entwine:fall:dairy products:bitter:riot:egg:perusal:excessive:indigo:column:officer:profit:village:reason:diarrhea:back:footgear:glassy:detach:land:stand up:law:fear:abbreviation:willow:stream:detain:dragon:grains:hump:sulphur:companion:trip:captive:prudence:finish:both:good:fee:refreshing:game-hunting:mausoleum:quantity:colleague:territory:dormitory:heal:clear:provisions:power:green:woods:thousandth:ethics:wheel:neighboring:look to:lapis lazuli:tears:accumulate:bases:sort:orders:thanks:cool:encourage:re-:example:small bell:zero:spirits:slave:age:lovely:calendar:curriculum:row:inferiority:ardent:split:romance:take along:bargain:practice:tempering:spine:hearth:bribe:road:dew:old man:labour:tamper with:son:melodious:wandering:corridor:watchtower:leak:basket:six:record:foot of a mountain:theory:peace:talk:bribe:aside:beguile:frame:gulf:arm
+
+#+Name: joyo-translate-4
+#+Begin_Src translate :cache t :dest de :var joyo=mjoyo-4
+joyo 
+#+End_src
+
+#+RESULTS[c9418df5e2f7689171798b7f5d6afbb3de16de92]: joyo-translate-4
+: Reis: Wand: Kugel: Manierismus: getrennt: ignorieren: einseitig: Umgebung: Rückkehr: Veränderung: teilweise: überall: Kompilieren: Ventil: Bequemlichkeit: Anstrengung: Gehen: Konservieren: Lutschen: Fang: Beilage: Pflaster: Mutter: Rekrut: Grab: Pining: Lebensunterhalt: Register: Richtung: Wrap: Parfüm: Heimatland: Einhaltung: Schatz: Umarmung: Release: Methode: Blasen: Plazenta: Gehalt: Emulat: Gipfel: Kanone: Crumble: Besuch: Bericht: Biene: reichhaltig : Lob: Nähen: Verstorbene: Mangel: Beschäftigt: Junge: Stören: Vergessen: Verhindern: Quaste: Übergewicht: so und so: Risiko: Teilen: Drehen: Hoffnung: Zuschauer: Kappe: Stab: Handel: Aussehen: Ausbruch: Schwellung : Verschwörung: Wange: Norden: Baum: roh: Rasse: harmonisch: Ich: schwarze Tinte: Ohrfeige: Ertrinken: Graben: Buch: Treiben: Flip: mittelmäßig: Becken: Hanf: Schafe: Schleifen: Hexe: alle: jüngere Schwester : Blatt von ...: dumm: begraben: Vorhang: Membran: Kissen: oder wieder: Ende: Einreiben: Zehntausend: voll: Spott: Karikatur: noch nicht: Geschmack: Faszination: Landzunge: Geheimhaltung: Honig: Vene: vorzüglich: Menschen: Schlaf: Hellebarde: Pflicht: nichts: Traum: Nebel: Tochter: Name: Schicksal: Hell: Verirrung: Dunkelheit: Allianz: Inschrift: Chirp: Zerstörung: Entschuldigung: f As: Baumwolle: Nudeln: überwachsen: Imitation: Haare: Wahn: Blind: Abnahme: heftig: Geflecht: Auge: Stille: Tore: Familienwappen: Frage: Schmelzen: Nacht: Feld: umso mehr: Pech: Service: Versprechen: übersetzen : Medizin: Sprung: Dunkelheit: Grund: Öl: Metapher: Vergnügen: Tadel: Transport: Heilung: nur: Freund: habe: Mut: Seclude: Dauerhaftigkeit: Post: Kochen: außerdem: reichlich: Spiel: männlich: locken: melancholisch: auflösen : überlegen: geben: im voraus: verlassen: Ruf: Kaution: Säuglingsalter: Verwendung: Schaf: betörend: Meer: Bedarf: enthalten: Alltäglich: Hebezeug: Schaukel: Blatt: Sonnenschein: Schmelze: Lenden: formale Titel: kochen (medizinisch) : Sprung: Ofen: Pflege: Umarmung: Nein Singen: Wochentag: Unterdrücken: Fruchtbarkeit: Baden: Sehnsucht: Folgendes: Flügel: Crash: Nackt: Gaze: Kommen: Donner: Vertrauen: Umschließen: Fall: Milchprodukte: Bitter : Aufstand: Ei: Durchsichtigkeit: Übermaß: Indigo: Kolumne: Offizier: Gewinn: Dorf: Grund: Durchfall: Rücken: Fußbekleidung: Glasig: Detach: Land: Aufstehen: Gesetz: Angst: Abkürzung: Weide: Strom: Festhalten: Drache: Körner: Höcker: Schwefel: Begleiter: Ausflug: Gefangenschaft: Klugheit: Ziel: beide: gut: Gebühr: erfrischend: Spiel-h Enting: Mausoleum: Menge: Kollege: Gebiet: Studentenwohnheim: Heilung: Klar: Vorkehrungen: Kraft: Grün: Wald: Tausendstel: Ethik: Rad: Nachbarn: schau nach: Lapislazuli: Tränen: Anhäufen: Basen: Sortieren: Bestellungen: Danke: cool: ermutigen: re: Beispiel: kleine Glocke: Null: Geister: Sklave: Alter: liebevoll: Kalender: Lehrplan: Reihe: Minderwertigkeit: brennend: gespalten: Romantik: Mitnehmen: Schnäppchen: Übung: Temperieren: Wirbelsäule: Herd: Bestechung : Straße: Tau: Alter Mann: Arbeit: Tamper mit: Sohn: Melodiös: Wandern: Gang: Wachturm: Leck: Korb: Sechs: Rekord: Fuß eines Berges: Theorie: Frieden: Gespräch: Bestechung: Seite: Begleitung: Rahmen: Golf: Arm
+
+#+Name: joyo-translate-csv-4
+#+Begin_Src R :var joyo=joyo-translate-4 :file joyo-kanji-4.csv
+gsub(":", "\n", joyo)
+#+End_src
+
+#+RESULTS[ccea906a4d068bc67fa1042fd49de52589c2ad70]: joyo-translate-csv-4
+[[file:joyo-kanji-4.csv]]
+
+
+#+Name: joyo-translate-x
+#+Begin_Src translate :cache t :dest de :var joyo="vermilion:take:hunt:neck:particularly:pearl:alcoholic drink:tumor:kind:gist:longevity:accept:curse:instruct:demand:Confucian:trees:take in"
+joyo
+#+End_src
+
+#+RESULTS[68eb3583161a13bee08bef799f13c7ea1fa71993]: joyo-translate-x
+: Vermilion: Nehmen: Jagd: Hals: Besonders: Perle: Alkoholisches Getränk: Tumor: Art: Gist: Langlebigkeit: Akzeptieren: Fluch: Anweisung: Nachfrage: Konfuzianer: Bäume: Nehmen Sie mit
+
+#+end_comment
+
+*** DONE Ziel
+    CLOSED: [2019-03-16 Sat 09:46]
+
+#+Attr_Latex: :align ccccccc :booktabs nil
+| \kk{日}{Sonne}{ニチ}{ひ}{sun}     | \kk{月}{Mond}{ゲツ}{つき}{moon, month} | \kk{人}{Person}{ジン}{ニン}{person} | \kk{田}{Feld}{デン}{た}{field}        | \kk{木}{Baum}{ボク}{モク}{tree} | \kk{雨}{Regen}{ウ}{あめ}{rain}             | \kk{雲}{Wolke}{ウン}{くも}{cloud}  |
+| \kk{一}{eins}{イチ}{ひと-つ}{one} | \kk{二}{zwei}{ニ}{ふた}{two}           | \kk{三}{drei}{サン}{み}{three}      | \kk{四}{vier}{シ}{よ}{four}           | \kk{五}{fünf}{ゴ}{いつ}{five}   | \kk{六}{sechs}{ロク}{む}{six}              | \kk{七}{sieben}{シチ}{なな}{seven} |
+| \kk{八}{acht}{ハチ}{や}{eight}    | \kk{九}{neun}{キュウ}{ク}{nine}        | \kk{十}{zehn}{ジュウ}{ジッ}{ten}    | \kk{上}{hoch}{ジョウ}{（ショウ）}{up} | \kk{下}{unten}{カ}{した}{below} | \kk{中}{Mitte}{チュウ}{（ジュウ）}{middle} |                                    |
+ 
+#+Name: tab-joyo-wiki-grade
+#+Begin_Src R :cache nil :var g=1 min=1 max=16 ncol=7 :exports both :colnames no
+library(dplyr)
+library(openxlsx)
+library(glue)
+ktable <- function(grade,min,max,ncol){
+  kanji <- read.xlsx(xlsxFile = "joyo-kanji-review.xlsx", sheet = "Joyo-Kanji")
+  kanji2 <- kanji[c(1,2,6,8,9,11,12)]
+  kanji3 <- kanji2 %>% filter(Grade==g) %>% arrange(Grade,Kanji)
+  kanji4 <- kanji3[c(2,4,5,6,7)] 
+  n <- max - min + 1 
+  kanji5 <- kanji4 %>% head(max) %>% 
+    glue_data("\\kk{{{Kanji}}}{{{Bedeutung}}}{{{R1}}}{{{R2}}}{{{Meaning}}}", .na = "") 
+  k5 <- kanji5[c(min:max)]
+  nr <- ncol - n + (ncol*floor((n-1)/ncol))
+  nal <- rep("",nr)
+  k5 <- append(k5, nal)
+  matrix(k5, ncol = ncol, byrow = TRUE)
+}
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-grade
+| \kk{一}{eins}{イチ}{ひと-つ}{one} | \kk{七}{sieben}{シチ}{なな}{seven}            | \kk{三}{drei}{サン}{み}{three}      | \kk{上}{hoch}{ジョウ}{（ショウ）}{up} | \kk{下}{unten}{カ}{した}{below}          | \kk{中}{Mitte}{チュウ}{（ジュウ）}{middle} | \kk{九}{neun}{キュウ}{ク}{nine} |
+| \kk{二}{zwei}{ニ}{ふた}{two}      | \kk{五}{fünf}{ゴ}{いつ}{five}                 | \kk{人}{Person}{ジン}{ニン}{person} | \kk{休}{Ruhe}{キュウ}{やす-む}{rest}  | \kk{先}{vorherige}{セン}{さき}{previous} | \kk{入}{hineingehen}{ニュウ}{い-る}{enter} | \kk{八}{acht}{ハチ}{や}{eight}  |
+| \kk{六}{sechs}{ロク}{む}{six}     | \kk{円}{rund, Yen}{エン}{まる-い}{round, yen} |                                     |                                       |                                          |                                            |                                 |
+
+#+Latex: \newpage
+*** DONE Grade 1
+    CLOSED: [2019-03-12 Tue 09:20]
+
+#+Name: tab-joyo-wiki-1
+#+Begin_Src R :cache nil :noweb yes :exports results :var g=1 min=1 max=80 ncol=7
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+# #+Attr_Latex: :booktabs t
+#+RESULTS[20facd238c65f6d1b8f3e30274793ac9eb463af7]: tab-joyo-wiki-1
+| \kk{一}{eins}{イチ}{ひと-つ}{one}                       | \kk{七}{sieben}{シチ}{なな}{seven}             | \kk{三}{drei}{サン}{み}{three}             | \kk{上}{hoch}{ジョウ}{（ショウ）}{up}   | \kk{下}{unten}{カ}{した}{below}          | \kk{中}{Mitte}{チュウ}{（ジュウ）}{middle} | \kk{九}{neun}{キュウ}{ク}{nine}               |
+| \kk{二}{zwei}{ニ}{ふた}{two}                            | \kk{五}{Fünf}{ゴ}{いつ}{five}                  | \kk{人}{Person}{ジン}{ニン}{person}        | \kk{休}{Ruhe}{キュウ}{やす-む}{rest}    | \kk{先}{vorherige}{セン}{さき}{previous} | \kk{入}{hineingehen}{ニュウ}{い-る}{enter} | \kk{八}{acht}{ハチ}{や}{eight}                |
+| \kk{六}{Sechs}{ロク}{む}{six}                           | \kk{円}{rund, Yen}{エン}{まる-い}{round, yen}  | \kk{出}{verlassen}{シュツ}{（スイ）}{exit} | \kk{力}{Kraft}{リョク}{リキ}{power}     | \kk{十}{zehn}{ジュウ}{ジッ}{ten}         | \kk{千}{tausend}{セン}{ち}{thousand}       | \kk{口}{Mund}{コウ}{ク}{mouth}                |
+| \kk{右}{rechts (Richtung)}{ウ}{みぎ}{right (direction)} | \kk{名}{Name}{メイ}{ミョウ}{name}              | \kk{四}{vier}{シ}{よ}{four}                | \kk{土}{Boden}{ド}{ト}{soil}            | \kk{夕}{Abend}{セキ}{ゆう}{evening}      | \kk{大}{groß}{ダイ}{タイ}{large}           | \kk{天}{Himmel}{テン}{あめ}{heaven}           |
+| \kk{女}{Frau}{ジョ}{ニョ}{woman}                        | \kk{子}{Kind}{シ}{ス}{child}                   | \kk{字}{Brief}{ジ}{あざ}{letter}           | \kk{学}{Studium}{ガク}{まな-ぶ}{study}  | \kk{小}{klein}{ショウ}{ちい-さい}{small} | \kk{山}{Berg}{サン}{やま}{mountain}        | \kk{川}{Fluss}{セン}{かわ}{river}             |
+| \kk{左}{links (Richtung)}{サ}{ひだり}{left (direction)} | \kk{年}{Jahr}{ネン}{とし}{year}                | \kk{手}{Hand}{シュ}{て}{hand}              | \kk{文}{schreiben}{ブン}{モン}{writing} | \kk{日}{Tag}{ニチ}{ジツ}{day}            | \kk{早}{früh}{ソウ}{（サッ）}{early}       | \kk{月}{Monat, Mond}{ゲツ}{ガツ}{month, moon} |
+| \kk{木}{Baum}{ボク}{モク}{tree}                         | \kk{本}{Buch}{ホン}{もと}{book}                | \kk{村}{Dorf}{ソン}{むら}{village}         | \kk{林}{Wald}{リン}{はやし}{woods}      | \kk{校}{Schule}{コウ}{NA}{school}        | \kk{森}{Wald}{シン}{もり}{forest}          | \kk{正}{richtig}{セイ}{ショウ}{correct}       |
+| \kk{気}{Gefühl}{キ}{ケ}{feeling}                        | \kk{水}{Wasser}{スイ}{みず}{water}             | \kk{火}{Feuer}{カ}{ひ}{fire}               | \kk{犬}{Hund}{ケン}{いぬ}{dog}          | \kk{玉}{Ball}{ギョク}{たま}{ball}        | \kk{王}{König}{オウ}{NA}{king}             | \kk{生}{leben}{セイ}{ショウ}{life}            |
+| \kk{田}{Reisfeld}{デン}{た}{rice paddy}                 | \kk{男}{männlich}{ダン}{ナン}{male}            | \kk{町}{Stadt}{チョウ}{まち}{town}         | \kk{白}{weiß}{ハク}{ビャク}{white}      | \kk{百}{hundert}{ヒャク}{NA}{hundred}    | \kk{目}{Auge}{モク}{（ボク）}{eye}         | \kk{石}{Stein}{セキ}{（シャク）}{stone}       |
+| \kk{空}{Himmel}{クウ}{そら}{sky}                        | \kk{立}{aufstehen}{リツ}{（リュウ）}{stand up} | \kk{竹}{Bambus}{チク}{たけ}{bamboo}        | \kk{糸}{Faden}{シ}{いと}{thread}        | \kk{耳}{Ohr}{ジ}{みみ}{ear}              | \kk{花}{Blume}{カ}{はな}{flower}           | \kk{草}{Gras}{ソウ}{くさ}{grass}              |
+| \kk{虫}{Insekt}{チュウ}{むし}{insect}                   | \kk{見}{sehen}{ケン}{み-る}{see}               | \kk{貝}{Muscheln}{かい}{NA}{shellfish}     | \kk{赤}{rot}{セキ}{（シャク）}{red}     | \kk{足}{Fuß}{ソク}{あし}{foot}           | \kk{車}{Auto}{シャ}{くるま}{car}           | \kk{金}{Gold}{キン}{コン}{gold}               |
+| \kk{雨}{Regen}{ウ}{あめ}{rain}                          | \kk{青}{blau}{セイ}{（ショウ）}{blue}          | \kk{音}{Ton}{オン}{おと}{sound}            |                                         |                                          |                                            |                                               |
+
+#+Latex: \newpage
+*** DONE Grade 2
+    CLOSED: [2019-03-12 Tue 09:20]
+
+#+Name: tab-joyo-wiki-2-1
+#+Begin_Src R :headers t :cache nil :var g=2 min=1 max=77 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+# #+Attr_Latex: :booktabs t
+#+RESULTS: tab-joyo-wiki-2-1
+| \kk{万}{zehntausend}{マン}{バン}{ten thousand}             | \kk{丸}{Kreis}{ガン}{まる-い}{circle}             | \kk{交}{mischen}{コウ}{まじ-わる}{mix}                  | \kk{京}{Hauptstadt}{キョウ}{ケイ}{capital}               | \kk{今}{jetzt}{コン}{キン}{now}                           | \kk{会}{Vereinigung}{カイ}{あ-う}{association}                               | \kk{体}{Körper}{タイ}{テイ}{body}             |
+| \kk{何}{was}{カ}{なに}{what}                               | \kk{作}{Marke}{サク}{サ}{make}                    | \kk{元}{Herkunft}{ゲン}{ガン}{origin}                   | \kk{兄}{älterer Bruder}{ケイ}{（キョウ）}{older brother} | \kk{光}{Strahl}{コウ}{ひか-る}{ray}                       | \kk{公}{öffentlich}{コウ}{おおやけ}{public}                                  | \kk{内}{innen}{ナイ}{（ダイ）}{inside}        |
+| \kk{冬}{Winter}{トウ}{ふゆ}{winter}                        | \kk{刀}{Schwert}{トウ}{かたな}{sword}             | \kk{分}{Teil, Minute}{ブン}{フン}{part, minute of time} | \kk{切}{schneiden}{セツ}{（サイ）}{cut}                  | \kk{前}{vorne}{ゼン}{まえ}{in front}                      | \kk{北}{Norden}{ホク}{きた}{north}                                           | \kk{午}{Mittag}{ゴ}{NA}{noon}                 |
+| \kk{半}{halb}{ハン}{なか-ば}{half}                         | \kk{南}{Süden}{ナン}{（ナ）}{south}               | \kk{原}{Feld}{ゲン}{はら}{field}                        | \kk{友}{Freund}{ユウ}{とも}{friend}                      | \kk{古}{alt}{コ}{ふる-い}{old}                            | \kk{台}{Sockel}{ダイ}{タイ}{pedestal}                                        | \kk{合}{Passform}{ゴウ}{ガッ}{fit}            |
+| \kk{同}{gleich}{ドウ}{おな-じ}{same}                       | \kk{回}{Zeiten}{カイ}{まわ-る}{times}             | \kk{図}{Diagramm}{ズ}{ト}{diagram}                      | \kk{国}{Land}{コク}{くに}{country}                       | \kk{園}{Garten}{エン}{その}{garden}                       | \kk{地}{Boden}{チ}{ジ}{ground}                                               | \kk{場}{Ort}{ジョウ}{ば}{place}               |
+| \kk{声}{stimme}{セイ}{（ショウ）}{voice}                   | \kk{売}{Verkauf}{バイ}{う-る}{sell}               | \kk{夏}{Sommer}{カ}{なつ}{summer}                       | \kk{外}{außerhalb}{ガイ}{そと}{outside}                  | \kk{多}{viele}{タ}{おお-い}{many}                         | \kk{夜}{Nacht}{ヤ}{よ}{night}                                                | \kk{太}{dick}{タイ}{タ}{thick}                |
+| \kk{妹}{jüngere Schwester}{マイ}{いもうと}{younger sister} | \kk{姉}{ältere Schwester}{シ}{あね}{older sister} | \kk{室}{Raum}{シツ}{むろ}{room}                         | \kk{家}{Haus}{カ}{いえ}{house}                           | \kk{寺}{Buddhistischer Tempel}{ジ}{てら}{Buddhist temple} | \kk{少}{wenige}{ショウ}{すく-ない}{few}                                      | \kk{岩}{Felsblock}{ガン}{いわ}{boulder}       |
+| \kk{工}{Handwerk}{コウ}{ク}{craft}                         | \kk{市}{Markt}{シ}{いち}{market}                  | \kk{帰}{Rückkehr}{キ}{かえ-る}{return}                  | \kk{広}{Breite}{コウ}{ひろ-い}{wide}                     | \kk{店}{Shop}{テン}{みせ}{shop}                           | \kk{弓}{Bogen (Bogenschießen, Violine)}{キュウ}{ゆみ}{bow (archery, violin)} | \kk{引}{ziehen}{イン}{ひ-く}{pull}            |
+| \kk{弟}{jüngerer Bruder}{テイ}{（ダイ）}{younger brother}  | \kk{弱}{schwach}{ジャク}{よわ-い}{weak}           | \kk{強}{stark}{キョウ}{ゴウ}{strong}                    | \kk{当}{Treffer}{トウ}{あ-たる}{hit}                     | \kk{形}{Form}{ケイ}{ギョウ}{shape}                        | \kk{後}{hinter}{ゴ}{コウ}{behind}                                            | \kk{心}{Herz}{シン}{こころ}{heart}            |
+| \kk{思}{Denken}{シ}{おも-う}{think}                        | \kk{戸}{Tür}{コ}{と}{door}                        | \kk{才}{Genie}{サイ}{NA}{genius}                        | \kk{教}{lehren}{キョウ}{おし-える}{teach}                | \kk{数}{Nummer}{スウ}{（ス）}{number}                     | \kk{新}{neu}{シン}{あたら-しい}{new}                                         | \kk{方}{Richtung}{ホウ}{かた}{direction}      |
+| \kk{明}{hell}{メイ}{ミョウ}{bright}                        | \kk{星}{Stern}{セイ}{（ショウ）}{star}            | \kk{春}{Frühling}{シュン}{はる}{springtime}             | \kk{昼}{Tag}{チュウ}{ひる}{daytime}                      | \kk{時}{Zeit}{ジ}{とき}{time}                             | \kk{晴}{klar}{セイ}{は-れる}{clear up}                                       | \kk{曜}{Wochentag}{ヨウ}{NA}{day of the week} |
+
+#+Name: tab-joyo-wiki-2-2
+#+Begin_Src R :headers t :cache nil :var g=2 min=78 max=160 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+# #+Attr_Latex: :booktabs t
+#+RESULTS: tab-joyo-wiki-2-2
+| \kk{書}{schreiben}{ショ}{か-く}{write}                | \kk{朝}{Morgen}{チョウ}{あさ}{morning}         | \kk{来}{kommen}{ライ}{く-る}{come}             | \kk{東}{Osten}{トウ}{ひがし}{east}            | \kk{楽}{Vergnügen}{ガク}{たの-しい}{pleasure} | \kk{歌}{Lied}{カ}{うた}{song}             | \kk{止}{anhalten}{シ}{と-まる}{stop}                 |
+| \kk{歩}{gehen}{ホ}{ブ}{walk}                          | \kk{母}{Mutter}{ボ}{はは}{mother}              | \kk{毎}{alle}{マイ}{NA}{every}                 | \kk{毛}{Haare}{モウ}{け}{hair}                | \kk{池}{Teich}{チ}{いけ}{pond}                | \kk{汽}{Dampf}{キ}{NA}{steam}             | \kk{活}{aktiv}{カツ}{NA}{active}                     |
+| \kk{海}{Meer}{カイ}{うみ}{sea}                        | \kk{点}{Punkt}{テン}{NA}{point}                | \kk{父}{Vater}{フ}{ちち}{father}               | \kk{牛}{Kuh}{ギュウ}{うし}{cow}               | \kk{理}{Grund}{リ}{NA}{reason}                | \kk{用}{Verwendung}{ヨウ}{もち-いる}{use} | \kk{画}{Tableau}{ガ}{カク}{tableau}                  |
+| \kk{番}{Einer ist an der Reihe}{バン}{NA}{one's turn} | \kk{直}{gerade}{チョク}{ジキ}{straight}        | \kk{矢}{Pfeil}{シ}{や}{arrow}                  | \kk{知}{wissen}{チ}{し-る}{know}              | \kk{社}{Firma}{シャ}{やしろ}{company}         | \kk{秋}{Herbst}{シュウ}{あき}{autumn}     | \kk{科}{Abschnitt}{カ}{NA}{section}                  |
+| \kk{答}{Antwort}{トウ}{こた-える}{answer}             | \kk{算}{berechnen}{サン}{NA}{calculate}        | \kk{米}{Reis}{ベイ}{マイ}{rice}                | \kk{紙}{Papier}{シ}{かみ}{paper}              | \kk{細}{dünn}{サイ}{ほそ-い}{thin}            | \kk{組}{Verband}{ソ}{く-む}{association}  | \kk{絵}{Bild}{カイ}{エ}{picture}                     |
+| \kk{線}{Linie}{セン}{NA}{line}                        | \kk{羽}{Feder}{ウ}{はね}{feather}              | \kk{考}{denken}{コウ}{かんが-える}{think}      | \kk{聞}{hören}{ブン}{モン}{hear}              | \kk{肉}{Fleisch}{ニク}{NA}{meat}              | \kk{自}{sich selbst}{ジ}{シ}{oneself}     | \kk{船}{Boot}{セン}{ふね}{boat}                      |
+| \kk{色}{Gebräu}{ショク}{シキ}{color}                  | \kk{茶}{Tee}{チャ}{サ}{tea}                    | \kk{行}{los}{コウ}{ギョウ}{go}                 | \kk{西}{Westen}{セイ}{サイ}{west}             | \kk{親}{Eltern}{シン}{おや}{parent}           | \kk{角}{Winkel}{カク}{かど}{angle}        | \kk{言}{sagen}{ゲン}{ゴン}{say}                      |
+| \kk{計}{Maß}{ケイ}{はか-る}{measure}                  | \kk{記}{aufschreiben}{キ}{しる-す}{write down} | \kk{話}{Gespräch}{ワ}{はな-す}{talk}           | \kk{語}{Sprache}{ゴ}{かた-る}{language}       | \kk{読}{lesen}{ドク}{トク}{read}              | \kk{谷}{Tal}{コク}{たに}{valley}          | \kk{買}{kaufen}{バイ}{か-う}{buy}                    |
+| \kk{走}{rennen}{ソウ}{はし-る}{run}                   | \kk{近}{in der Nähe}{キン}{ちか-い}{near}      | \kk{通}{passieren}{ツウ}{（ツ）}{pass through} | \kk{週}{Woche}{シュウ}{NA}{week}              | \kk{道}{Straße}{ドウ}{（トウ）}{road}         | \kk{遠}{weit}{エン}{とお-い}{far}         | \kk{里}{Dorf}{リ}{さと}{village}                     |
+| \kk{野}{Feld}{ヤ}{の}{field}                          | \kk{長}{lang}{チョウ}{なが-い}{long}           | \kk{門}{Tore}{モン}{かど}{gates}               | \kk{間}{Intervall}{カン}{あいだ}{interval}    | \kk{雪}{Schnee}{セツ}{ゆき}{snow}             | \kk{雲}{Wolke}{ウン}{くも}{cloud}         | \kk{電}{Strom}{デン}{NA}{electricity}                |
+| \kk{頭}{Kopf}{トウ}{ズ}{head}                         | \kk{顔}{Gesicht}{ガン}{かお}{face}             | \kk{風}{Wind}{フウ}{（フ）}{wind}              | \kk{食}{wischen}{ショク}{（ジキ）}{eat, meal} | \kk{首}{Hals}{シュ}{くび}{neck}               | \kk{馬}{Pferd}{バ}{うま}{horse}           | \kk{高}{hoch, teuer}{コウ}{たか-い}{tall, expensive} |
+| \kk{魚}{Fisch}{ギョ}{うお}{fish}                      | \kk{鳥}{Vogel}{チョウ}{とり}{bird}             | \kk{鳴}{zwitschern}{メイ}{な-く}{chirp}        | \kk{麦}{Weizen}{バク}{むぎ}{wheat}            | \kk{黄}{gelb}{コウ}{オウ}{yellow}             | \kk{黒}{schwarz}{コク}{くろ}{black}       |                                                      |
+
+#+Latex: \newpage
+*** DONE Grade 3
+    CLOSED: [2019-03-12 Tue 09:20]
+
+#+Name: tab-joyo-wiki-3-1
+#+Begin_Src R :headers t :cache nil :var g=3 min=1 max=74 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+# #+Attr_Latex: :booktabs t
+#+RESULTS: tab-joyo-wiki-3-1
+| \kk{丁}{Bezirk}{チョウ}{テイ}{ward}           | \kk{世}{welt}{セイ}{セ}{world}               | \kk{両}{beide}{リョウ}{NA}{both}            | \kk{主}{Meister}{シュ}{（ス）}{master}     | \kk{乗}{Fahrt}{ジョウ}{の-る}{ride}   | \kk{予}{im voraus}{ヨ}{NA}{in advance}                     | \kk{事}{abstraktes Ding}{ジ}{（ズ）}{abstract thing} |
+| \kk{仕}{tun}{シ}{（ジ）}{do}                  | \kk{他}{andere}{タ}{ほか}{other}             | \kk{代}{Ersatz}{ダイ}{タイ}{substitute}     | \kk{住}{Wohnung}{ジュウ}{す-む}{dwelling}  | \kk{使}{Verwendung}{シ}{つか-う}{use} | \kk{係}{Verantwortlicher}{ケイ}{かか-る}{person in charge} | \kk{倍}{doppelt}{バイ}{NA}{double}                   |
+| \kk{全}{ganz}{ゼン}{まった-く}{whole}         | \kk{具}{Werkzeug}{グ}{NA}{tool}              | \kk{写}{Kopie}{シャ}{うつ-す}{copy}         | \kk{列}{Reihe}{レツ}{NA}{row}              | \kk{助}{Hilfe}{ジョ}{たす-ける}{help} | \kk{勉}{Anstrengung}{ベン}{NA}{exertion}                   | \kk{動}{Umzug}{ドウ}{うご-く}{move}                  |
+| \kk{勝}{Sieg}{ショウ}{か-つ}{win}             | \kk{化}{Veränderung}{カ}{ば-ける}{change}    | \kk{区}{Bezirk}{ク}{NA}{ward}               | \kk{医}{Medizin}{イ}{NA}{medicine}         | \kk{去}{Urlaub}{キョ}{コ}{leave}      | \kk{反}{Anti- }{ハン}{（ホン）}{anti-}                     | \kk{取}{nehmen}{シュ}{と-る}{take}                   |
+| \kk{受}{akzeptieren}{ジュ}{う-ける}{accept}   | \kk{号}{Anzahl}{ゴウ}{NA}{number}            | \kk{向}{da drüben}{コウ}{む-く}{over there} | \kk{君}{Du}{クン}{きみ}{you}               | \kk{味}{Geschmack}{ミ}{あじ}{flavor}  | \kk{命}{Schicksal}{メイ}{ミョウ}{fate}                     | \kk{和}{Frieden}{ワ}{（オ）}{peace}                  |
+| \kk{品}{Artikel}{ヒン}{しな}{article}         | \kk{員}{Mitglied}{イン}{NA}{member}          | \kk{商}{verkaufen}{ショウ}{あきな-う}{sell} | \kk{問}{Frage}{モン}{と-う}{question}      | \kk{坂}{Steigung}{ハン}{さか}{slope}  | \kk{央}{Mitte}{オウ}{NA}{center}                           | \kk{始}{Anfang}{シ}{はじ-める}{begin}                |
+| \kk{委}{Kommission}{イ}{ゆだ-ねる}{committee} | \kk{守}{schützen}{シュ}{（ス）}{protect}     | \kk{安}{billig}{アン}{やす-い}{cheap}       | \kk{定}{entscheiden}{テイ}{ジョウ}{decide} | \kk{実}{Wahrheit}{ジツ}{み}{truth}    | \kk{客}{Gast}{キャク}{カク}{guest}                         | \kk{宮}{Shinto-Schrein}{キュウ}{グウ}{Shinto shrine} |
+| \kk{宿}{Gasthaus}{シュク}{やど}{inn}          | \kk{寒}{Kälte}{カン}{さむ-い}{cold}          | \kk{対}{gegenüber}{タイ}{ツイ}{opposite}    | \kk{局}{Büro}{キョク}{NA}{office}          | \kk{屋}{Dach}{オク}{や}{roof}         | \kk{岸}{Strand}{ガン}{きし}{beach}                         | \kk{島}{Insel}{トウ}{しま}{island}                   |
+| \kk{州}{Staat}{シュウ}{す}{state}             | \kk{帳}{Kontobuch}{チョウ}{NA}{account book} | \kk{平}{Wohnung}{ヘイ}{ビョウ}{flat}        | \kk{幸}{Glück}{コウ}{さいわ-い}{happiness} | \kk{度}{Grad}{ド}{（ト）}{degrees}    | \kk{庫}{Lager}{コ}{（ク）}{warehouse}                      | \kk{庭}{Garten}{テイ}{にわ}{garden}                  |
+| \kk{式}{Stil}{シキ}{NA}{style}                | \kk{役}{Service}{ヤク}{エキ}{service}        | \kk{待}{warten}{タイ}{ま-つ}{wait}          | \kk{急}{beeilen}{キュウ}{いそ-ぐ}{hurry}   | \kk{息}{Atem}{ソク}{いき}{breath}     | \kk{悪}{schlecht}{アク}{わる-い}{bad}                      | \kk{悲}{traurig}{ヒ}{かな-しい}{sad}                 |
+| \kk{想}{Konzept}{ソウ}{（ソ）}{concept}       | \kk{意}{Idee}{イ}{NA}{idea}                  | \kk{感}{Gefühl}{カン}{NA}{feeling}          | \kk{所}{Ort}{ショ}{ところ}{place}          |                                       |                                                            |                                                      |
+
+#+Name: tab-joyo-wiki-3-2
+#+Begin_Src R :headers t :cache nil :var g=3 min=75 max=156 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+# #+Attr_Latex: :booktabs t
+#+RESULTS: tab-joyo-wiki-3-2
+| \kk{打}{schlagen}{ダ}{う-つ}{hit}                 | \kk{投}{Wurf}{トウ}{な-げる}{throw}               | \kk{拾}{Abholung}{シュウ}{ジュウ}{pick up}           | \kk{持}{halten}{ジ}{も-つ}{hold}                | \kk{指}{Finger}{シ}{ゆび}{finger}            | \kk{放}{Release}{ホウ}{はな-す}{release} | \kk{整}{sortieren}{セイ}{ととの-える}{put in order}                     |
+| \kk{旅}{Ausflug}{リョ}{たび}{trip}                | \kk{族}{Stamm}{ゾク}{NA}{tribe}                   | \kk{昔}{vor langer Zeit}{セキ}{（シャク）}{long ago} | \kk{昭}{leuchtend}{ショウ}{NA}{shining}         | \kk{暑}{heiß}{ショ}{あつ-い}{hot}            | \kk{暗}{dunkel}{アン}{くら-い}{dark}     | \kk{曲}{musikalische Komposition}{キョク}{ま-がる}{musical composition} |
+| \kk{有}{haben}{ユウ}{ウ}{have}                    | \kk{服}{Kleidung}{フク}{NA}{clothes}              | \kk{期}{Zeitraum}{キ}{（ゴ）}{period of time}        | \kk{板}{Brett}{ハン}{バン}{board}               | \kk{柱}{Pfeil}{チュウ}{はしら}{pillar}       | \kk{根}{Wurzel}{コン}{ね}{root}          | \kk{植}{Pflanze}{ショク}{う-える}{plant}                                |
+| \kk{業}{Business}{ギョウ}{ゴウ}{business}         | \kk{様}{formaler Titel}{ヨウ}{さま}{formal title} | \kk{横}{Seite}{オウ}{よこ}{side}                     | \kk{橋}{Brücke}{キョウ}{はし}{bridge}           | \kk{次}{nächstes}{ジ}{シ}{next}              | \kk{歯}{Zahn}{シ}{は}{tooth}             | \kk{死}{Tod}{シ}{し-ぬ}{death}                                          |
+| \kk{氷}{Eis}{ヒョウ}{こおり}{ice}                 | \kk{決}{entscheiden}{ケツ}{き-める}{decide}       | \kk{油}{Öl}{ユ}{あぶら}{oil}                         | \kk{波}{Welle}{ハ}{なみ}{wave}                  | \kk{注}{Puder}{チュウ}{そそ-ぐ}{pour}        | \kk{泳}{schwimmen}{エイ}{およ-ぐ}{swim}  | \kk{洋}{Meer}{ヨウ}{NA}{ocean}                                          |
+| \kk{流}{Strom}{リュウ}{（ル）}{stream}            | \kk{消}{löschen}{ショウ}{き-える}{extinguish}     | \kk{深}{tief}{シン}{ふか-い}{deep}                   | \kk{温}{warm}{オン}{あたた-かい}{warm}          | \kk{港}{Hafen}{コウ}{みなと}{harbor}         | \kk{湖}{See}{コ}{みずうみ}{lake}         | \kk{湯}{heißes Wasser}{トウ}{ゆ}{hot water}                             |
+| \kk{漢}{China}{カン}{NA}{China}                   | \kk{炭}{Holzkohle}{タン}{すみ}{charcoal}          | \kk{物}{Ding}{ブツ}{モツ}{thing}                     | \kk{球}{Kugel}{キュウ}{たま}{sphere}            | \kk{由}{Grund}{ユ}{ユウ}{reason}             | \kk{申}{sagen}{シン}{もう-す}{say}       | \kk{界}{Welt}{カイ}{NA}{world}                                          |
+| \kk{畑}{Farm}{はた}{はたけ}{farm}                 | \kk{病}{krank}{ビョウ}{（ヘイ）}{sick}            | \kk{発}{Abfahrt}{ハツ}{ホツ}{departure}              | \kk{登}{klettern}{トウ}{ト}{climb}              | \kk{皮}{Haut}{ヒ}{かわ}{skin}                | \kk{皿}{Gericht}{さら}{NA}{dish}         | \kk{相}{gegenseitig}{ソウ}{ショウ}{mutual}                              |
+| \kk{県}{Präfektur}{ケン}{NA}{prefecture}          | \kk{真}{richtig}{シン}{ま}{TRUE}                  | \kk{着}{Abnutzung}{チャク}{（ジャク）}{wear}         | \kk{短}{kurz}{タン}{みじか-い}{short}           | \kk{研}{schärfen}{ケン}{と-ぐ}{sharpen}      | \kk{礼}{Danke}{レイ}{ライ}{thanks}       | \kk{神}{Gott}{シン}{ジン}{god}                                          |
+| \kk{祭}{Festival}{サイ}{まつ-る}{festival}        | \kk{福}{Glück}{フク}{NA}{luck}                    | \kk{秒}{Sekunde}{ビョウ}{NA}{second (part of time)}  | \kk{究}{Forschung}{キュウ}{きわ-める}{research} | \kk{童}{Jugendliche}{ドウ}{わらべ}{juvenile} | \kk{笛}{Flöte}{テキ}{ふえ}{flute}        | \kk{第}{Ordinalzahl Präfix}{ダイ}{NA}{ordinal number prefix}            |
+| \kk{筆}{Schreibpinsel}{ヒツ}{ふで}{writing brush} | \kk{等}{Klasse}{トウ}{ひと-しい}{class}           | \kk{箱}{Box}{はこ}{NA}{box}                          | \kk{級}{Rang}{キュウ}{NA}{rank}                 | \kk{終}{Ende}{シュウ}{お-わる}{end}          | \kk{緑}{grün}{リョク}{（ロク）}{green}   | \kk{練}{Übung}{レン}{ね-る}{practice}                                   |
+| \kk{羊}{Schaf}{ヨウ}{ひつじ}{sheep}               | \kk{美}{Schönheit}{ビ}{うつく-しい}{beauty}       | \kk{習}{lernen}{シュウ}{なら-う}{learn}              | \kk{者}{jemand}{シャ}{もの}{someone}            | \kk{育}{nähren}{イク}{そだ-つ}{nurture}      |                                          |                                                                         |
+
+#+Name: tab-joyo-wiki-3-3
+#+Begin_Src R :headers t :cache nil :var g=3 min=157 max=200 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+# #+Caption: Grade 3(3).
+# #+Attr_Latex: :booktabs t
+#+RESULTS: tab-joyo-wiki-3-3
+| \kk{苦}{Leiden}{ク}{くる-しい}{suffer}                           | \kk{荷}{Gepäck}{カ}{に}{luggage}                     | \kk{落}{Fall}{ラク}{お-ちる}{fall}      | \kk{葉}{Blatt}{ヨウ}{は}{leaf}             | \kk{薬}{Medizin}{ヤク}{くすり}{medicine} | \kk{血}{Blut}{ケツ}{ち}{blood}              | \kk{表}{Express}{ヒョウ}{おもて}{express}                    |
+| \kk{詩}{Gedicht}{シ}{NA}{poem}                                   | \kk{調}{untersuchen}{チョウ}{しら-べる}{investigate} | \kk{談}{diskutieren}{ダン}{NA}{discuss} | \kk{豆}{Bohne}{トウ}{（ズ）}{beans}        | \kk{負}{verlieren}{フ}{ま-ける}{lose}    | \kk{起}{aufwachen}{キ}{お-きる}{wake up}    | \kk{路}{Straße}{ロ}{じ}{road}                                |
+| \kk{身}{Körper}{シン}{み}{body}                                  | \kk{転}{Drehen}{テン}{ころ-がる}{revolve}            | \kk{軽}{Licht}{ケイ}{かる-い}{light}    | \kk{農}{Landwirtschaft}{ノウ}{NA}{farming} | \kk{返}{Rückkehr}{ヘン}{かえ-す}{return} | \kk{追}{folgen}{ツイ}{お-う}{follow}        | \kk{送}{senden}{ソウ}{おく-る}{send}                         |
+| \kk{速}{schnell}{ソク}{はや-い}{fast}                            | \kk{進}{voraus}{シン}{すす-む}{advance}              | \kk{遊}{Spiel}{ユウ}{（ユ）}{play}      | \kk{運}{tragen}{ウン}{はこ-ぶ}{carry}      | \kk{部}{Teil}{ブ}{NA}{part}              | \kk{都}{Metropole}{ト}{ツ}{metropolis}      | \kk{配}{verteilen}{ハイ}{くば-る}{distribute}                |
+| \kk{酒}{alkoholisches Getränk}{シュ}{さけ}{alcoholic drink}      | \kk{重}{schwer}{ジュウ}{チョウ}{heavy}               | \kk{鉄}{Eisen}{テツ}{NA}{iron}          | \kk{銀}{Silber}{ギン}{NA}{silver}          | \kk{開}{offen}{カイ}{ひら-く}{open}      | \kk{院}{Institution}{イン}{NA}{institution} | \kk{陽}{Sonnenschein}{ヨウ}{NA}{sunshine}                    |
+| \kk{階}{Stockwerk eines Gebäudes}{カイ}{NA}{floor of a building} | \kk{集}{sammeln}{シュウ}{あつ-まる}{collect}         | \kk{面}{Gesicht}{メン}{おも}{face}      | \kk{章}{Kapitel}{ショウ}{NA}{chapter}      | \kk{題}{Thema}{ダイ}{NA}{topic}          | \kk{飲}{Getränk}{イン}{の-む}{drink}        | \kk{館}{öffentliches Gebäude}{カン}{やかた}{public building} |
+| \kk{駅}{Bahnhof}{エキ}{NA}{station}                              | \kk{鼻}{Nase}{ビ}{はな}{nose}                        |                                         |                                            |                                          |                                             |                                                              |
+
+#+Latex: \newpage
+*** DONE Grade 4
+    CLOSED: [2019-03-12 Tue 09:27]
+
+#+Name: tab-joyo-wiki-4-1
+#+Begin_Src R :headers t :cache nil :var g=4 min=1 max=77 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-4-1
+| \kk{不}{Nicht-}{フ}{ブ}{non-}                | \kk{争}{Konflikt}{ソウ}{あらそ-う}{conflict}    | \kk{付}{beifügen}{フ}{つ-ける}{attach}                  | \kk{令}{Bestellungen}{レイ}{}{orders}            | \kk{以}{mittels}{イ}{}{by means of}             | \kk{仲}{Beziehung}{チュウ}{なか}{relationship}      | \kk{伝}{Senden}{デン}{つた-わる}{transmit}                       |
+| \kk{位}{Rang}{イ}{くらい}{rank}              | \kk{低}{niedrig}{テイ}{ひく-い}{low}            | \kk{例}{Beispiel}{レイ}{たと-える}{example}             | \kk{便}{Bequemlichkeit}{ベン}{ビン}{convenience} | \kk{信}{vertrauen}{シン}{}{trust}               | \kk{倉}{Lager}{ソウ}{くら}{warehouse}               | \kk{候}{Klima}{コウ}{そうろう}{climate}                          |
+| \kk{借}{leihen}{シャク}{か-りる}{borrow}     | \kk{停}{halten}{テイ}{}{halt}                   | \kk{健}{gesund}{ケン}{すこ-やか}{healthy}               | \kk{側}{Seite}{ソク}{がわ}{side}                 | \kk{働}{Arbeit}{ドウ}{はたら-く}{work}          | \kk{億}{Hundert Millionen}{オク}{}{hundred million} | \kk{兆}{Vorzeichen, Billion}{チョウ}{きざ-す}{portent, trillion} |
+| \kk{児}{Kind}{ジ}{（ニ）}{child}             | \kk{共}{zusammen}{キョウ}{とも}{together}       | \kk{兵}{Soldat}{ヘイ}{ヒョウ}{soldier}                  | \kk{典}{Code}{テン}{}{code}                      | \kk{最}{meist}{サイ}{もっと-も}{most}           | \kk{冷}{kühl}{レイ}{つめ-たい}{cool}                | \kk{初}{zuerst}{ショ}{はじ-め}{first}                            |
+| \kk{別}{getrennt}{ベツ}{わか-れる}{separate} | \kk{利}{Gewinn}{リ}{き-く}{profit}              | \kk{刷}{Druck}{サツ}{す-る}{printing}                   | \kk{副}{Laster}{フク}{}{vice}                    | \kk{功}{Leistung}{コウ}{（ク）}{achievement}    | \kk{加}{hinzufügen}{カ}{くわ-える}{add}             | \kk{努}{Wut}{ド}{つと-める}{toil}                                |
+| \kk{労}{Arbeit}{ロウ}{}{labour}              | \kk{勇}{Mut}{ユウ}{いさ-む}{courage}            | \kk{包}{wickeln}{ホウ}{つつ-む}{wrap}                   | \kk{卒}{Absolvent}{ソツ}{}{graduate}             | \kk{協}{Zusammenarbeit}{キョウ}{}{cooperation}  | \kk{単}{einfach}{タン}{}{simple}                    | \kk{博}{Dr.}{ハク}{（バク）}{Dr.}                                |
+| \kk{印}{Kennzeichen}{イン}{しるし}{mark}     | \kk{参}{teilnehmen}{サン}{まい-る}{participate} | \kk{史}{Geschichte}{シ}{}{history}                      | \kk{司}{Regisseur}{シ}{}{director}               | \kk{各}{jeweils}{カク}{おのおの}{each}          | \kk{告}{erzählen}{コク}{つ-げる}{tell}              | \kk{周}{Umfang}{シュウ}{まわ-り}{circumference}                  |
+| \kk{唱}{Gesang}{ショウ}{とな-える}{chant}    | \kk{喜}{sich freuen}{キ}{よろこ-ぶ}{rejoice}    | \kk{器}{Behälter}{キ}{うつわ}{container}                | \kk{囲}{umgeben}{イ}{かこ-む}{surround}          | \kk{固}{schwer}{コ}{かた-める}{hard}            | \kk{型}{Modell}{ケイ}{かた}{model}                  | \kk{堂}{öffentliche Kammer}{ドウ}{}{public chamber}              |
+| \kk{塩}{Salz}{エン}{しお}{salt}              | \kk{士}{Herr}{シ}{}{gentleman}                  | \kk{変}{Veränderung}{ヘン}{か-わる}{change}             | \kk{夫}{Ehemann}{フ}{（フウ）}{husband}          | \kk{失}{verlieren}{シツ}{うしな-う}{lose}       | \kk{好}{wie}{コウ}{この-む}{like}                   | \kk{季}{Jahreszeiten}{キ}{}{seasons}                             |
+| \kk{孫}{Enkel}{ソン}{まご}{grandchild}       | \kk{完}{perfekt}{カン}{}{perfect}               | \kk{官}{Regierungsbeamter}{カン}{}{government official} | \kk{害}{Schaden}{ガイ}{}{harm}                   | \kk{察}{Vermutung}{サツ}{}{guess}               | \kk{巣}{Nest}{ソウ}{す}{nest}                       | \kk{差}{Unterscheidung}{サ}{さ-す}{distinction}                  |
+| \kk{希}{Hoffnung}{キ}{}{hope}                | \kk{席}{Sitz}{セキ}{}{seat}                     | \kk{帯}{Schärpe}{タイ}{お-びる}{sash}                   | \kk{底}{unten}{テイ}{そこ}{bottom}               | \kk{府}{Stadtpräfektur}{フ}{}{urban prefecture} | \kk{康}{Gesundheit}{コウ}{}{health}                 | \kk{建}{bauen}{ケン}{（コン）}{build}                            |
+
+
+#+Name: tab-joyo-wiki-4-2
+#+Begin_Src R :headers t :cache nil :var g=4 min=78 max=154 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-4-2
+| \kk{径}{Durchmesser}{ケイ}{}{diameter}            | \kk{徒}{Junior}{ト}{}{junior}                    | \kk{得}{Erwerb}{トク}{え-る}{acquire}   | \kk{必}{ohne Fehler}{ヒツ}{かなら-ず}{without fail}     | \kk{念}{Gedanke}{ネン}{}{thought}              | \kk{愛}{Liebe}{アイ}{}{love}                    | \kk{成}{werden}{セイ}{（ジョウ）}{become} |
+| \kk{戦}{Krieg}{セン}{いくさ}{war}                 | \kk{折}{falzen}{セツ}{お-る}{fold}               | \kk{挙}{heben}{キョ}{あ-げる}{raise}    | \kk{改}{Reformation}{カイ}{あらた-める}{reformation}    | \kk{救}{Erlösung}{キュウ}{すく-う}{salvation}  | \kk{敗}{Misserfolg}{ハイ}{やぶ-れる}{failure}   | \kk{散}{streuen}{サン}{ち-る}{scatter}    |
+| \kk{料}{Gebühr}{リョウ}{}{fee}                    | \kk{旗}{Nationalflagge}{キ}{はた}{national flag} | \kk{昨}{Vorherige}{サク}{}{previous}    | \kk{景}{​​Landschaft}{ケイ}{}{scenery}                    | \kk{望}{Hoffnung}{ボウ}{モウ}{hope}            | \kk{未}{noch nicht}{ミ}{}{not yet}              | \kk{末}{Ende}{マツ}{バツ}{end}            |
+| \kk{札}{Etikett}{サツ}{ふだ}{tag}                 | \kk{材}{Holz}{ザイ}{}{lumber}                    | \kk{束}{Bündel}{ソク}{たば}{bundle}     | \kk{松}{Kiefer}{ショウ}{まつ}{pine}                     | \kk{果}{Frucht}{カ}{は-たす}{fruit}            | \kk{栄}{Wohlstand}{エイ}{さか-える}{prosperity} | \kk{案}{Plan}{アン}{}{plan}               |
+| \kk{梅}{Ume (Pflaume)}{バイ}{うめ}{ume (apricot)} | \kk{械}{Apparat}{カイ}{}{contraption}            | \kk{極}{Stöcke}{キョク}{ゴク}{poles}    | \kk{標}{Wegweiser}{ヒョウ}{}{signpost}                  | \kk{機}{Maschine}{キ}{はた}{machine}           | \kk{欠}{Mangel}{ケツ}{か-ける}{lack}            | \kk{歴}{Lehrplan}{レキ}{}{curriculum}     |
+| \kk{残}{Rest}{ザン}{のこ-る}{remainder}           | \kk{殺}{töten}{サツ}{（サイ）}{kill}             | \kk{毒}{Gift}{ドク}{}{poison}           | \kk{氏}{Familienname}{シ}{うじ}{family name}            | \kk{民}{Menschen}{ミン}{たみ}{people}          | \kk{求}{Anfrage}{キュウ}{もと-める}{request}    | \kk{治}{regieren}{ジ}{チ}{govern}         |
+| \kk{法}{Methode}{ホウ}{（ハッ）}{method}          | \kk{泣}{Schrei}{キュウ}{な-く}{cry}              | \kk{浅}{flach}{セン}{あさ-い}{shallow}  | \kk{浴}{baden}{ヨク}{あ-びる}{bathe}                    | \kk{清}{rein}{セイ}{（ショウ）}{pure}          | \kk{満}{voll}{マン}{み-ちる}{full}              | \kk{漁}{angeln}{ギョ}{リョウ}{fishing}    |
+| \kk{灯}{Lampe}{トウ}{ひ}{lamp}                    | \kk{無}{nichts}{ム}{ブ}{nothing}                 | \kk{然}{so}{ゼン}{ネン}{so}             | \kk{焼}{backen}{ショウ}{や-く}{bake}                    | \kk{照}{beleuchten}{ショウ}{て-る}{illuminate} | \kk{熱}{Hitze}{ネツ}{あつ-い}{heat}             | \kk{牧}{Rasse}{ボク}{まき}{breed}         |
+| \kk{特}{spezial}{トク}{}{special}                 | \kk{産}{gebären}{サン}{う-む}{give birth}        | \kk{的}{Ziel}{テキ}{まと}{target}       | \kk{省}{Ministerium}{セイ}{ショウ}{government ministry} | \kk{祝}{feiern}{シュク}{（シュウ）}{celebrate} | \kk{票}{Stimmzettel}{ヒョウ}{}{ballot}          | \kk{種}{Art}{シュ}{たね}{kind}            |
+| \kk{積}{anhäufen}{セキ}{つ-む}{accumulate}        | \kk{競}{konkurrieren}{キョウ}{ケイ}{compete}     | \kk{笑}{lachen}{ショウ}{わら-う}{laugh} | \kk{節}{Knoten}{セツ}{（セチ）}{node}                   | \kk{管}{Pfeife}{カン}{くだ}{pipe}              | \kk{粉}{Mehl}{フン}{こ}{flour}                  | \kk{紀}{Chronik}{キ}{}{chronicle}         |
+| \kk{約}{Versprechen}{ヤク}{}{promise}             | \kk{結}{Krawatte}{ケツ}{むす-ぶ}{tie}            | \kk{給}{Gehalt}{キュウ}{}{salary}       | \kk{続}{weiter}{ゾク}{つづ-く}{continue}                | \kk{置}{put}{チ}{お-く}{put}                   | \kk{老}{alter Mann}{ロウ}{お-いる}{old man}     | \kk{胃}{Bauch}{イ}{}{stomach}             |
+
+
+#+Name: tab-joyo-wiki-4-3
+#+Begin_Src R :headers t :cache nil :var g=4 min=155 max=200 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-4-3
+| \kk{脈}{Vene}{ミャク}{}{vein}                   | \kk{腸}{Darm}{チョウ}{}{intestines}     | \kk{臣}{Halter}{シン}{ジン}{retainer}    | \kk{航}{Kreuzfahrt}{コウ}{}{cruise}     | \kk{良}{gut}{リョウ}{よ-い}{good}         | \kk{芸}{Kunst}{ゲイ}{}{art}                   | \kk{芽}{Knospe}{ガ}{め}{bud}               |
+| \kk{英}{England}{エイ}{}{England}               | \kk{菜}{Gemüse}{サイ}{な}{vegetable}    | \kk{街}{Straße}{ガイ}{まち}{street}      | \kk{衣}{Kleidung}{イ}{ころも}{clothes}  | \kk{要}{Bedarf}{ヨウ}{かなめ}{need}       | \kk{覚}{einprägen}{カク}{おぼ-える}{memorize} | \kk{観}{beobachten}{カン}{}{observe}       |
+| \kk{訓}{Belehrung}{クン}{}{instruction}         | \kk{試}{Test}{シ}{こころ-みる}{test}    | \kk{説}{Theorie}{セツ}{（ゼイ）}{theory} | \kk{課}{Abschnitt}{カ}{}{section}       | \kk{議}{Überlegung}{ギ}{}{deliberation}   | \kk{象}{Elefant}{ショウ}{ゾウ}{elephant}      | \kk{貨}{Fracht}{カ}{}{freight}             |
+| \kk{貯}{Einsparung}{チョ}{}{savings}            | \kk{費}{Kosten}{ヒ}{つい-やす}{expense} | \kk{賞}{Preis}{ショウ}{}{prize}          | \kk{軍}{Armee}{グン}{}{army}            | \kk{輪}{Rad}{リン}{わ}{wheel}             | \kk{辞}{resignieren}{ジ}{や-める}{resign}     | \kk{辺}{Umgebung}{ヘン}{あた-り}{environs} |
+| \kk{連}{mitnehmen}{レン}{つら-なる}{take along} | \kk{達}{erreichen}{タツ}{}{attain}      | \kk{選}{wählen}{セン}{えら-ぶ}{choose}   | \kk{郡}{Bezirk}{グン}{}{county}         | \kk{量}{Menge}{リョウ}{はか-る}{quantity} | \kk{録}{Rekord}{ロク}{}{record}               | \kk{鏡}{Spiegel}{キョウ}{かがみ}{mirror}   |
+| \kk{関}{verwandt}{カン}{せき}{related}          | \kk{陸}{Land}{リク}{}{land}             | \kk{隊}{Gruppe}{タイ}{}{group}           | \kk{静}{ruhig}{セイ}{（ジョウ）}{quiet} | \kk{順}{gehorchen}{ジュン}{}{obey}        | \kk{願}{Wunsch}{ガン}{ねが-う}{request}       | \kk{類}{sortieren}{ルイ}{たぐ-い}{sort}    |
+| \kk{飛}{fliegen}{ヒ}{と-ぶ}{fly}                | \kk{飯}{Mahlzeit}{ハン}{めし}{meal}     | \kk{養}{Pflege}{ヨウ}{やしな-う}{foster} | \kk{験}{Test}{ケン}{（ゲン）}{test}     |                                           |                                               |                                            |
+
+
+#+Latex: \newpage
+*** DONE Grade 5
+    CLOSED: [2019-03-12 Tue 09:34]
+
+#+Name: tab-joyo-wiki-5-1
+#+Begin_Src R :headers t :cache nil :var g=5 min=1 max=77 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-5-1
+| \kk{久}{lange Zeit}{キュウ}{（ク）}{long time} | \kk{仏}{Buddha}{ブツ}{ほとけ}{Buddha}                   | \kk{仮}{temporär}{カ}{かり}{temporary}           | \kk{件}{Affäre}{ケン}{NA}{affair}            | \kk{任}{Verantwortung}{ニン}{まか-せる}{responsibility} | \kk{似}{werden}{ジ}{に-る}{becoming}         | \kk{余}{verlassen}{ヨ}{あま-る}{leave over} |
+| \kk{価}{Wert}{カ}{あたい}{value}               | \kk{保}{konservieren}{ホ}{たも-つ}{preserve}            | \kk{修}{Disziplin}{シュウ}{（シュ）}{discipline} | \kk{俵}{Beutel}{ヒョウ}{たわら}{bag}         | \kk{個}{individuell}{コ}{NA}{individual}                | \kk{備}{versorgen}{ビ}{そな-える}{provide}   | \kk{像}{Statue}{ゾウ}{NA}{statue}           |
+| \kk{再}{wieder}{サイ}{（サ）}{again}           | \kk{刊}{veröffentlichen}{カン}{NA}{publish}             | \kk{判}{Richter}{ハン}{バン}{judge}              | \kk{制}{Kontrolle}{セイ}{NA}{control}        | \kk{券}{Ticket}{ケン}{NA}{ticket}                       | \kk{則}{Regel}{ソク}{NA}{rule}               | \kk{効}{Wirkung}{コウ}{き-く}{effect}       |
+| \kk{務}{Pflicht}{ム}{つと-める}{duty}          | \kk{勢}{Macht}{セイ}{いきお-い}{power}                  | \kk{厚}{dick}{コウ}{あつ-い}{thick}              | \kk{句}{Satz}{ク}{NA}{phrase}                | \kk{可}{möglich}{カ}{NA}{possible}                      | \kk{営}{verwalten}{エイ}{いとな-む}{manage}  | \kk{因}{Ursache}{イン}{よ-る}{cause}        |
+| \kk{団}{Gruppe}{ダン}{（トン）}{group}         | \kk{圧}{Druck}{アツ}{NA}{pressure}                      | \kk{在}{existieren}{ザイ}{あ-る}{exist}          | \kk{均}{Level}{キン}{NA}{level}              | \kk{基}{Fundament}{キ}{もと}{foundation}                | \kk{報}{Bericht}{ホウ}{むく-いる}{report}    | \kk{境}{Grenze}{キョウ}{（ケイ）}{boundary} |
+| \kk{墓}{Grab}{ボ}{はか}{grave}                 | \kk{増}{erhöhen}{ゾウ}{ま-す}{increase}                 | \kk{夢}{Traum}{ム}{ゆめ}{dream}                  | \kk{妻}{Frau}{サイ}{つま}{wife}              | \kk{婦}{Dame}{フ}{NA}{lady}                             | \kk{容}{enthalten}{ヨウ}{NA}{contain}        | \kk{寄}{Ansatz}{キ}{よ-る}{approach}        |
+| \kk{富}{reich}{フ}{（フウ）}{rich}             | \kk{導}{Wegweiser}{ドウ}{みちび-く}{guide}              | \kk{居}{wohnen}{キョ}{い-る}{reside}             | \kk{属}{gehören}{ゾク}{NA}{belong}           | \kk{布}{Leinen}{フ}{ぬの}{linen}                        | \kk{師}{Experte}{シ}{NA}{expert}             | \kk{常}{normal}{ジョウ}{つね}{normal}       |
+| \kk{幹}{Baumstamm}{カン}{みき}{tree-trunk}     | \kk{序}{Vorwort}{ジョ}{NA}{preface}                     | \kk{弁}{Ventil}{ベン}{NA}{valve}                 | \kk{張}{Strecke}{チョウ}{は-る}{stretch}     | \kk{往}{Hinfahrt}{オウ}{NA}{outward journey}            | \kk{復}{wieder}{フク}{NA}{again}             | \kk{徳}{Wohlwollen}{トク}{NA}{benevolence}  |
+| \kk{志}{Absicht}{シ}{こころざ-す}{intention}   | \kk{応}{Antwort}{オウ}{こた-える}{respond}              | \kk{快}{heiter}{カイ}{こころよ-い}{cheerful}     | \kk{性}{Geschlecht}{セイ}{ショウ}{gender}    | \kk{恩}{Anmut}{オン}{NA}{grace}                         | \kk{情}{Gefühle}{ジョウ}{（セイ）}{feelings} | \kk{態}{Zustand}{タイ}{NA}{condition}       |
+| \kk{慣}{gewohnt}{カン}{な-れる}{accustomed}    | \kk{承}{Einwilligung}{ショウ}{うけたまわ-る}{acquiesce} | \kk{技}{Geschicklichkeit}{ギ}{わざ}{skill}       | \kk{招}{winken}{ショウ}{まね-く}{beckon}     | \kk{授}{Anweisung}{ジュ}{さず-ける}{instruct}           | \kk{採}{Pick}{サイ}{と-る}{pick}             | \kk{接}{Kontakt}{セツ}{つ-ぐ}{contact}      |
+| \kk{提}{Gegenwart}{テイ}{さ-げる}{present}     | \kk{損}{Verlust}{ソン}{そこ-なう}{loss}                 | \kk{支}{Zweig}{シ}{ささ-える}{branch}            | \kk{政}{Politik}{セイ}{（ショウ）}{politics} | \kk{故}{Umstände}{コ}{ゆえ}{circumstances}              | \kk{敵}{Feind}{テキ}{かたき}{enemy}          | \kk{断}{abschneiden}{ダン}{た-つ}{cut off}  |
+
+
+#+Name: tab-joyo-wiki-5-2
+#+Begin_Src R :headers t :cache nil :var g=5 min=78 max=154 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-5-2
+| \kk{旧}{alte Zeiten}{キュウ}{NA}{old times}    | \kk{易}{einfach}{エキ}{やさ-しい}{easy}     | \kk{暴}{Ausbruch}{ボウ}{（バク）}{outburst}    | \kk{条}{Klausel}{ジョウ}{NA}{clause}               | \kk{枝}{Zweig}{シ}{えだ}{branch}                   | \kk{査}{untersuchen}{サ}{NA}{investigate}        | \kk{格}{Status}{カク}{（コウ）}{status}           |
+| \kk{桜}{Kirschbaum}{オウ}{さくら}{cherry tree} | \kk{検}{untersuchen}{ケン}{NA}{examine}     | \kk{構}{Konstrukt}{コウ}{かま-える}{construct} | \kk{武}{Militär}{ブ}{ム}{military}                 | \kk{比}{Vergleich}{ヒ}{くら-べる}{compare}         | \kk{永}{Ewigkeit}{エイ}{なが-い}{eternity}       | \kk{河}{Fluss}{カ}{かわ}{river}                   |
+| \kk{液}{Flüssigkeit}{エキ}{NA}{fluid}          | \kk{混}{Mix}{コン}{ま-じる}{mix}            | \kk{減}{Abnahme}{ゲン}{へ-る}{decrease}        | \kk{測}{Faden}{ソク}{はか-る}{fathom}              | \kk{準}{Standard}{ジュン}{NA}{standard}            | \kk{演}{ausführen}{エン}{NA}{perform}            | \kk{潔}{unbefleckt}{ケツ}{いさぎよ-い}{undefiled} |
+| \kk{災}{Desaster}{サイ}{わざわ-い}{disaster}   | \kk{燃}{brennen}{ネン}{も-える}{burn}       | \kk{版}{Druckblock}{ハン}{NA}{printing block}  | \kk{犯}{Verbrechen}{ハン}{おか-す}{crime}          | \kk{状}{Form}{ジョウ}{NA}{form}                    | \kk{独}{allein}{ドク}{ひと-り}{alone}            | \kk{率}{Rate}{ソツ}{リツ}{rate}                   |
+| \kk{現}{erscheinen}{ゲン}{あらわ-れる}{appear} | \kk{留}{festhalten}{リュウ}{（ル）}{detain} | \kk{略}{Abkürzung}{リャク}{NA}{abbreviation}   | \kk{益}{Vorteil}{エキ}{（ヤク）}{benefit}          | \kk{眼}{Augapfel}{ガン}{まなこ}{eyeball}           | \kk{破}{Zerren}{ハ}{やぶ-る}{rend}               | \kk{確}{sicher}{カク}{たし-か}{certain}           |
+| \kk{示}{angeben}{ジ}{シ}{indicate}             | \kk{祖}{Ahne}{ソ}{NA}{ancestor}             | \kk{禁}{Verbot}{キン}{NA}{prohibition}         | \kk{移}{Verschiebung}{イ}{うつ-る}{shift}          | \kk{程}{Umfang}{テイ}{ほど}{extent}                | \kk{税}{Steuer}{ゼイ}{NA}{tax}                   | \kk{築}{fabrizieren}{チク}{きず-く}{fabricate}    |
+| \kk{精}{verfeinern}{セイ}{（ショウ）}{refined} | \kk{素}{elementar}{ソ}{ス}{elementary}      | \kk{経}{verwalten}{ケイ}{キョウ}{manage}       | \kk{統}{vereinen}{トウ}{す-べる}{unite}            | \kk{絶}{unterbrechen}{ゼツ}{た-える}{discontinue}  | \kk{綿}{Baumwolle}{メン}{わた}{cotton}           | \kk{総}{Ganze}{ソウ}{NA}{whole}                   |
+| \kk{編}{zusammenstellen}{ヘン}{あ-む}{compile} | \kk{績}{ausnutzen}{セキ}{NA}{exploits}      | \kk{織}{weben}{ショク}{シキ}{weave}            | \kk{罪}{Schuld}{ザイ}{つみ}{guilt}                 | \kk{群}{Herde}{グン}{む-れる}{flock}               | \kk{義}{Gerechtigkeit}{ギ}{NA}{righteousness}    | \kk{耕}{bis}{コウ}{たがや-す}{till}               |
+| \kk{職}{Einsatz}{ショク}{NA}{employment}       | \kk{肥}{Dünger}{ヒ}{こ-える}{fertilizer}    | \kk{能}{Fähigkeit}{ノウ}{NA}{ability}          | \kk{興}{unterhalten}{コウ}{キョウ}{entertain}      | \kk{舌}{Zunge}{ゼツ}{した}{tongue}                 | \kk{舎}{Hütte}{シャ}{NA}{cottage}                | \kk{術}{Kunst}{ジュツ}{NA}{art}                   |
+| \kk{衛}{Verteidigung}{エイ}{NA}{defense}       | \kk{製}{herstellen}{セイ}{NA}{manufacture}  | \kk{複}{Duplikat}{フク}{NA}{duplicate}         | \kk{規}{Regel}{キ}{NA}{rule}                       | \kk{解}{Aufheben}{カイ}{と-く}{untie}              | \kk{設}{feststellen}{セツ}{もう-ける}{establish} | \kk{許}{zulassen}{キョ}{ゆる-す}{permit}          |
+| \kk{証}{Beweis}{ショウ}{NA}{evidence}          | \kk{評}{bewerten}{ヒョウ}{NA}{evaluate}     | \kk{講}{Vortrag}{コウ}{NA}{lecture}            | \kk{謝}{entschuldigen}{シャ}{あやま-る}{apologize} | \kk{識}{diskriminierend}{シキ}{NA}{discriminating} | \kk{護}{Schutz}{ゴ}{NA}{safeguard}               | \kk{豊}{reichhaltig}{ホウ}{ゆた-か}{bountiful}    |
+
+
+#+Name: tab-joyo-wiki-5-3
+#+Begin_Src R :headers t :cache nil :var g=5 min=155 max=185 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-5-3
+| \kk{財}{Reichtum}{ザイ}{（サイ）}{wealth}   | \kk{貧}{schlecht}{ヒン}{ビン}{poor}                   | \kk{責}{Schuld}{セキ}{せ-める}{blame}         | \kk{貸}{verleihen}{タイ}{か-す}{lend}       | \kk{貿}{Handel}{ボウ}{NA}{trade}             | \kk{賀}{Glückwunsch}{ガ}{NA}{congratulations} | \kk{資}{Ressourcen}{シ}{NA}{resources}      |
+| \kk{賛}{genehmigen}{サン}{NA}{approve}      | \kk{質}{Qualität}{シツ}{シチ}{quality}                | \kk{輸}{Transport}{ユ}{NA}{transport}         | \kk{述}{erwähnen}{ジュツ}{の-べる}{mention} | \kk{迷}{Verirrung}{メイ}{まよ-う}{astray}    | \kk{退}{Rückzug}{タイ}{しりぞ-く}{retreat}    | \kk{逆}{invertiert}{ギャク}{さか}{inverted} |
+| \kk{造}{Kreation}{ゾウ}{つく-る}{create}    | \kk{過}{darüber hinaus gehen}{カ}{す-ぎる}{go beyond} | \kk{適}{geeignet}{テキ}{NA}{suitable}         | \kk{酸}{Säure}{サン}{す-い}{acid}           | \kk{鉱}{Mineral}{コウ}{NA}{mineral}          | \kk{銅}{Kupfer}{ドウ}{NA}{copper}             | \kk{銭}{Münze}{セン}{ぜに}{coin}            |
+| \kk{防}{verhindern}{ボウ}{ふせ-ぐ}{prevent} | \kk{限}{Grenze}{ゲン}{かぎ-る}{limit}                 | \kk{険}{steil}{ケン}{けわ-しい}{precipitous}  | \kk{際}{Gelegenheit}{サイ}{きわ}{occasion}  | \kk{雑}{Diverses}{ザツ}{ゾウ}{miscellaneous} | \kk{非}{negativ}{ヒ}{NA}{negative}            | \kk{預}{Kaution}{ヨ}{あず-ける}{deposit}    |
+| \kk{領}{Gebiet}{リョウ}{NA}{territory}      | \kk{額}{Anzahl}{ガク}{ひたい}{amount}                 | \kk{飼}{domestiziert}{シ}{か-う}{domesticate} |                                             |                                              |                                               |                                             |
+
+
+#+Latex: \newpage
+*** DONE Grade 6
+    CLOSED: [2019-03-12 Tue 11:31]
+
+#+Name: tab-joyo-wiki-6-1
+#+Begin_Src R :headers t :cache nil :var g=6 min=1 max=77 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-6-1
+| \kk{並}{Aufstellung}{ヘイ}{なみ}{line-up}      | \kk{乱}{Aufstand}{ラン}{みだ-れる}{riot}          | \kk{乳}{Milch}{ニュウ}{ちち}{milk}                     | \kk{亡}{verstorben}{ボウ}{（モウ）}{deceased}    | \kk{仁}{Menschheit}{ジン}{（ニ）}{humanity}               | \kk{供}{Angebot}{キョウ}{（ク）}{offer}       | \kk{俳}{Haiku}{ハイ}{NA}{haiku}                        |
+| \kk{値}{Wert}{チ}{ね}{value}                   | \kk{傷}{Wunde}{ショウ}{きず}{wound}               | \kk{優}{überlegen}{ユウ}{やさ-しい}{superior}          | \kk{党}{Gruppe}{トウ}{NA}{group}                 | \kk{冊}{Zähler für Bücher}{サツ}{サク}{counter for books} | \kk{処}{entsorgen}{ショ}{NA}{dispose}         | \kk{刻}{gravieren}{コク}{きざ-む}{engrave}             |
+| \kk{割}{Teilung}{カツ}{わ-る}{divide}          | \kk{創}{erstellen}{ソウ}{つく-る}{create}         | \kk{劇}{Drama}{ゲキ}{NA}{drama}                        | \kk{勤}{Fleiß}{キン}{（ゴン）}{diligence}        | \kk{危}{gefährlich}{キ}{あぶ-ない}{dangerous}             | \kk{卵}{Ei}{ラン}{たまご}{egg}                | \kk{厳}{streng}{ゲン}{（ゴン）}{strict}                |
+| \kk{収}{mitnehmen}{シュウ}{おさ-める}{take in} | \kk{后}{Kaiserin}{コウ}{NA}{empress}              | \kk{否}{negieren}{ヒ}{いな}{negate}                    | \kk{吸}{saugen}{キュウ}{す-う}{suck}             | \kk{呼}{rufen}{コ}{よ-ぶ}{call}                           | \kk{善}{gut}{ゼン}{よ-い}{good}               | \kk{困}{verzweifeln}{コン}{こま-る}{become distressed} |
+| \kk{垂}{herabfallen}{スイ}{た-れる}{droop}     | \kk{城}{Burg}{ジョウ}{しろ}{castle}               | \kk{域}{Bereich}{イキ}{NA}{range}                      | \kk{奏}{musizieren}{ソウ}{かな-でる}{play music} | \kk{奮}{Aufgerührt}{フン}{ふる-う}{stirred up}            | \kk{姿}{Figur}{シ}{すがた}{figure}            | \kk{存}{annehmen}{ソン}{ゾン}{suppose}                 |
+| \kk{孝}{Frömmigkeit}{コウ}{NA}{filial piety}   | \kk{宅}{Zuhause}{タク}{NA}{home}                  | \kk{宇}{Traufe}{ウ}{NA}{eaves}                         | \kk{宗}{Religion}{シュウ}{ソウ}{religion}        | \kk{宙}{in der Luft}{チュウ}{NA}{mid-air}                 | \kk{宝}{Schatz}{ホウ}{たから}{treasure}       | \kk{宣}{Bekanntmachung}{セン}{NA}{proclaim}            |
+| \kk{密}{Geheimhaltung}{ミツ}{NA}{secrecy}      | \kk{寸}{Maß}{スン}{NA}{measurement}               | \kk{専}{Spezialität}{セン}{もっぱ-ら}{specialty}       | \kk{将}{Führer}{ショウ}{NA}{leader}              | \kk{射}{schießen}{シャ}{い-る}{shoot}                     | \kk{尊}{verehren}{ソン}{たっと-い}{revered}   | \kk{就}{betreffen}{シュウ}{（ジュ）}{concerning}       |
+| \kk{尺}{Shaku}{シャク}{NA}{shaku}              | \kk{届}{liefern}{とど-ける}{とど-く}{deliver}     | \kk{展}{erweitern}{テン}{NA}{expand}                   | \kk{層}{Schicht}{ソウ}{NA}{stratum}              | \kk{己}{selbst}{コ}{キ}{self}                             | \kk{巻}{Schriftrolle}{カン}{ま-く}{scroll}    | \kk{幕}{Vorhang}{マク}{バク}{curtain}                  |
+| \kk{干}{trocken}{カン}{ほ-す}{dry}             | \kk{幼}{Säuglingsalter}{ヨウ}{おさな-い}{infancy} | \kk{庁}{Regierungsbüro}{チョウ}{NA}{government office} | \kk{座}{Sitz}{ザ}{すわ-る}{sit}                  | \kk{延}{verlängern}{エン}{の-びる}{prolong}               | \kk{律}{Gesetz}{リツ}{（リチ）}{law}          | \kk{従}{Gehorsam}{ジュウ}{（ショウ）}{obey}            |
+| \kk{忘}{vergessen}{ボウ}{わす-れる}{forget}    | \kk{忠}{Loyalität}{チュウ}{NA}{loyalty}           | \kk{憲}{Verfassung}{ケン}{NA}{constitution}            | \kk{我}{Ego}{ガ}{われ}{ego}                      | \kk{批}{Kritik}{ヒ}{NA}{criticism}                        | \kk{担}{Schulter}{タン}{かつ-ぐ}{shouldering} | \kk{拝}{Anbetung}{ハイ}{おが-む}{worship}              |
+| \kk{拡}{verbreitert}{カク}{NA}{broaden}        | \kk{捨}{wegwerfen}{シャ}{す-てる}{throw away}     | \kk{探}{Taille}{タン}{さぐ-る}{grope}                  | \kk{推}{Schlußfolgerung}{スイ}{お-す}{infer}     | \kk{揮}{Schwänze}{キ}{NA}{brandish}                       | \kk{操}{Manöver}{ソウ}{みさお}{maneuver}      | \kk{敬}{Respekt}{ケイ}{うやま-う}{respect}             |
+
+
+#+Name: tab-joyo-wiki-6-2
+#+Begin_Src R :headers t :cache nil :var g=6 min=78 max=152 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-6-2
+| \kk{映}{reflektieren}{エイ}{うつ-る}{reflect}   | \kk{晩}{Einbruch der Nacht}{バン}{NA}{nightfall} | \kk{暖}{Wärme}{ダン}{あたた-か}{warmth}  | \kk{暮}{Lebensunterhalt}{ボ}{く-れる}{livelihood} | \kk{朗}{melodiös}{ロウ}{ほが-らか}{melodious}  | \kk{机}{Schreibtisch}{キ}{つくえ}{desk}              | \kk{枚}{Blatt von ...}{マイ}{NA}{sheet of...} |
+| \kk{染}{Farbstoff}{セン}{そ-める}{dye}          | \kk{株}{Vorräte}{かぶ}{NA}{stocks}               | \kk{棒}{Stab}{ボウ}{NA}{rod}             | \kk{模}{Imitation}{モ}{ボ}{imitation}             | \kk{権}{Rechte}{ケン}{（ゴン）}{rights}        | \kk{樹}{Bäume}{ジュ}{NA}{trees}                      | \kk{欲}{Sehnsucht}{ヨク}{ほっ-する}{longing}  |
+| \kk{段}{Schritte}{ダン}{NA}{steps}              | \kk{沿}{mitlaufen}{エン}{そ-う}{run alongside}   | \kk{泉}{Frühling}{セン}{いずみ}{spring}  | \kk{洗}{waschen}{セン}{あら-う}{wash}             | \kk{派}{Sekte}{ハ}{NA}{sect}                   | \kk{済}{Siedlung}{サイ}{す-む}{settle}               | \kk{源}{Quelle}{ゲン}{みなもと}{origin}       |
+| \kk{潮}{Gezeiten}{チョウ}{しお}{tide}           | \kk{激}{heftig}{ゲキ}{はげ-しい}{violent}        | \kk{灰}{Asche}{カイ}{はい}{ashes}        | \kk{蒸}{Dampf}{ジョウ}{む-す}{steam}              | \kk{熟}{reifen}{ジュク}{う-れる}{ripen}        | \kk{片}{einseitig}{ヘン}{かた}{one-sided}            | \kk{班}{Kader}{ハン}{NA}{squad}               |
+| \kk{異}{ungewöhnlich}{イ}{こと}{uncommon}       | \kk{疑}{Zweifel}{ギ}{うたが-う}{doubt}           | \kk{痛}{Schmerz}{ツウ}{いた-い}{pain}    | \kk{皇}{Kaiser}{コウ}{オウ}{emperor}              | \kk{盛}{wohlhabend}{セイ}{（ジョウ）}{prosper} | \kk{盟}{Allianz}{メイ}{NA}{alliance}                 | \kk{看}{überwachen}{カン}{NA}{watch over}     |
+| \kk{砂}{Sand}{サ}{シャ}{sand}                   | \kk{磁}{Magnet}{ジ}{NA}{magnet}                  | \kk{視}{betrachten}{シ}{NA}{look at}     | \kk{私}{ich}{シ}{わたくし}{me}                    | \kk{秘}{Geheimnis}{ヒ}{ひ-める}{secret}        | \kk{穀}{Getreide}{コク}{NA}{cereals}                 | \kk{穴}{Loch}{ケツ}{あな}{hole}               |
+| \kk{窓}{Fenster}{ソウ}{まど}{window}            | \kk{筋}{Muskel}{キン}{すじ}{muscle}              | \kk{策}{Schema}{サク}{NA}{scheme}        | \kk{簡}{Einfachheit}{カン}{NA}{simplicity}        | \kk{糖}{Zucker}{トウ}{NA}{sugar}               | \kk{系}{Abstammung}{ケイ}{NA}{lineage}               | \kk{紅}{tiefrot}{コウ}{（ク）}{deep red}      |
+| \kk{納}{Besiedlung}{ノウ}{（ナッ）}{settlement} | \kk{純}{echt}{ジュン}{NA}{genuine}               | \kk{絹}{Seide}{ケン}{きぬ}{silk}         | \kk{縦}{vertikal}{ジュウ}{たて}{vertical}         | \kk{縮}{schrumpfen}{シュク}{ちぢ-む}{shrink}   | \kk{署}{Regierungsbüro}{ショ}{NA}{government office} | \kk{翌}{Folgendes}{ヨク}{NA}{the following}   |
+| \kk{聖}{heilig}{セイ}{NA}{holy}                 | \kk{肺}{Lunge}{ハイ}{NA}{lungs}                  | \kk{背}{Rücken}{ハイ}{せ}{back}          | \kk{胸}{​​Busen}{キョウ}{むね}{bosom}               | \kk{脳}{Gehirn}{ノウ}{NA}{brain}               | \kk{腹}{Bauch}{フク}{はら}{abdomen}                  | \kk{臓}{Eingeweide}{ゾウ}{NA}{entrails}       |
+| \kk{臨}{sich kümmern}{リン}{のぞ-む}{look to}   | \kk{至}{Höhepunkt}{シ}{いた-る}{climax}          | \kk{若}{jung}{ジャク}{（ニャク）}{young} | \kk{著}{berühmt}{チョ}{あらわ-す}{renowned}       | \kk{蔵}{Lager}{ゾウ}{くら}{warehouse}          | \kk{蚕}{Seidenraupe}{サン}{かいこ}{silkworm}         | \kk{衆}{Massen}{シュウ}{（シュ）}{masses}     |
+| \kk{裁}{Richter}{サイ}{た-つ}{judge}            | \kk{装}{Kleidung}{ソウ}{ショウ}{attire}          | \kk{裏}{Rücken}{リ}{うら}{back}          | \kk{補}{Beilage}{ホ}{おぎな-う}{supplement}       | \kk{覧}{Durchsichtigkeit}{ラン}{NA}{perusal}   |                                                      |                                               |
+
+
+#+Name: tab-joyo-wiki-6-3
+#+Begin_Src R :headers t :cache nil :var g=6 min=153 max=181 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-6-3
+| \kk{討}{Keuschheit}{トウ}{う-つ}{chastise} | \kk{訪}{Besuch}{ホウ}{おとず-れる}{visit} | \kk{訳}{übersetzen}{ヤク}{わけ}{translate}    | \kk{詞}{Poesie}{シ}{NA}{poetry}          | \kk{誠}{Aufrichtigkeit}{セイ}{まこと}{sincerity} | \kk{誌}{Dokument}{シ}{NA}{document}         | \kk{認}{erkennen}{ニン}{みと-める}{recognize}                     |
+| \kk{誕}{Geburt}{タン}{NA}{nativity}        | \kk{誤}{Fehler}{ゴ}{あやま-る}{mistake}   | \kk{論}{Theorie}{ロン}{NA}{theory}            | \kk{諸}{verschiedene}{ショ}{NA}{various} | \kk{警}{verhüten}{ケイ}{NA}{guard against}       | \kk{貴}{kostbar}{キ}{たっと-い}{precious}   | \kk{賃}{Preis}{チン}{NA}{fare}                                    |
+| \kk{遺}{vererben}{イ}{（ユイ）}{bequeath}  | \kk{郵}{Post}{ユウ}{NA}{mail}             | \kk{郷}{Heimatstadt}{キョウ}{ゴウ}{home town} | \kk{針}{Nadel}{シン}{はり}{needle}       | \kk{鋼}{Stahl}{コウ}{はがね}{steel}              | \kk{閉}{geschlossen}{ヘイ}{と-じる}{closed} | \kk{閣}{groß}{カク}{NA}{tall}                                     |
+| \kk{降}{Abstieg}{コウ}{お-りる}{descend}   | \kk{陛}{Hoheit}{ヘイ}{NA}{highness}       | \kk{除}{ausschließen}{ジョ}{（ジ）}{exclude}  | \kk{障}{verletzt}{ショウ}{さわ-る}{hurt} | \kk{難}{schwierig}{ナン}{かた-い}{difficult}     | \kk{革}{Leder}{カク}{かわ}{leather}         | \kk{頂}{Platz auf dem Kopf}{チョウ}{いただ-く}{place on the head} |
+| \kk{骨}{Knochen}{コツ}{ほね}{bone}         |                                           |                                               |                                          |                                                  |                                             |                                                                   |
+
+#+Latex: \newpage
+*** DONE Grade S
+    CLOSED: [2019-03-16 Sat 09:46]
+
+#+Name: tab-joyo-wiki-S-1
+#+Begin_Src R :headers t :cache nil :var g='S' min=1 max=77 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-S-1
+| \kk{丈}{Länge}{ジョウ}{たけ}{length}                          | \kk{与}{geben}{ヨ}{あた-える}{give}                | \kk{且}{außerdem}{か-つ}{}{moreover}   | \kk{丘}{Hügel}{キュウ}{おか}{hill}                   | \kk{丙}{3. Klasse}{ヘイ}{}{third class}           | \kk{串}{Spieß}{くし}{}{skewer}                   | \kk{丹}{Zinnober}{タン}{}{cinnabar}      |
+| \kk{丼}{Schüssel mit Essen}{どんぶり}{（どん）}{bowl of food} | \kk{乏}{Mangel}{ボウ}{とぼ-しい}{scarce}           | \kk{乙}{letzteres}{オツ}{}{the latter} | \kk{乞}{Bitte}{こ-う}{}{beg}                         | \kk{乾}{trocken}{カン}{かわ-く}{dry}              | \kk{亀}{Schildkröte}{キ}{かめ}{turtle}           | \kk{了}{Ziel}{リョウ}{}{finish}          |
+| \kk{互}{wechselseitig}{ゴ}{たが-い}{mutually}                 | \kk{井}{gut}{セイ}{（ショウ）}{well}               | \kk{亜}{Unter-}{ア}{}{sub-}            | \kk{享}{erhalten}{キョウ}{}{receive}                 | \kk{亭}{Pavillon}{テイ}{}{pavilion}               | \kk{介}{eingeklemmt}{カイ}{}{jammed in}          | \kk{仙}{Einsiedler}{セン}{}{hermit}      |
+| \kk{仰}{Rückenlage}{ギョウ}{（コウ）}{face-up}                | \kk{企}{Plan}{キ}{くわだ-てる}{plan}               | \kk{伎}{Tat}{キ}{}{deed}               | \kk{伏}{niedergeschlagen}{フク}{ふ-せる}{prostrated} | \kk{伐}{fallen}{バツ}{}{fell}                     | \kk{伯}{Chef}{ハク}{}{chief}                     | \kk{伴}{Gemahl(in)}{ハン}{バン}{consort} |
+| \kk{伸}{verlängern}{シン}{の-びる}{lengthen}                  | \kk{伺}{respektieren}{シ}{うかが-う}{pay respects} | \kk{但}{aber}{ただ-し}{}{however}      | \kk{佐}{Hilfe}{サ}{}{help}                           | \kk{佳}{ausgezeichnet}{カ}{}{excellent}           | \kk{併}{verbinden}{ヘイ}{あわ-せる}{join}        | \kk{侍}{Kellner}{ジ}{さむらい}{waiter}   |
+| \kk{依}{angewiesen}{イ}{（エ）}{reliant}                      | \kk{侮}{Verachtung}{ブ}{あなど-る}{scorn}          | \kk{侯}{Marquis}{コウ}{}{marquis}      | \kk{侵}{eindringen}{シン}{おか-す}{encroach}         | \kk{侶}{Begleiter}{リョ}{}{companion}             | \kk{促}{stimulieren}{ソク}{うなが-す}{stimulate} | \kk{俊}{Genie}{シュン}{}{genius}         |
+| \kk{俗}{vulgär}{ゾク}{}{vulgar}                               | \kk{俸}{Gehalt}{ホウ}{}{salary}                    | \kk{俺}{ich, wir}{おれ}{}{I, we}       | \kk{倒}{Sturz}{トウ}{たお-れる}{overthrow}           | \kk{倣}{Emulat}{ホウ}{なら-う}{emulate}           | \kk{倫}{Ethik}{リン}{}{ethics}                   | \kk{倹}{sparsam}{ケン}{}{frugal}         |
+| \kk{偉}{bewundernswert}{イ}{えら-い}{admirable}               | \kk{偏}{teilweise}{ヘン}{かたよ-る}{partial}       | \kk{偵}{Spion}{テイ}{}{spy}            | \kk{偶}{versehentlich}{グウ}{}{accidentally}         | \kk{偽}{Falschheit}{ギ}{いつわ-る}{falsehood}     | \kk{傍}{Zuschauer}{ボウ}{かたわ-ら}{bystander}   | \kk{傑}{Größe}{ケツ}{}{greatness}        |
+| \kk{傘}{Regenschirm}{サン}{かさ}{umbrella}                    | \kk{催}{Sponsor}{サイ}{もよお-す}{sponsor}         | \kk{傲}{stolz sein}{ゴウ}{}{be proud}  | \kk{債}{Bindung}{サイ}{}{bond}                       | \kk{傾}{schlank}{ケイ}{かたむ-く}{lean}           | \kk{僅}{bisschen}{キン}{わず-か}{a wee bit}      | \kk{僕}{Ich}{ボク}{}{me}                 |
+| \kk{僚}{Kollege}{リョウ}{}{colleague}                         | \kk{僧}{Priester}{ソウ}{}{Buddhist priest}         | \kk{儀}{Zeremonie}{ギ}{}{ceremony}     | \kk{儒}{Konfuzianer}{ジュ}{}{Confucian}              | \kk{償}{Reparatur}{ショウ}{つぐな-う}{reparation} | \kk{充}{Zuteilung}{ジュウ}{あ-てる}{allot}       | \kk{克}{überwinden}{コク}{}{overcome}    |
+| \kk{免}{Entschuldigung}{メン}{まぬか-れる}{excuse}            | \kk{兼}{gleichzeitig}{ケン}{か-ねる}{concurrently} | \kk{冒}{Risiko}{ボウ}{おか-す}{risk}   | \kk{冗}{überflüssig}{ジョウ}{}{superfluous}          | \kk{冠}{Krone}{カン}{かんむり}{crown}             | \kk{冥}{Dunkelheit}{メイ}{ミョウ}{dark}          | \kk{冶}{schmelzen}{ヤ}{}{melting}        |
+
+#+Name: tab-joyo-wiki-S-2
+#+Begin_Src R :headers t :cache nil :var g='S' min=78 max=161 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-S-2
+| \kk{凄}{unheimlich}{セイ}{}{uncanny}                  | \kk{准}{Quasi}{ジュン}{}{quasi-}                      | \kk{凍}{gefroren}{トウ}{こお-る}{frozen} | \kk{凝}{erstarren}{ギョウ}{こ-る}{congeal}           | \kk{凡}{mittelmäßig}{ボン}{（ハン）}{mediocre}                | \kk{凶}{Bösewicht}{キョウ}{}{villain}       | \kk{凸}{konvex}{トツ}{}{convex}                 |
+| \kk{凹}{konkav}{オウ}{}{concave}                      | \kk{刃}{Klinge}{ジン}{は}{blade}                      | \kk{刈}{Ernte}{か-る}{}{reap}            | \kk{刑}{Bestrafung}{ケイ}{}{punish}                  | \kk{到}{Ankunft}{トウ}{}{arrival}                             | \kk{刹}{Tempel}{サツ}{セツ}{temple}         | \kk{刺}{Dorn}{シ}{さ-す}{thorn}                 |
+| \kk{削}{Flugzeug}{サク}{けず-る}{plane}               | \kk{剖}{teilen}{ボウ}{}{divide}                       | \kk{剛}{robust}{ゴウ}{}{sturdy}          | \kk{剝}{schälen}{ハク}{は-がす}{peel}                | \kk{剣}{Säbel}{ケン}{つるぎ}{sabre}                           | \kk{剤}{Dosis}{ザイ}{}{dose}                | \kk{剰}{Überschuss}{ジョウ}{}{surplus}          |
+| \kk{劣}{Minderwertigkeit}{レツ}{おと-る}{inferiority} | \kk{励}{ermutigen}{レイ}{はげ-む}{encourage}          | \kk{劾}{Tadel}{ガイ}{}{censure}          | \kk{勃}{steigen}{ボツ}{}{rise}                       | \kk{勅}{Reichsordnung}{チョク}{}{imperial order}              | \kk{勘}{Intuition}{カン}{}{intuition}       | \kk{募}{Rekrut}{ボ}{つの-る}{recruit}           |
+| \kk{勧}{überrede}{カン}{すす-める}{persuade}          | \kk{勲}{Verdienstvolle Tat}{クン}{}{meritorious deed} | \kk{勾}{Gefangennahme}{コウ}{}{capture}  | \kk{匂}{Duft}{にお-う}{}{scent}                      | \kk{匠}{Handwerker}{ショウ}{}{artisan}                        | \kk{匹}{gleich}{ヒツ}{ひき}{equal}          | \kk{匿}{verstecken}{トク}{}{hide}               |
+| \kk{升}{Messbox}{ショウ}{ます}{measuring box}         | \kk{卑}{niedrig}{ヒ}{いや-しい}{lowly}                | \kk{卓}{eminent}{タク}{}{eminent}        | \kk{占}{Wahrsagerei}{セン}{し-める}{fortune telling} | \kk{即}{sofort}{ソク}{}{instant}                              | \kk{却}{stattdessen}{キャク}{}{instead}     | \kk{卸}{Großhandel}{おろ-す}{おろし}{wholesale} |
+| \kk{厄}{Pech}{ヤク}{}{unlucky}                        | \kk{厘}{Tausendstel}{リン}{}{thousandth}              | \kk{又}{oder wieder}{また}{}{or again}   | \kk{及}{ausstrecken}{キュウ}{およ-ぶ}{reach out}     | \kk{双}{Paar}{ソウ}{ふた}{pair}                               | \kk{叔}{Onkel}{シュク}{}{uncle}             | \kk{叙}{verleihen}{ジョ}{}{confer}              |
+| \kk{叫}{Ruf}{キョウ}{さけ-ぶ}{shout}                  | \kk{召}{Beschwörung}{ショウ}{め-す}{summon}           | \kk{𠮟}{schimpfen}{シツ}{しか-る}{scold} | \kk{吉}{viel Glück}{キチ}{キツ}{good luck}           | \kk{吏}{Offizier}{リ}{}{officer}                              | \kk{吐}{Spucke}{ト}{は-く}{spit}            | \kk{吟}{dichten}{ギン}{}{versify}               |
+| \kk{含}{umfassen}{ガン}{ふく-む}{include}             | \kk{吹}{Schlag}{スイ}{ふ-く}{blow}                    | \kk{呂}{Wirbelsäule}{ロ}{}{spine}        | \kk{呈}{Anzeige}{テイ}{}{display}                    | \kk{呉}{geben}{ゴ}{}{give}                                    | \kk{呪}{Fluch }{ジュ}{のろ-う}{curse}       | \kk{咲}{Blüte}{さ-く}{}{blossom}                |
+| \kk{咽}{Kehle}{イン}{}{throat}                        | \kk{哀}{erbärmlich}{アイ}{あわ-れ}{pathetic}          | \kk{哲}{Philosophie}{テツ}{}{philosophy} | \kk{哺}{lutschen}{ホ}{}{suckle}                      | \kk{唄}{Lieder mit Shamisen}{（うた）}{}{songs with shamisen} | \kk{唆}{Versuchung}{サ}{そそのか-す}{tempt} | \kk{唇}{Lippen}{シン}{くちびる}{lips}           |
+| \kk{唐}{T'ang}{トウ}{から}{T'ang}                     | \kk{唯}{nur}{ユイ}{（イ）}{solely}                    | \kk{唾}{Speichel}{ダ}{つば}{saliva}      | \kk{啓}{Offenlegen}{ケイ}{}{disclose}                | \kk{喉}{Hals}{コウ}{のど}{throat}                             | \kk{喚}{Schrei}{カン}{}{yell}               | \kk{喝}{heiser}{カツ}{}{hoarse}                 |
+| \kk{喩}{Metapher}{ユ}{}{metaphor}                     | \kk{喪}{Miss}{ソウ}{も}{miss}                         | \kk{喫}{verbrauchen}{キツ}{}{consume}    | \kk{嗅}{Geruch}{キュウ}{か-ぐ}{smell}                | \kk{嗣}{Erbe}{シ}{}{heir}                                     | \kk{嘆}{Seufzer}{タン}{なげ-く}{sigh}       | \kk{嘱}{vertrauen}{ショク}{}{entrust}           |
+
+
+#+Name: tab-joyo-wiki-S-3
+#+Begin_Src R :headers t :cache nil :var g='S' min=162 max=244 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-S-3
+| \kk{嘲}{Spott}{チョウ}{あざけ-る}{ridicule}  | \kk{噴}{Ausbruch}{フン}{ふ-く}{erupt}             | \kk{嚇}{bedrohlich}{カク}{}{menacing}                 | \kk{囚}{}{シュウ}{}{captured}                     | \kk{圏}{Kugel}{ケン}{}{sphere}                   | \kk{坊}{Junge}{ボウ}{（ボッ）}{boy}               | \kk{坑}{Grube}{コウ}{}{pit}                 |
+| \kk{坪}{Flächenmaaß}{つぼ}{}{two-mat area}   | \kk{垣}{Hecke}{かき}{}{hedge}                     | \kk{埋}{begraben}{マイ}{う-める}{bury}                | \kk{執}{hartnäckig}{シツ}{シュウ}{tenacious}      | \kk{培}{kultivieren}{バイ}{つちか-う}{cultivate} | \kk{埼}{Kap (geogr. )}{（さい）}{}{cape (geogr.)} | \kk{堀}{Graben}{ほり}{}{ditch}              |
+| \kk{堅}{streng}{ケン}{かた-い}{strict}       | \kk{堆}{hoch stapeln}{タイ}{}{piled high}         | \kk{堕}{entarten}{ダ}{}{degenerate}                   | \kk{堤}{Deich}{テイ}{つつみ}{dike}                | \kk{堪}{widerstehen}{カン}{た-える}{withstand}   | \kk{塀}{Zaun}{ヘイ}{}{fence}                      | \kk{塁}{Sockel}{ルイ}{}{bases}              |
+| \kk{塊}{Klumpen}{カイ}{かたまり}{clod}       | \kk{塑}{Modell}{ソ}{}{model}                      | \kk{塔}{Pagode}{トウ}{}{pagoda}                       | \kk{塗}{Farbe}{ト}{ぬ-る}{paint}                  | \kk{塚}{Hügel}{つか}{}{hillock}                  | \kk{塞}{Hindernis}{サイ}{ソク}{obstruct}          | \kk{塡}{Ausfüllen}{テン}{}{fill in}         |
+| \kk{塾}{Nachhilfe}{ジュク}{}{cram school}    | \kk{墜}{Absturz}{ツイ}{}{crash}                   | \kk{墳}{Grab}{フン}{}{tomb}                           | \kk{墾}{bahnbrechend}{コン}{}{ground-breaking}    | \kk{壁}{Wand}{ヘキ}{かべ}{wall}                  | \kk{壇}{Podium}{ダン}{（タン）}{podium}           | \kk{壊}{Abriss}{カイ}{こわ-す}{demolition}  |
+| \kk{壌}{Menge}{ジョウ}{}{lot}                | \kk{壮}{robust}{ソウ}{}{robust}                   | \kk{壱}{eins}{イチ}{}{one (falsification prevention)} | \kk{奇}{merkwürdig}{キ}{}{strange}                | \kk{奈}{was}{ナ}{}{what}                         | \kk{奉}{Einhaltung}{ホウ}{（ブ）}{observance}     | \kk{契}{Versprechen}{ケイ}{ちぎ-る}{pledge} |
+| \kk{奔}{treiben}{ホン}{}{bustle}             | \kk{奥}{Herz}{オウ}{おく}{heart}                  | \kk{奨}{ermahnen}{ショウ}{}{exhort}                   | \kk{奪}{rauben}{ダツ}{うば-う}{rob}               | \kk{奴}{Typ}{ド}{}{guy}                          | \kk{如}{Figur}{ジョ}{ニョ}{likeness}              | \kk{妃}{Königin}{ヒ}{}{queen}               |
+| \kk{妄}{Wahn}{モウ}{ボウ}{delusion}          | \kk{妊}{Schwangerschaft}{ニン}{}{pregnancy}       | \kk{妖}{betörend}{ヨウ}{あや-しい}{bewitching}        | \kk{妙}{vorzüglich}{ミョウ}{}{exquisite}          | \kk{妥}{sanft}{ダ}{}{gentle}                     | \kk{妨}{stören}{ボウ}{さまた-げる}{disturb}       | \kk{妬}{Eifersucht}{ト}{ねた-む}{jealousy}  |
+| \kk{姓}{Nachname}{セイ}{ショウ}{surname}     | \kk{姫}{Prinzessin}{ひめ}{}{princess}             | \kk{姻}{Ehe}{イン}{}{matrimony}                       | \kk{威}{einschüchtern}{イ}{}{intimidate}          | \kk{娘}{Tochter}{むすめ}{}{daughter}             | \kk{娠}{mit Kind}{シン}{}{with child}             | \kk{娯}{Erholung}{ゴ}{}{recreation}         |
+| \kk{婆}{alte Frau}{バ}{}{old woman}          | \kk{婚}{Ehe}{コン}{}{marriage}                    | \kk{婿}{Bräutigam}{セイ}{むこ}{bridegroom}            | \kk{媒}{Mediator}{バイ}{}{mediator}               | \kk{媛}{Prinzessin}{エン}{}{princess}            | \kk{嫁}{heiraten}{カ}{よめ}{marry into}           | \kk{嫉}{Neid}{シツ}{}{envy}                 |
+| \kk{嫌}{Abneigung}{ケン}{（ゲン）}{dislike}  | \kk{嫡}{legitime Frau}{チャク}{}{legitimate wife} | \kk{嬢}{Mädel}{ジョウ}{}{lass}                        | \kk{孔}{Hohlraum}{コウ}{}{cavity}                 | \kk{孤}{verwaist}{コ}{}{orphan}                  | \kk{宛}{zuteilen}{あ-てる}{}{allocate}            | \kk{宜}{Beste Grüße}{ギ}{}{best regards}    |
+| \kk{宰}{beaufsichtigen}{サイ}{}{superintend} | \kk{宴}{Bankett}{エン}{}{banquet}                 | \kk{宵}{kleine Stunden}{ショウ}{よい}{wee hours}      | \kk{寂}{Einsamkeit}{ジャク}{（セキ）}{loneliness} | \kk{寛}{tolerant}{カン}{}{tolerant}              | \kk{寝}{liegen}{シン}{ね-る}{lie down}            |                                             |
+
+
+#+Name: tab-joyo-wiki-S-4
+#+Begin_Src R :headers t :cache nil :var g='S' min=245 max=328 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-S-4
+| \kk{寡}{Witwe}{カ}{}{widow}                   | \kk{寧}{eher}{ネイ}{}{rather}                       | \kk{審}{untersuchen}{シン}{}{examine}            | \kk{寮}{Wohnheim}{リョウ}{}{dormitory}        | \kk{寿}{Langlebigkeit}{ジュ}{ことぶき}{longevity}  | \kk{封}{Seehund}{フウ}{ホウ}{seal}     | \kk{尉}{Offizier}{イ}{}{military officer}          |
+| \kk{尋}{erkundigen}{ジン}{たず-ねる}{inquire} | \kk{尚}{Wertschätzung}{ショウ}{}{esteem}            | \kk{尻}{Gesäß}{しり}{}{buttocks}                 | \kk{尼}{Nonne}{ニ}{あま}{nun}                 | \kk{尽}{Auspuff}{ジン}{つ-くす}{exhaust}           | \kk{尾}{Schwanz}{ビ}{お}{tail}         | \kk{尿}{Urin}{ニョウ}{}{urine}                     |
+| \kk{屈}{Ertrag}{クツ}{}{yield}                | \kk{履}{Fußbekleidung}{リ}{は-く}{footgear}         | \kk{屯}{Kaserne}{トン}{}{barracks}               | \kk{岐}{Abzweig}{キ}{}{branch off}            | \kk{岡}{Hügel}{（おか）}{}{hill}                   | \kk{岬}{Landzunge}{みさき}{}{headland} | \kk{岳}{Punkt}{ガク}{たけ}{point}                  |
+| \kk{峠}{Berggipfel}{とうげ}{}{mountain peak}  | \kk{峡}{Schlucht}{キョウ}{}{gorge}                  | \kk{峰}{Gipfel}{ホウ}{みね}{summit}              | \kk{崇}{verehren}{スウ}{}{adore}              | \kk{崎}{Vorgebirge}{さき}{}{promontory}            | \kk{崖}{Felsen}{ガイ}{がけ}{cliff}     | \kk{崩}{bröckeln}{ホウ}{くず-れる}{crumble}        |
+| \kk{嵐}{Sturm}{あらし}{}{storm}               | \kk{巧}{Geschicklichkeit}{コウ}{たく-み}{adroit}    | \kk{巨}{gigantisch}{キョ}{}{gigantic}            | \kk{巾}{Handtuch}{キン}{}{towel}              | \kk{帆}{Segel}{ハン}{ほ}{sail}                     | \kk{帝}{souverän}{テイ}{}{sovereign}   | \kk{帥}{Kommandant}{スイ}{}{commander}             |
+| \kk{帽}{Kappe}{ボウ}{}{cap}                   | \kk{幅}{Weite}{フク}{はば}{breadth}                 | \kk{幣}{Bargeld}{ヘイ}{}{cash}                   | \kk{幻}{Gespenster}{ゲン}{まぼろし}{phantasm} | \kk{幽}{absondern}{ユウ}{}{seclude}                | \kk{幾}{wieviele}{キ}{いく}{how many}  | \kk{床}{Bett}{ショウ}{とこ}{bed}                   |
+| \kk{庶}{Gemeiner}{ショ}{}{commoner}           | \kk{庸}{alltäglich}{ヨウ}{}{commonplace}            | \kk{廃}{abschaffen}{ハイ}{すた-れる}{abolish}    | \kk{廊}{Gang}{ロウ}{}{corridor}               | \kk{廉}{Schnäppchen}{レン}{}{bargain}              | \kk{廷}{Gerichte}{テイ}{}{courts}      | \kk{弄}{bestechen}{ロウ}{もてあそ-ぶ}{tamper with} |
+| \kk{弊}{Missbrauch}{ヘイ}{}{abuse}            | \kk{弐}{zwei}{ニ}{}{two (falsification prevention)} | \kk{弔}{Beileid}{チョウ}{とむら-う}{condolences} | \kk{弥}{umso mehr}{や}{}{all the more}        | \kk{弦}{Bogensehne}{ゲン}{つる}{bowstring}         | \kk{弧}{Bogen}{コ}{}{arc}              | \kk{弾}{Kugel (Geschoss)}{ダン}{ひ-く}{bullet}     |
+| \kk{彙}{gleiche Art}{イ}{}{same kind}         | \kk{彩}{Färbung}{サイ}{いろど-る}{coloring}         | \kk{彫}{schnitzen}{チョウ}{ほ-る}{carve}         | \kk{彰}{Patent}{ショウ}{}{patent}             | \kk{影}{Schatten}{エイ}{かげ}{shadow}              | \kk{彼}{er}{ヒ}{かれ}{he}              | \kk{征}{unterwerfen}{セイ}{}{subjugate}            |
+| \kk{徐}{allmählich}{ジョ}{}{gradually}        | \kk{御}{ehrenvoll}{ギョ}{ゴ}{honorable}             | \kk{循}{sequenziell}{ジュン}{}{sequential}       | \kk{微}{zart}{ビ}{}{delicate}                 | \kk{徴}{Indikationen}{チョウ}{}{indications}       | \kk{徹}{eindringen}{テツ}{}{penetrate} | \kk{忌}{Trauer}{キ}{い-む}{mourning}               |
+| \kk{忍}{ertragen}{ニン}{しの-ぶ}{endure}      | \kk{忙}{beschäftigt}{ボウ}{いそが-しい}{busy}       | \kk{怒}{wütend}{ド}{いか-る}{angry}              | \kk{怖}{schrecklich}{フ}{こわ-い}{dreadful}   | \kk{怠}{vernachlässigen}{タイ}{おこた-る}{neglect} | \kk{怨}{Groll}{エン}{オン}{grudge}     | \kk{怪}{verdächtig}{カイ}{あや-しい}{suspicious}   |
+| \kk{恋}{Romantik}{レン}{こ-う}{romance}       | \kk{恐}{Angst}{キョウ}{おそ-れる}{fear}             | \kk{恒}{Konstanz}{コウ}{}{constancy}             | \kk{恣}{Egoismus}{シ}{}{selfish}              | \kk{恥}{Schande}{チ}{は-じる}{shame}               | \kk{恨}{Groll}{コン}{うら-む}{rancor}  | \kk{恭}{Respekt}{キョウ}{うやうや-しい}{respect}   |
+
+
+#+Name: tab-joyo-wiki-S-5
+#+Begin_Src R :headers t :cache nil :var g='S' min=329 max=412 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-S-5
+| \kk{恵}{Gefallen}{ケイ}{エ}{favor}            | \kk{悔}{Buße tun}{カイ}{く-いる}{repent}    | \kk{悟}{Erleuchtung}{ゴ}{さと-る}{enlightenment}      | \kk{悠}{dauerhaft}{ユウ}{}{permanence}         | \kk{患}{befallen}{カン}{わずら-う}{afflicted}        | \kk{悦}{Ekstase}{エツ}{}{ecstasy}                     | \kk{悩}{Ärger}{ノウ}{なや-む}{trouble}             |
+| \kk{悼}{Klage}{トウ}{いた-む}{lament}         | \kk{惑}{Begleitung}{ワク}{まど-う}{beguile} | \kk{惜}{Mitleid}{セキ}{お-しい}{pity}                 | \kk{惧}{fürchten}{グ}{}{dread}                 | \kk{惨}{elendig}{サン}{ザン}{wretched}               | \kk{惰}{faul}{ダ}{}{lazy}                             | \kk{愁}{Bedrängnis}{シュウ}{うれ-える}{distress}   |
+| \kk{愉}{Vergnügen}{ユ}{}{pleasure}            | \kk{愚}{dumm}{グ}{おろ-か}{foolish}         | \kk{慨}{Rue}{ガイ}{}{rue}                             | \kk{慄}{Angst}{リツ}{}{fear}                   | \kk{慈}{erbarmen}{ジ}{いつく-しむ}{mercy}            | \kk{慌}{verstört}{コウ}{あわ-てる}{disconcerted}      | \kk{慎}{Demut}{シン}{つつし-む}{humility}          |
+| \kk{慕}{Sehnsucht}{ボ}{した-う}{pining}       | \kk{慢}{Spott}{マン}{}{ridicule}            | \kk{慮}{Klugheit}{リョ}{}{prudence}                   | \kk{慰}{Trost}{イ}{なぐさ-める}{consolation}   | \kk{慶}{Jubel}{ケイ}{}{jubilation}                   | \kk{憂}{melancholisch}{ユウ}{うれ-える}{melancholy}   | \kk{憎}{Hass}{ゾウ}{にく-む}{hate}                 |
+| \kk{憤}{Erregung}{フン}{いきどお-る}{aroused} | \kk{憧}{Wunsch}{ショウ}{}{desire}           | \kk{憩}{Pause}{ケイ}{いこ-い}{recess}                 | \kk{憬}{ersehnen}{ケイ}{}{long for}            | \kk{憶}{Erinnerung}{オク}{}{recollection}            | \kk{憾}{Reue}{カン}{}{remorse}                        | \kk{懇}{kontaktfreudig}{コン}{ねんご-ろ}{sociable} |
+| \kk{懐}{Tasche}{カイ}{ふところ}{pocket}       | \kk{懲}{Strafe}{チョウ}{こ-りる}{penal}     | \kk{懸}{suspendieren}{ケン}{（ケ）}{suspend}          | \kk{戒}{Gebot}{カイ}{いまし-める}{commandment} | \kk{戚}{Trauer}{セキ}{}{grieve}                      | \kk{戯}{Scherz}{ギ}{たわむ-れる}{frolic}              | \kk{戴}{krönen}{タイ}{}{be crowned with}           |
+| \kk{戻}{re-}{レイ}{もど-す}{re-}              | \kk{房}{Quaste}{ボウ}{ふさ}{tassel}         | \kk{扇}{Lüfter}{セン}{おうぎ}{fan}                    | \kk{扉}{Haustür}{ヒ}{とびら}{front door}       | \kk{払}{bezahlen}{フツ}{はら-う}{pay}                | \kk{扱}{Henkel}{あつか-う}{}{handle}                  | \kk{扶}{Beihilfe}{フ}{}{aid}                       |
+| \kk{抄}{Auszug}{ショウ}{}{extract}            | \kk{把}{Griff}{ハ}{}{grasp}                 | \kk{抑}{unterdrücken}{ヨク}{おさ-える}{repress}       | \kk{抗}{Konfrontation}{コウ}{}{confront}       | \kk{抜}{herausrutschen}{バツ}{ぬ-く}{slip out}       | \kk{択}{wählen}{タク}{}{choose}                       | \kk{披}{aussetzen}{ヒ}{}{expose}                   |
+| \kk{抱}{Umarmung}{ホウ}{だ-く}{embrace}       | \kk{抵}{widerstehen}{テイ}{}{resist}        | \kk{抹}{einreiben}{マツ}{}{rub}                       | \kk{押}{drücken}{オウ}{お-す}{push}            | \kk{抽}{zupfen}{チュウ}{}{pluck}                     | \kk{拉}{zerquetschen}{ラ}{}{crush}                    | \kk{拍}{Schlag}{ハク}{（ヒョウ）}{clap}            |
+| \kk{拐}{entführen}{カイ}{}{kidnap}            | \kk{拒}{abstoßen}{キョ}{こば-む}{repel}     | \kk{拓}{roden}{タク}{}{clear (the land)}              | \kk{拘}{Verhaftung}{コウ}{}{arrest}            | \kk{拙}{verstümmeln}{セツ}{つたな-い}{bungling}      | \kk{拠}{Fuß}{キョ}{コ}{foothold}                      | \kk{括}{befestigen}{カツ}{}{fasten}                |
+| \kk{拭}{Farbe}{ショク}{ふ-く}{wipe}           | \kk{拳}{Faust}{ケン}{こぶし}{fist}          | \kk{拶}{unmittelbar bevorstehen}{サツ}{}{be imminent} | \kk{拷}{Folter}{ゴウ}{}{torture}               | \kk{挑}{Herausforderung}{チョウ}{いど-む}{challenge} | \kk{挟}{Prise}{キョウ}{はさ-む}{pinch}                | \kk{挨}{aufstoßen}{アイ}{}{push open}              |
+| \kk{挫}{Verstauchung}{ザ}{}{sprain}           | \kk{振}{schütteln}{シン}{ふ-る}{shake}      | \kk{挿}{einfügen}{ソウ}{さ-す}{insert}                | \kk{捉}{fangen}{ソク}{とら-える}{capture}      | \kk{捕}{fangen}{ホ}{と-らえる}{catch}                | \kk{捗}{Fortschritte machen}{チョク}{}{make progress} | \kk{捜}{suchen}{ソウ}{さが-す}{search}             |
+
+
+#+Name: tab-joyo-wiki-S-6
+#+Begin_Src R :headers t :cache nil :var g='S' min=413 max=496 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-S-6
+| \kk{据}{Satz}{す-える}{す-わる}{set}                         | \kk{捻}{Drehung}{ネン}{ひね-る}{twist}                          | \kk{掃}{Schwung}{ソウ}{は-く}{sweep}                            | \kk{掌}{manipulieren}{ショウ}{}{manipulate}    | \kk{排}{ablehnen}{ハイ}{}{repudiate}          | \kk{掘}{Grab}{クツ}{ほ-る}{dig}                       | \kk{掛}{hängen}{か-ける}{か-かる}{hang}             |
+| \kk{控}{zurückziehen}{コウ}{ひか-える}{withdraw}             | \kk{措}{beiseite legen}{ソ}{}{set aside}                        | \kk{掲}{Aufstellen (Gebot)}{ケイ}{かか-げる}{put up (a notice)} | \kk{描}{Skizze}{ビョウ}{えが-く}{sketch}       | \kk{揚}{Hebezeug}{ヨウ}{あ-げる}{hoist}       | \kk{換}{Austausch}{カン}{か-える}{interchange}        | \kk{握}{Griff}{アク}{にぎ-る}{grip}                 |
+| \kk{援}{Hilfe}{エン}{}{aid}                                  | \kk{揺}{Schaukel}{ヨウ}{ゆ-れる}{swing}                         | \kk{搬}{Förderband}{ハン}{}{conveyor}                           | \kk{搭}{Brett}{トウ}{}{board}                  | \kk{携}{tragbar}{ケイ}{たずさ-える}{portable} | \kk{搾}{quetschen}{サク}{しぼ-る}{squeeze}            | \kk{摂}{Stellvertreter}{セツ}{}{vicarious}          |
+| \kk{摘}{Prise}{テキ}{つ-む}{pinch}                           | \kk{摩}{reiben}{マ}{}{chafe}                                    | \kk{摯}{Ernsthaftigkeit}{シ}{}{seriousness}                     | \kk{撃}{schlagen}{ゲキ}{う-つ}{beat}           | \kk{撤}{entfernen}{テツ}{}{remove}            | \kk{撮}{Momentaufnahme}{サツ}{と-る}{snapshot}        | \kk{撲}{Ohrfeige}{ボク}{}{slap}                     |
+| \kk{擁}{Umarmung}{ヨウ}{}{embrace}                           | \kk{擦}{Rost}{サツ}{す-る}{grate}                               | \kk{擬}{Nachahmung}{ギ}{}{mimic}                                | \kk{攻}{Aggression}{コウ}{せ-める}{aggression} | \kk{敏}{Klugheit}{ビン}{}{cleverness}         | \kk{敢}{Wagemut}{カン}{}{daring}                      | \kk{敷}{Verbreitung}{フ}{し-く}{spread}             |
+| \kk{斉}{angepasst}{セイ}{}{adjusted}                         | \kk{斎}{Reinigung}{サイ}{}{purification}                        | \kk{斑}{Schönheitsfehler}{ハン}{}{blemish}                      | \kk{斗}{Großer Wagen}{ト}{}{Big Dipper}        | \kk{斜}{Diagonale}{シャ}{なな-め}{diagonal}   | \kk{斤}{Axt}{キン}{}{axe}                             | \kk{斥}{ablehnen}{セキ}{}{reject}                   |
+| \kk{斬}{töten durch schneiden}{ザン}{き-る}{kill by slicing} | \kk{施}{Durchführung}{シ}{セ}{carry out}                        | \kk{旋}{Rotation}{セン}{}{rotation}                             | \kk{既}{vorher}{キ}{すで-に}{previously}       | \kk{旦}{Tagesanbruch}{タン}{ダン}{daybreak}   | \kk{旨}{lecker}{シ}{むね}{delicious}                  | \kk{旬}{10-Tage}{ジュン}{（シュン）}{10-day period} |
+| \kk{旺}{gedeihen}{オウ}{}{flourishing}                       | \kk{昆}{Nachkommen}{コン}{}{descendants}                        | \kk{昇}{sich erheben}{ショウ}{のぼ-る}{rise up}                 | \kk{昧}{dumm}{マイ}{}{foolish}                 | \kk{是}{gerade so}{ゼ}{}{just so}             | \kk{曽}{früher}{ソウ}{（ゾ）}{formerly}               | \kk{普}{universal}{フ}{}{universal}                 |
+| \kk{晶}{funkeln}{ショウ}{}{sparkle}                          | \kk{暁}{Morgendämmerung}{ギョウ}{あかつき}{daybreak}            | \kk{暇}{Freizeit}{カ}{ひま}{spare time}                         | \kk{暦}{Kalender}{レキ}{こよみ}{calendar}      | \kk{暫}{vorübergehend}{ザン}{}{temporarily}   | \kk{曇}{trübes Wetter}{ドン}{くも-る}{cloudy weather} | \kk{曖}{nicht klar}{アイ}{}{not clear}              |
+| \kk{更}{spät wachsen}{コウ}{さら}{grow late}                 | \kk{曹}{Kadett}{ソウ}{}{cadet}                                  | \kk{替}{tauschen}{タイ}{か-える}{exchange}                      | \kk{朕}{(Plural)}{チン}{}{majestic plural}     | \kk{朱}{Zinnober}{シュ}{}{vermilion}          | \kk{朴}{roh}{ボク}{}{crude}                           | \kk{朽}{Verfall}{キュウ}{く-ちる}{decay}            |
+| \kk{杉}{Zeder}{すぎ}{}{cedar}                                | \kk{杯}{Zähler für Becher}{ハイ}{さかずき}{counter for cupfuls} | \kk{析}{hacken}{セキ}{}{chop}                                   | \kk{枕}{Kissen}{まくら}{}{pillow}              | \kk{枠}{Rahmen}{わく}{}{frame}                | \kk{枢}{Scharnier}{スウ}{}{hinge}                     | \kk{枯}{Tod}{コ}{か-れる}{wither}                   |
+| \kk{架}{Gestell}{カ}{か-ける}{rack}                          | \kk{柄}{Design}{ヘイ}{がら}{design}                             | \kk{某}{so und so}{ボウ}{}{so-and-so}                           | \kk{柔}{zart}{ジュウ}{ニュウ}{tender}          | \kk{柳}{Weide}{リュウ}{やなぎ}{willow}        | \kk{柵}{Zaun}{サク}{}{fence}                          | \kk{柿}{Kaki}{かき}{}{persimmon}                    |
+
+
+#+Name: tab-joyo-wiki-S-7
+#+Begin_Src R :headers t :cache nil :var g='S' min=497 max=580 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-S-7
+| \kk{栃}{Rosskastanie}{（とち）}{}{horse chestnut} | \kk{栓}{Stecker}{セン}{}{plug}                  | \kk{核}{Kern}{カク}{}{nucleus}           | \kk{栽}{Plantage}{サイ}{}{plantation}               | \kk{桁}{Strahl}{けた}{}{beam}                    | \kk{桃}{Pfirsichbaum}{トウ}{もも}{peach tree} | \kk{桑}{Maulbeere}{ソウ}{くわ}{mulberry}    |
+| \kk{桟}{Gerüst}{サン}{}{scaffold}                 | \kk{梗}{Nahaufnahme}{コウ}{}{close up}          | \kk{梨}{Birnbaum}{なし}{}{pear tree}     | \kk{棄}{aufgeben}{キ}{}{abandon}                    | \kk{棋}{Schachfigur}{キ}{}{chess piece}          | \kk{棚}{Regal}{たな}{}{shelf}                 | \kk{棟}{First}{トウ}{むね}{ridgepole}       |
+| \kk{棺}{Sarg}{カン}{}{coffin}                     | \kk{椅}{Stuhl}{イ}{}{chair}                     | \kk{椎}{Eiche}{ツイ}{}{oak}              | \kk{楷}{(Zeichenstil)}{カイ}{}{square characters}   | \kk{楼}{Wachturm}{ロウ}{}{watchtower}            | \kk{概}{Umriss}{ガイ}{}{outline}              | \kk{槽}{Bottich}{ソウ}{}{vat}               |
+| \kk{欄}{Kolumne}{ラン}{}{column}                  | \kk{欧}{Europa}{オウ}{}{Europe}                 | \kk{欺}{Betrug}{ギ}{あざむ-く}{deceit}   | \kk{款}{Wohlwollen}{カン}{}{goodwill}               | \kk{歓}{Freude}{カン}{}{delight}                 | \kk{歳}{Jahresende}{サイ}{（セイ）}{year-end} | \kk{殉}{Martyrium}{ジュン}{}{martyrdom}     |
+| \kk{殊}{besonders}{シュ}{こと}{particularly}      | \kk{殖}{Vergrößerung}{ショク}{ふ-える}{augment} | \kk{殴}{Angriff}{オウ}{なぐ-る}{assault} | \kk{殻}{Schale}{カク}{から}{husk}                   | \kk{殿}{Herr}{デン}{テン}{Mr.}                   | \kk{毀}{zerstören}{キ}{}{destroy}             | \kk{氾}{verbreitet}{ハン}{}{spread out}     |
+| \kk{汁}{Suppe}{ジュウ}{しる}{soup}                | \kk{汎}{Pan-}{ハン}{}{pan-}                     | \kk{汗}{schwitzen}{カン}{あせ}{sweat}    | \kk{汚}{schmutzig}{オ}{けが-す}{dirty}              | \kk{江}{Einlauf}{コウ}{え}{inlet}                | \kk{汰}{Luxus}{タ}{}{luxury}                  | \kk{沃}{Fruchtbarkeit}{ヨク}{}{fertility}   |
+| \kk{沈}{Senke}{チン}{しず-む}{sink}               | \kk{沖}{offenes Meer}{チュウ}{おき}{open sea}   | \kk{沙}{Sand}{サ}{}{sand}                | \kk{没}{ertrinken}{ボツ}{}{drown}                   | \kk{沢}{Sumpf}{タク}{さわ}{swamp}                | \kk{沸}{sitzen}{フツ}{わ-く}{seethe}          | \kk{沼}{Sumpf}{ショウ}{ぬま}{marsh}         |
+| \kk{況}{Bedingung}{キョウ}{}{condition}           | \kk{泊}{über Nacht}{ハク}{と-まる}{overnight}   | \kk{泌}{Schlamm}{ヒツ}{ヒ}{ooze}         | \kk{泡}{blasen}{ホウ}{あわ}{bubbles}                | \kk{泥}{Schlamm}{デイ}{どろ}{mud}                | \kk{泰}{friedlich}{タイ}{}{peaceful}          | \kk{洞}{Höhle}{ドウ}{ほら}{den}             |
+| \kk{津}{Hafen}{シン}{つ}{haven}                   | \kk{洪}{Flut}{コウ}{}{deluge}                   | \kk{浄}{sauber}{ジョウ}{}{clean}         | \kk{浜}{Seeküste}{ヒン}{はま}{seacoast}             | \kk{浦}{Bucht}{うら}{}{bay}                      | \kk{浪}{Wandern}{ロウ}{}{wandering}           | \kk{浮}{schwimmen}{フ}{う-く}{floating}     |
+| \kk{浸}{eintauchen}{シン}{ひた-す}{immersed}      | \kk{涙}{Tränen}{ルイ}{なみだ}{tears}            | \kk{涯}{Horizont}{ガイ}{}{horizon}       | \kk{涼}{erfrischend}{リョウ}{すず-しい}{refreshing} | \kk{淑}{anmutig}{シュク}{}{graceful}             | \kk{淡}{dünn}{タン}{あわ-い}{thin}            | \kk{淫}{anzüglich}{イン}{みだ-ら}{lewdness} |
+| \kk{添}{beigefügt}{テン}{そ-える}{annexed}        | \kk{渇}{Durst}{カツ}{かわ-く}{thirst}           | \kk{渉}{durchwaten}{ショウ}{}{ford}      | \kk{渋}{nüchtern}{ジュウ}{しぶ}{astringent}         | \kk{渓}{Gebirgsbach}{ケイ}{}{mountain stream}    | \kk{渡}{Transit}{ト}{わた-る}{transit}        | \kk{渦}{Whirlpool}{カ}{うず}{whirlpool}     |
+| \kk{湧}{kochen}{ユウ}{わ-く}{boil}                | \kk{湾}{Golf}{ワン}{}{gulf}                     | \kk{湿}{feucht}{シツ}{しめ-る}{damp}     | \kk{滋}{nähren}{ジ}{}{nourishing}                   | \kk{滞}{stagnieren}{タイ}{とどこお-る}{stagnate} | \kk{溝}{Rinne}{コウ}{みぞ}{gutter}            | \kk{溶}{Schmelze}{ヨウ}{と-ける}{melt}      |
+
+
+#+Name: tab-joyo-wiki-S-8
+#+Begin_Src R :headers t :cache nil :var g='S' min=581 max=664 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-S-8
+| \kk{溺}{ertrinken}{デキ}{おぼ-れる}{drown}  | \kk{滅}{Zerstörung}{メツ}{ほろ-びる}{destroy} | \kk{滑}{rutschig}{カツ}{すべ-る}{slippery} | \kk{滝}{Wasserfall}{たき}{}{waterfall}           | \kk{滴}{Tropf}{テキ}{しずく}{drip}                 | \kk{漂}{Drift}{ヒョウ}{ただよ-う}{drift}       | \kk{漆}{Lack}{シツ}{うるし}{lacquer}       |
+| \kk{漏}{Leck}{ロウ}{も-る}{leak}            | \kk{漠}{vage}{バク}{}{vague}                  | \kk{漫}{Karikatur}{マン}{}{cartoon}        | \kk{漬}{beizen}{つ-ける}{つ-かる}{pickling}      | \kk{漸}{stetig}{ゼン}{}{steadily}                  | \kk{潜}{untertauchen}{セン}{ひそ-む}{submerge} | \kk{潟}{Lagune}{かた}{}{lagoon}            |
+| \kk{潤}{nass}{ジュン}{うるお-う}{wet}       | \kk{潰}{zerquetschen}{カイ}{つぶ-す}{crush}   | \kk{澄}{Klarheit}{チョウ}{す-む}{lucidity} | \kk{濁}{stimmhaft}{ダク}{にご-る}{voiced}        | \kk{濃}{konzentriert}{ノウ}{こ-い}{concentrated}   | \kk{濫}{Übermaß}{ラン}{}{excessive}            | \kk{濯}{Wäsche}{タク}{}{laundry}           |
+| \kk{瀬}{Stromschnellen}{せ}{}{rapids}       | \kk{炉}{Herd}{ロ}{}{hearth}                   | \kk{炊}{kochen}{スイ}{た-く}{cook}         | \kk{炎}{Entzündung}{エン}{ほのお}{inflammation}  | \kk{為}{tun}{イ}{}{do}                             | \kk{烈}{brennend}{レツ}{}{ardent}              | \kk{焦}{verkohlen}{ショウ}{こ-げる}{char}  |
+| \kk{煮}{Kochen}{シャ}{に-る}{boil}          | \kk{煎}{Grill}{セン}{い-る}{broil}            | \kk{煙}{Rauch}{エン}{けむ-る}{smoke}       | \kk{煩}{Angst}{ハン}{（ボン）}{anxiety}          | \kk{熊}{Bär}{くま}{}{bear}                         | \kk{黙}{Stille}{モク}{だま-る}{silence}        | \kk{燥}{dörren}{ソウ}{}{parch}             |
+| \kk{爆}{explodieren}{バク}{}{explode}       | \kk{爪}{Kralle}{つめ}{（つま）}{claw}         | \kk{爵}{Baron}{シャク}{}{baron}            | \kk{爽}{Erneuerung}{ソウ}{さわ-やか}{refreshing} | \kk{牙}{Stoßzahn}{ガ}{きば}{tusk}                  | \kk{牲}{Tieropfer}{セイ}{}{animal sacrifice}   | \kk{犠}{Opfer}{ギ}{}{sacrifice}            |
+| \kk{狂}{verrückt}{キョウ}{くる-う}{lunatic} | \kk{狙}{anstreben}{ソ}{ねら-う}{aim at}       | \kk{狩}{Jagd}{シュ}{か-る}{hunt}           | \kk{狭}{eng}{キョウ}{せま-い}{cramped}           | \kk{猛}{heftig}{モウ}{}{fierce}                    | \kk{猟}{jagen}{リョウ}{}{game-hunting}         | \kk{猫}{Katze}{ビョウ}{ねこ}{cat}          |
+| \kk{献}{Angebot}{ケン}{（コン）}{offering}  | \kk{猶}{außerdem}{ユウ}{}{furthermore}        | \kk{猿}{Affe}{エン}{さる}{monkey}          | \kk{獄}{Gefängnis}{ゴク}{}{prison}               | \kk{獣}{Tier}{ジュウ}{けもの}{animal}              | \kk{獲}{ergreifen}{カク}{え-る}{seize}         | \kk{玄}{geheimnisvoll}{ゲン}{}{mysterious} |
+| \kk{玩}{leicht nehmen}{ガン}{}{trifle with} | \kk{珍}{selten}{チン}{めずら-しい}{rare}      | \kk{珠}{Perle}{シュ}{}{pearl}              | \kk{琴}{Harfe}{キン}{こと}{harp}                 | \kk{瑠}{Lapislazuli}{ル}{}{lapis lazuli}           | \kk{璃}{glasig}{リ}{}{glassy}                  | \kk{璧}{Kugel}{ヘキ}{}{sphere}             |
+| \kk{環}{Ring}{カン}{}{ring}                 | \kk{璽}{Kaisersiegel}{ジ}{}{emperor's seal}   | \kk{瓦}{Fliese}{ガ}{かわら}{tile}          | \kk{瓶}{Blumentopf}{ビン}{}{flower pot}          | \kk{甘}{süß}{カン}{あま-い}{sweet}                 | \kk{甚}{enorm}{ジン}{はなは-だ}{tremendously}  | \kk{甲}{Rüstung}{コウ}{カン}{armor}        |
+| \kk{畏}{Angst}{イ}{おそ-れる}{fear}         | \kk{畔}{Paddy-First}{ハン}{}{paddy-ridge}     | \kk{畜}{Vieh}{チク}{}{livestock}           | \kk{畝}{Furche}{うね}{}{furrow}                  | \kk{畳}{Tatami-Matte}{ジョウ}{たた-む}{tatami mat} | \kk{畿}{Hauptstadt}{キ}{}{capital}             | \kk{疎}{entfremden}{ソ}{うと-い}{alienate} |
+| \kk{疫}{Epidemie}{エキ}{（ヤク）}{epidemic} | \kk{疲}{erschöpft}{ヒ}{つか-れる}{exhausted}  | \kk{疾}{schnell}{シツ}{}{rapidly}          | \kk{症}{Symptome}{ショウ}{}{symptoms}            | \kk{痕}{Note}{コン}{あと}{mark}                    | \kk{痘}{Pocken}{トウ}{}{pox}                   | \kk{痢}{Durchfall}{リ}{}{diarrhea}         |
+
+
+#+Name: tab-joyo-wiki-S-9
+#+Begin_Src R :headers t :cache nil :var g='S' min=665 max=748 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-S-9
+| \kk{痩}{dünner werden}{ソウ}{や-せる}{get thin} | \kk{痴}{dumm}{チ}{}{stupid}                   | \kk{瘍}{kochen (medizinisch)}{ヨウ}{}{boil (medical)} | \kk{療}{Heilung}{リョウ}{}{heal}           | \kk{癒}{Heilung}{ユ}{い-える}{healing}         | \kk{癖}{Manierismus}{ヘキ}{くせ}{mannerism}         | \kk{皆}{Alle}{カイ}{みな}{all}            |
+| \kk{盆}{Becken}{ボン}{}{basin}                  | \kk{盗}{Stahl}{トウ}{ぬす-む}{steal}          | \kk{監}{übersehen}{カン}{}{oversee}                   | \kk{盤}{Tablett}{バン}{}{tray}             | \kk{盲}{blind}{モウ}{}{blind}                  | \kk{盾}{Schild}{ジュン}{たて}{shield}               | \kk{眉}{Augenbraue}{ビ}{（ミ）}{eyebrow}  |
+| \kk{眠}{Schlaf}{ミン}{ねむ-る}{sleep}           | \kk{眺}{starren}{チョウ}{なが-める}{stare}    | \kk{督}{Trainer}{トク}{}{coach}                       | \kk{睦}{harmonisch}{ボク}{}{harmonious}    | \kk{睡}{Schläfrigkeit}{スイ}{}{drowsy}         | \kk{瞬}{Wink}{シュン}{またた-く}{wink}              | \kk{瞭}{klar}{リョウ}{}{clear}            |
+| \kk{瞳}{Schüler}{ドウ}{ひとみ}{pupil}           | \kk{矛}{Hellebarde}{ム}{ほこ}{halberd}        | \kk{矯}{korrigieren}{キョウ}{た-める}{rectify}        | \kk{砕}{zerschlagen}{サイ}{くだ-く}{smash} | \kk{砲}{Kanone}{ホウ}{}{cannon}                | \kk{硝}{Nitrat}{ショウ}{}{nitrate}                  | \kk{硫}{Schwefel}{リュウ}{}{sulphur}      |
+| \kk{硬}{steif}{コウ}{かた-い}{stiff}            | \kk{碁}{Go-Spiel}{ゴ}{}{Go}                   | \kk{碑}{Grabstein}{ヒ}{}{tombstone}                   | \kk{磨}{schleifen}{マ}{みが-く}{grind}     | \kk{礁}{Riff}{ショウ}{}{reef}                  | \kk{礎}{Eckstein}{ソ}{いしずえ}{cornerstone}        | \kk{祈}{beten}{キ}{いの-る}{pray}         |
+| \kk{祉}{Wohlbefinden}{シ}{}{welfare}            | \kk{祥}{günstig}{ショウ}{}{auspicious}        | \kk{禅}{Zen}{ゼン}{}{Zen}                             | \kk{禍}{Unglück}{カ}{}{calamity}           | \kk{秀}{übertreffen}{シュウ}{ひい-でる}{excel} | \kk{租}{Steuer-}{ソ}{}{tariff}                      | \kk{秩}{regelmäßig}{チツ}{}{regularity}   |
+| \kk{称}{Appellation}{ショウ}{}{appellation}     | \kk{稚}{unreif}{チ}{}{immature}               | \kk{稲}{Reispflanze}{トウ}{いね}{rice plant}          | \kk{稼}{Verdienst}{カ}{かせ-ぐ}{earnings}  | \kk{稽}{in Betracht ziehen}{ケイ}{}{consider}  | \kk{稿}{Zug}{コウ}{}{draft}                         | \kk{穂}{Ohr}{スイ}{ほ}{ear}               |
+| \kk{穏}{Ruhe}{オン}{おだ-やか}{calm}            | \kk{穫}{ernten}{カク}{}{harvest}              | \kk{突}{stechen}{トツ}{つ-く}{stab}                   | \kk{窃}{List}{セツ}{}{stealth}             | \kk{窒}{verstopfen}{チツ}{}{plug up}           | \kk{窟}{Höhle}{クツ}{}{cavern}                      | \kk{窮}{hart}{キュウ}{きわ-める}{hard up} |
+| \kk{窯}{Ofen}{ヨウ}{かま}{kiln}                 | \kk{竜}{Drache}{リュウ}{たつ}{dragon}         | \kk{端}{Rand}{タン}{はし}{edge}                       | \kk{符}{Zeichen}{フ}{}{token}              | \kk{筒}{Zylinder}{トウ}{つつ}{cylinder}        | \kk{箇}{(Dinge)}{カ}{}{counters for things}         | \kk{箋}{Papier}{セン}{}{paper}            |
+| \kk{箸}{Essstäbchen}{はし}{}{chopsticks}        | \kk{範}{Muster}{ハン}{}{pattern}              | \kk{篤}{Inbrunst}{トク}{}{fervent}                    | \kk{簿}{Register}{ボ}{}{register}          | \kk{籍}{einschreiben}{セキ}{}{enroll}          | \kk{籠}{Korb}{ロウ}{かご}{basket}                   | \kk{粋}{chic}{スイ}{いき}{chic}           |
+| \kk{粒}{Körner}{リュウ}{つぶ}{grains}           | \kk{粗}{grob}{ソ}{あら-い}{coarse}            | \kk{粘}{klebrig}{ネン}{ねば-る}{sticky}               | \kk{粛}{feierlich}{シュク}{}{solemn}       | \kk{粧}{Kosmetik}{ショウ}{}{cosmetics}         | \kk{糧}{Vorkehrungen}{リョウ}{（ロウ）}{provisions} | \kk{糾}{Drehung}{キュウ}{}{twist}         |
+| \kk{紋}{Familienwappen}{モン}{}{family crest}   | \kk{紛}{Ablenkung}{フン}{まぎ-れる}{distract} | \kk{紡}{drehen}{ボウ}{つむ-ぐ}{spinning}              | \kk{索}{Kabel}{サク}{}{cord}               | \kk{紫}{Purpur}{シ}{むらさき}{purple}          | \kk{累}{anhäufen}{ルイ}{}{accumulate}               | \kk{紳}{Vater}{シン}{}{sire}              |
+
+
+#+Name: tab-joyo-wiki-S-10
+#+Begin_Src R :headers t :cache nil :var g='S' min=749 max=832 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-S-10
+| \kk{紹}{einführen}{ショウ}{}{introduce}     | \kk{紺}{dunkelblau}{コン}{}{dark blue}   | \kk{絞}{strangle}{コウ}{しぼ-る}{strangle}   | \kk{絡}{umschließen}{ラク}{から-む}{entwine}         | \kk{継}{erben}{ケイ}{つ-ぐ}{inherit}        | \kk{維}{Faser}{イ}{}{fiber}                 | \kk{綱}{Trosse}{コウ}{つな}{hawser}          |
+| \kk{網}{Geflecht}{モウ}{あみ}{netting}      | \kk{綻}{Rippe}{タン}{ほころ-びる}{rip}   | \kk{緊}{angespannt}{キン}{}{tense}           | \kk{緒}{Riemen}{ショ}{（チョ）}{thong}               | \kk{締}{festziehen}{テイ}{し-まる}{tighten} | \kk{緩}{entspannen}{カン}{ゆる-い}{slacken} | \kk{緯}{horizontal}{イ}{}{horizontal}        |
+| \kk{緻}{fein}{チ}{}{fine (not coarse)}      | \kk{縁}{Affinität}{エン}{ふち}{affinity} | \kk{縄}{Strohseil}{ジョウ}{なわ}{straw rope} | \kk{縛}{Fachwerk}{バク}{しば-る}{truss}              | \kk{縫}{nähen}{ホウ}{ぬ-う}{sew}            | \kk{繁}{üppig}{ハン}{}{luxuriant}           | \kk{繊}{schlank}{セン}{}{slender}            |
+| \kk{繕}{stopfen}{ゼン}{つくろ-う}{darning}  | \kk{繭}{Kokon}{ケン}{まゆ}{cocoon}       | \kk{繰}{Wicklung}{く-る}{}{winding}          | \kk{缶}{Blechdose}{カン}{}{tin can}                  | \kk{罰}{Strafe}{バツ}{バチ}{penalty}        | \kk{罵}{Beleidigung}{バ}{ののし-る}{insult} | \kk{罷}{beenden}{ヒ}{}{quit}                 |
+| \kk{羅}{Gaze}{ラ}{}{gauze}                  | \kk{羞}{schämen}{シュウ}{}{feel ashamed} | \kk{羨}{Neid}{セン}{うらや-む}{envy}         | \kk{翁}{ehrw. alter Mann}{オウ}{}{venerable old man} | \kk{翼}{Flügel}{ヨク}{つばさ}{wing}         | \kk{翻}{Flip}{ホン}{ひるがえ-る}{flip}      | \kk{耐}{beständig}{タイ}{た-える}{resistant} |
+| \kk{耗}{Abnahme}{モウ}{（コウ）}{decrease}  | \kk{聴}{hören}{チョウ}{き-く}{listen}    | \kk{肌}{Textur}{はだ}{}{texture}             | \kk{肖}{Ähnlichkeit}{ショウ}{}{resemblance}          | \kk{肘}{Ellenbogen}{ひじ}{}{elbow}          | \kk{肝}{Leber}{カン}{きも}{liver}           | \kk{股}{Schritt}{コ}{また}{crotch}           |
+| \kk{肢}{Gliedmaße}{シ}{}{limb}              | \kk{肩}{Schulter}{ケン}{かた}{shoulder}  | \kk{肪}{Übergewicht}{ボウ}{}{obese}          | \kk{肯}{Vereinbarung}{コウ}{}{agreement}             | \kk{胆}{Gallenblase}{タン}{}{gall bladder}  | \kk{胎}{Mutterleib}{タイ}{}{womb}           | \kk{胞}{Plazenta}{ホウ}{}{placenta}          |
+| \kk{胴}{Rumpf}{ドウ}{}{trunk}               | \kk{脂}{Fett}{シ}{あぶら}{fat}           | \kk{脅}{Bedrohung}{キョウ}{}{threaten}       | \kk{脇}{Seite}{わき}{}{aside}                        | \kk{脊}{Statur}{セキ}{}{stature}            | \kk{脚}{Bein}{キャク}{（キャ）}{leg}        | \kk{脱}{entkleiden}{ダツ}{ぬ-ぐ}{undress}    |
+| \kk{腎}{Niere}{ジン}{}{kidney}              | \kk{腐}{Fäulnis}{フ}{くさ-る}{rot}       | \kk{腕}{Arm}{ワン}{うで}{arm}                | \kk{腫}{Tumor}{シュ}{は-れる}{tumor}                 | \kk{腰}{Lenden}{ヨウ}{こし}{loins}          | \kk{腺}{Drüse}{セン}{}{gland}               | \kk{膚}{Haut}{フ}{}{skin}                    |
+| \kk{膜}{Membran}{マク}{}{membrane}          | \kk{膝}{Knie}{ひざ}{}{knee}              | \kk{膨}{Schwellung}{ボウ}{ふく-らむ}{swell}  | \kk{膳}{Tablett}{ゼン}{}{tray}                       | \kk{臆}{Scheu}{オク}{}{timidity}            | \kk{臭}{stinken}{シュウ}{くさ-い}{stinking} | \kk{致}{(to) do}{チ}{いた-す}{(to) do}       |
+| \kk{臼}{Granatwerfer}{キュウ}{うす}{mortar} | \kk{舗}{Pflaster}{ホ}{}{pavement}        | \kk{舞}{Tanz}{ブ}{ま-う}{dance}              | \kk{舟}{Boot}{シュウ}{ふね}{boat}                    | \kk{般}{allgemein}{ハン}{}{generally}       | \kk{舶}{Schiff}{ハク}{}{liner}              | \kk{舷}{gunwale}{ゲン}{}{gunwale}            |
+| \kk{艇}{Ruderboot}{テイ}{}{rowboat}         | \kk{艦}{Kriegsschiff}{カン}{}{warship}   | \kk{艶}{Hochglanz}{エン}{つや}{glossy}       | \kk{芋}{Kartoffel}{いも}{}{potato}                   | \kk{芝}{Rasen}{しば}{}{turf}                | \kk{芯}{Kern}{シン}{}{core}                 | \kk{芳}{Parfüm}{ホウ}{かんば-しい}{perfume}  |
+
+
+#+Name: tab-joyo-wiki-S-11
+#+Begin_Src R :headers t :cache nil :var g='S' min=833 max=916 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-S-11
+| \kk{苗}{Sämling}{ビョウ}{なえ}{seedling}          | \kk{苛}{Qual}{カ}{}{torment}             | \kk{茂}{überwachsen}{モ}{しげ-る}{overgrown} | \kk{茎}{Stiel}{ケイ}{くき}{stalk}                         | \kk{茨}{Dorn}{（いばら）}{}{thorn}        | \kk{荒}{abgelagert}{コウ}{あら-い}{laid waste} | \kk{荘}{Villa}{ソウ}{}{villa}                          |
+| \kk{菊}{Chrysantheme}{キク}{}{chrysanthemum}      | \kk{菌}{Keim}{キン}{}{germ}              | \kk{菓}{Konditorei}{カ}{}{confectionery}     | \kk{華}{Pracht}{カ}{はな}{splendor}                       | \kk{萎}{welken}{イ}{な-える}{wither}      | \kk{葛}{Pfeilwurzel}{カツ}{くず}{arrowroot}    | \kk{葬}{Begräbnis}{ソウ}{ほうむ-る}{interment}         |
+| \kk{蓄}{anhäufen}{チク}{たくわ-える}{amass}       | \kk{蓋}{Abdeckung}{ガイ}{ふた}{cover}    | \kk{蔑}{ignorieren}{ベツ}{さげす-む}{ignore} | \kk{蔽}{Abdeckung}{ヘイ}{}{cover}                         | \kk{薄}{verdünnen}{ハク}{うす-い}{dilute} | \kk{薦}{empfehlen}{セン}{すす-める}{recommend} | \kk{薪}{Kraftstoff}{シン}{たきぎ}{fuel}                |
+| \kk{薫}{Duft}{クン}{かお-る}{fragrant}            | \kk{藍}{Indigo}{ラン}{あい}{indigo}      | \kk{藤}{Glyzinien}{トウ}{ふじ}{wisteria}     | \kk{藩}{Clan}{ハン}{}{clan}                               | \kk{藻}{Algen}{ソウ}{も}{seaweed}         | \kk{虎}{Tiger}{コ}{とら}{tiger}                | \kk{虐}{tyrannisieren}{ギャク}{しいた-げる}{tyrannize} |
+| \kk{虚}{leeren}{キョ}{（コ）}{void}               | \kk{虜}{Gefangenschaft}{リョ}{}{captive} | \kk{虞}{Unbehagen}{おそれ}{}{uneasiness}     | \kk{虹}{Regenbogen}{にじ}{}{rainbow}                      | \kk{蚊}{Moskito}{か}{}{mosquito}          | \kk{蛇}{Schlange}{ジャ}{ダ}{snake}             | \kk{蛍}{Leuchtkäfer}{ケイ}{ほたる}{lightning-bug}      |
+| \kk{蛮}{Barbar}{バン}{}{barbarian}                | \kk{蜂}{Biene}{ホウ}{はち}{bee}          | \kk{蜜}{Honig}{ミツ}{}{honey}                | \kk{融}{auflösen}{ユウ}{}{dissolve}                       | \kk{衝}{kollidieren}{ショウ}{}{collide}   | \kk{衡}{Gleichgewicht}{コウ}{}{equilibrium}    | \kk{衰}{Niedergang}{スイ}{おとろ-える}{decline}        |
+| \kk{衷}{Inmost}{チュウ}{}{inmost}                 | \kk{袋}{Sack}{タイ}{ふくろ}{sack}        | \kk{袖}{Ärmel}{シュウ}{そで}{sleeve}         | \kk{被}{eintreten}{ヒ}{こうむ-る}{incur}                  | \kk{裂}{gespalten}{レツ}{さ-く}{split}    | \kk{裕}{reichlich}{ユウ}{}{abundant}           | \kk{裸}{nackt}{ラ}{はだか}{naked}                      |
+| \kk{裾}{Manschette}{すそ}{}{cuff}                 | \kk{褐}{braun}{カツ}{}{brown}            | \kk{褒}{Lob}{ホウ}{ほ-める}{praise}          | \kk{襟}{Halsband}{キン}{えり}{collar}                     | \kk{襲}{Angriff}{シュウ}{おそ-う}{attack} | \kk{覆}{kentern}{フク}{おお-う}{capsize}       | \kk{覇}{Hegemonie}{ハ}{}{hegemony}                     |
+| \kk{触}{Kontakt}{ショク}{ふ-れる}{contact}        | \kk{訂}{überarbeiten}{テイ}{}{revise}    | \kk{訃}{Nachruf}{フ}{}{obituary}             | \kk{託}{Sendung}{タク}{}{consign}                         | \kk{訟}{verklagen}{ショウ}{}{sue}         | \kk{訴}{verklagen}{ソ}{うった-える}{sue}       | \kk{診}{Nachuntersuchung}{シン}{み-る}{checkup}        |
+| \kk{詐}{Lüge}{サ}{}{lie}                          | \kk{詔}{Edikt}{ショウ}{}{imperial edict} | \kk{詠}{Rezitation}{エイ}{よ-む}{recitation} | \kk{詣}{Tempel besuchen}{ケイ}{もう-でる}{visit a temple} | \kk{詮}{Diskussion}{セン}{}{discussion}   | \kk{詰}{verpackt}{キツ}{つ-める}{packed}       | \kk{該}{oben}{ガイ}{}{above-stated}                    |
+| \kk{詳}{detailliert}{ショウ}{くわ-しい}{detailed} | \kk{誇}{Prahlerei}{コ}{ほこ-る}{boast}   | \kk{誉}{Ruf}{ヨ}{ほま-れ}{reputation}        | \kk{誓}{geloben}{セイ}{ちか-う}{vow}                      | \kk{誘}{locken}{ユウ}{さそ-う}{entice}    | \kk{誰}{wer}{だれ}{}{who (question)}           | \kk{請}{erbitten}{セイ}{（シン）}{solicit}             |
+| \kk{諦}{aufgeben}{テイ}{あきら-める}{abandon}     | \kk{諧}{Harmonie}{カイ}{}{harmony}       | \kk{諭}{Tadel}{ユ}{さと-す}{rebuke}          | \kk{諮}{Rücksprache mit}{シ}{はか-る}{consult with}       | \kk{諾}{Zustimmung}{ダク}{}{consent}      | \kk{謀}{Verschwörung}{ボウ}{（ム）}{conspire}  | \kk{謁}{Publikum}{エツ}{}{audience}                    |
+
+
+#+Name: tab-joyo-wiki-S-12
+#+Begin_Src R :headers t :cache nil :var g='S' min=917 max=1000 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-S-12
+| \kk{謄}{vervielfältigen}{トウ}{}{mimeograph}  | \kk{謎}{Rätsel}{なぞ}{}{riddle}                    | \kk{謙}{selbstverlöschend}{ケン}{}{self-effacing} | \kk{謡}{Noh-Gesang}{ヨウ}{うたい}{noh chanting}      | \kk{謹}{diskret}{キン}{つつし-む}{discreet}     | \kk{譜}{Musiknote}{フ}{}{musical score}       | \kk{譲}{Verschiebung}{ジョウ}{ゆず-る}{defer} |
+| \kk{豚}{Schweinefleisch}{トン}{ぶた}{pork}    | \kk{豪}{überwältigend}{ゴウ}{}{overpowering}       | \kk{貌}{Aussehen}{ボウ}{}{appearance}             | \kk{貞}{aufrecht}{テイ}{}{upright}                   | \kk{貢}{Tribut}{コウ}{（ク）}{tribute}          | \kk{販}{Marketing}{ハン}{}{marketing}         | \kk{貪}{Begierde}{ドン}{むさぼ-る}{covet}     |
+| \kk{貫}{durchbohren}{カン}{つらぬ-く}{pierce} | \kk{貼}{kleben}{チョウ}{は-る}{paste}              | \kk{賂}{Bestechung}{ロ}{}{bribe}                  | \kk{賄}{Bestechung}{ワイ}{まかな-う}{bribe}          | \kk{賊}{Einbrecher}{ゾク}{}{burglar}            | \kk{賓}{VIP}{ヒン}{}{V.I.P.}                  | \kk{賜}{Zuschuss}{シ}{たまわ-る}{grant}       |
+| \kk{賠}{Entschädigung}{バイ}{}{compensation}  | \kk{賢}{intelligent}{ケン}{かしこ-い}{intelligent} | \kk{賦}{Abgabe}{フ}{}{levy}                       | \kk{賭}{Glücksspiel}{ト}{か-ける}{gamble}            | \kk{購}{Abo}{コウ}{}{subscription}              | \kk{贈}{Geschenke}{ゾウ}{（ソウ）}{presents}  | \kk{赦}{Verzeihung}{シャ}{}{pardon}           |
+| \kk{赴}{fortfahren}{フ}{おもむ-く}{proceed}   | \kk{超}{transzendend}{チョウ}{こ-える}{transcend}  | \kk{越}{überqueren}{エツ}{こ-す}{cross over}      | \kk{趣}{Hauptpunkt}{シュ}{おもむき}{gist}            | \kk{距}{langstrecken}{キョ}{}{long-distance}    | \kk{践}{Lauffläche}{セン}{}{tread}            | \kk{跡}{Spuren}{セキ}{あと}{tracks}           |
+| \kk{跳}{Hopfen}{チョウ}{は-ねる}{hop}         | \kk{踊}{Sprung}{ヨウ}{おど-る}{jump}               | \kk{踏}{Schritt}{トウ}{ふ-む}{step}               | \kk{踪}{Überreste}{ソウ}{}{remains}                  | \kk{蹴}{Tritt}{シュウ}{け-る}{kick}             | \kk{躍}{Sprung}{ヤク}{おど-る}{leap}          | \kk{軌}{Rut}{キ}{}{rut}                       |
+| \kk{軒}{Wohnungen}{ケン}{のき}{flats}         | \kk{軟}{weich}{ナン}{やわ-らか}{soft}              | \kk{軸}{Achse}{ジク}{}{axis}                      | \kk{較}{Kontrast}{カク}{}{contrast}                  | \kk{載}{Fahrt}{サイ}{の-せる}{ride}             | \kk{輝}{Leuchtkraft}{キ}{かがや-く}{radiance} | \kk{輩}{Kamerad}{ハイ}{}{comrade}             |
+| \kk{轄}{Kontrolle}{カツ}{}{control}           | \kk{辛}{würzig}{シン}{から-い}{spicy}              | \kk{辣}{bitter}{ラツ}{}{bitter}                   | \kk{辱}{Peinlichkeit}{ジョク}{}{embarrass}           | \kk{込}{voll}{こ-む}{こ-める}{crowded}          | \kk{巡}{Patrouille}{ジュン}{めぐ-る}{patrol}  | \kk{迅}{schnell}{ジン}{}{swift}               |
+| \kk{迎}{Willkommen}{ゲイ}{むか-える}{welcome} | \kk{迫}{Drang}{ハク}{せま-る}{urge}                | \kk{迭}{Transfer}{テツ}{}{transfer}               | \kk{逃}{Flucht}{トウ}{に-げる}{escape}               | \kk{透}{durchsichtig}{トウ}{す-く}{transparent} | \kk{逐}{verfolgen}{チク}{}{pursue}            | \kk{逓}{Staffel}{テイ}{}{relay}               |
+| \kk{途}{Route}{ト}{}{route}                   | \kk{逝}{abgereist}{セイ}{ゆ-く}{departed}          | \kk{逮}{festhalten}{タイ}{}{apprehend}            | \kk{逸}{abweichen}{イツ}{}{deviate}                  | \kk{遂}{vollbringen}{スイ}{と-げる}{consummate} | \kk{遅}{langsam}{チ}{おく-れる}{slow}         | \kk{遇}{Interview}{グウ}{}{interview}         |
+| \kk{遍}{überall}{ヘン}{}{everywhere}          | \kk{違}{unterscheiden}{イ}{ちが-う}{differ}        | \kk{遜}{bescheiden}{ソン}{}{humble}               | \kk{遡}{flussaufwärts}{ソ}{さかのぼ-る}{go upstream} | \kk{遣}{Versand}{ケン}{つか-う}{dispatch}       | \kk{遭}{Begegnung}{ソウ}{あ-う}{encounter}    | \kk{遮}{abfangen}{シャ}{さえぎ-る}{intercept} |
+| \kk{遵}{beibehalten}{ジュン}{}{abide by}      | \kk{遷}{Übergang}{セン}{}{transition}              | \kk{避}{ausweichen}{ヒ}{さ-ける}{evade}           | \kk{還}{zurücksenden}{カン}{}{send back}             | \kk{那}{was}{ナ}{}{what}                        | \kk{邦}{Heimatland}{ホウ}{}{home country}     | \kk{邪}{böse}{ジャ}{}{wicked}                 |
+
+
+#+Name: tab-joyo-wiki-S-13
+#+Begin_Src R :headers t :cache nil :var g='S' min=1001 max=1084 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-S-13
+| \kk{邸}{Wohnsitz}{テイ}{}{residence}        | \kk{郊}{Rand}{コウ}{}{outskirts}               | \kk{郎}{Sohn}{ロウ}{}{son}                       | \kk{郭}{Einfassung}{カク}{}{enclosure}       | \kk{酌}{bartending}{シャク}{く-む}{bartending} | \kk{酎}{Sake}{チュウ}{}{sake}                      | \kk{酔}{betrunken}{スイ}{よ-う}{drunk}         |
+| \kk{酢}{Essig}{サク}{す}{vinegar}           | \kk{酪}{Milchprodukte}{ラク}{}{dairy products} | \kk{酬}{Rückzahlung}{シュウ}{}{repay}            | \kk{酵}{Gärung}{コウ}{}{fermentation}        | \kk{酷}{grausam}{コク}{}{cruel}                | \kk{醒}{enttäuscht sein}{セイ}{}{be disillusioned} | \kk{醜}{hässlich}{シュウ}{みにく-い}{ugly}     |
+| \kk{醸}{Aufschieben}{ジョウ}{かも-す}{brew} | \kk{采}{Form}{サイ}{}{form}                    | \kk{釈}{Erklärung}{シャク}{}{explanation}        | \kk{釜}{Wasserkocher}{かま}{}{kettle}        | \kk{釣}{angeln}{チョウ}{つ-る}{angling}        | \kk{鈍}{langweilig}{ドン}{にぶ-い}{dull}           | \kk{鈴}{kleine Glocke}{レイ}{リン}{small bell} |
+| \kk{鉛}{Blei}{エン}{なまり}{lead}           | \kk{鉢}{Schüssel}{ハチ}{（ハツ）}{bowl}        | \kk{銃}{Waffe}{ジュウ}{}{gun}                    | \kk{銘}{Inschrift}{メイ}{}{inscription}      | \kk{鋭}{spitz}{エイ}{するど-い}{pointed}       | \kk{鋳}{Casting}{チュウ}{い-る}{casting}           | \kk{錠}{Schloss}{ジョウ}{}{lock}               |
+| \kk{錦}{Brokat}{キン}{にしき}{brocade}      | \kk{錬}{schmelzen}{レン}{}{tempering}          | \kk{錮}{fesseln}{コ}{}{tie up}                   | \kk{錯}{verwirrt}{サク}{}{confused}          | \kk{鍋}{Topf}{なべ}{}{pot}                     | \kk{鍛}{schmieden}{タン}{きた-える}{forge}         | \kk{鍵}{Schlüssel}{ケン}{かぎ}{key}            |
+| \kk{鎌}{Sichel}{かま}{}{sickle}             | \kk{鎖}{Kette}{サ}{くさり}{chain}              | \kk{鎮}{beruhigen}{チン}{しず-める}{tranquilize} | \kk{鐘}{Glocke}{ショウ}{かね}{bell}          | \kk{鑑}{Exemplar}{カン}{かんが-みる}{specimen} | \kk{閑}{Freizeit}{カン}{}{leisure}                 | \kk{閥}{Clique}{バツ}{}{clique}                |
+| \kk{閲}{Rezension}{エツ}{}{review}          | \kk{闇}{Dunkelheit}{やみ}{}{darkness}          | \kk{闘}{Kampf}{トウ}{たたか-う}{fight}           | \kk{阜}{Hügel}{（フ）}{}{mound}              | \kk{阪}{Höhe}{ハン}{}{heights}                 | \kk{阻}{vereiteln}{ソ}{はば-む}{thwart}            | \kk{附}{angebracht}{フ}{}{affixed}             |
+| \kk{陣}{Lager}{ジン}{}{camp}                | \kk{陥}{Kollaps}{カン}{おちい-る}{collapse}    | \kk{陪}{gehorsam}{バイ}{}{obeisance}             | \kk{陰}{Schatten}{イン}{かげ}{shade}         | \kk{陳}{Exponat}{チン}{}{exhibit}              | \kk{陵}{Mausoleum}{リョウ}{みささぎ}{mausoleum}    | \kk{陶}{töpfern}{トウ}{}{pottery}              |
+| \kk{隅}{Ecke}{グウ}{すみ}{corner}           | \kk{隆}{Höcker}{リュウ}{}{hump}                | \kk{随}{folgen}{ズイ}{}{follow}                  | \kk{隔}{isolieren}{カク}{へだ-てる}{isolate} | \kk{隙}{Riss}{ゲキ}{すき}{fissure}             | \kk{隠}{verheimlichen}{イン}{かく-す}{conceal}     | \kk{隣}{Nachbarn}{リン}{とな-る}{neighboring}  |
+| \kk{隷}{Sklave}{レイ}{}{slave}              | \kk{隻}{Gefäße}{セキ}{}{vessels}               | \kk{雄}{männlich}{ユウ}{お}{male}                | \kk{雅}{gnädig}{ガ}{}{gracious}              | \kk{雇}{beschäftigt}{コ}{やと-う}{employ}      | \kk{雌}{weiblich}{シ}{め}{feminine}                | \kk{離}{ablösen}{リ}{はな-れる}{detach}        |
+| \kk{雰}{Atmosphäre}{フン}{}{atmosphere}     | \kk{零}{Null}{レイ}{}{zero}                    | \kk{雷}{Donner}{ライ}{かみなり}{thunder}         | \kk{需}{Forderung}{ジュ}{}{demand}           | \kk{震}{beben}{シン}{ふる-う}{quake}           | \kk{霊}{Geister}{レイ}{リョウ}{spirits}            | \kk{霜}{Frost}{ソウ}{しも}{frost}              |
+| \kk{霧}{Nebel}{ム}{きり}{fog}               | \kk{露}{Tau}{ロ}{（ロウ）}{dew}                | \kk{靴}{Schuhe}{カ}{くつ}{shoes}                 | \kk{韓}{Korea}{カン}{}{Korea}                | \kk{韻}{Reim}{イン}{}{rhyme}                   | \kk{響}{Echo}{キョウ}{ひび-く}{echo}               | \kk{頃}{mal}{ころ}{}{times}                    |
+
+
+#+Name: tab-joyo-wiki-S-14
+#+Begin_Src R :headers t :cache nil :var g='S' min=1085 max=1130 ncol=7 :exports results :noweb yes
+<<tab-joyo-wiki-grade>>
+ktable(g,min,max,ncol)
+#+End_Src
+
+#+RESULTS: tab-joyo-wiki-S-14
+| \kk{項}{Absatz}{コウ}{}{paragraph}              | \kk{須}{auf jeden Fall}{ス}{}{by all means}    | \kk{頑}{hartnäckig}{ガン}{}{stubborn}    | \kk{頒}{Trennwand}{ハン}{}{partition}               | \kk{頓}{plötzlich}{トン}{}{suddenly}                        | \kk{頰}{Wange}{ほお}{}{cheek}                 | \kk{頻}{wiederholen}{ヒン}{}{repeatedly}      |
+| \kk{頼}{Vertrauen}{ライ}{たの-む}{trust}        | \kk{顎}{Kiefer}{ガク}{あご}{jaw}               | \kk{顕}{erscheinen}{ケン}{}{appear}      | \kk{顧}{Rückblick}{コ}{かえり-みる}{look back}      | \kk{飢}{Hunger}{キ}{う-える}{hungry}                        | \kk{飽}{satt}{ホウ}{あ-きる}{sated}           | \kk{飾}{verzieren}{ショク}{かざ-る}{decorate} |
+| \kk{餅}{Mochi}{ヘイ}{もち}{mochi rice cake}     | \kk{餌}{Köder}{ジ}{えさ}{bait}                 | \kk{餓}{verhungern}{ガ}{}{starve}        | \kk{香}{Räucherstäbchen}{コウ}{（キョウ）}{incense} | \kk{駄}{schwer}{ダ}{}{burdensome}                           | \kk{駆}{Laufwerk}{ク}{か-ける}{drive}         | \kk{駐}{Zwischenstopp}{チュウ}{}{stop-over}   |
+| \kk{駒}{Pferd}{こま}{}{horse}                   | \kk{騎}{Reiter}{キ}{}{equestrian}              | \kk{騒}{Lump}{ソウ}{さわ-ぐ}{boisterous} | \kk{騰}{Inflation}{トウ}{}{inflation}               | \kk{驚}{Wunder}{キョウ}{おどろ-く}{wonder}                  | \kk{骸}{tote Überreste}{ガイ}{}{dead remains} | \kk{髄}{Mark}{ズイ}{}{marrow}                 |
+| \kk{髪}{Kopfhaar}{ハツ}{かみ}{hair of the head} | \kk{鬱}{Trübsinn}{ウツ}{}{gloom}               | \kk{鬼}{Geist}{キ}{おに}{ghost}          | \kk{魂}{Seele}{コン}{たましい}{soul}                | \kk{魅}{Faszination}{ミ}{}{fascination}                     | \kk{魔}{Hexe}{マ}{}{witch}                    | \kk{鮮}{frisch}{セン}{あざ-やか}{fresh}       |
+| \kk{鯨}{Wal}{ゲイ}{くじら}{whale}               | \kk{鶏}{Huhn}{ケイ}{にわとり}{chicken}         | \kk{鶴}{Kran}{つる}{}{crane}             | \kk{鹿}{Hirsch}{しか}{（か）}{deer}                 | \kk{麓}{Fuß eines Berges}{ロク}{ふもと}{foot of a mountain} | \kk{麗}{liebevoll}{レイ}{うるわ-しい}{lovely} | \kk{麺}{Nudeln}{メン}{}{noodles}              |
+| \kk{麻}{Hanf}{マ}{あさ}{hemp}                   | \kk{墨}{schwarze Tinte}{ボク}{すみ}{black ink} | \kk{鼓}{Trommel}{コ}{つづみ}{drum}       | \kk{齢}{Alter}{レイ}{}{age}                         |                                                             |                                               |                                               |
+
+#+Latex: \newpage
+** TODO Details [0/5]                                              :noexport:
+
+*** TODO N5 [0/4]
 
  #+begin_note
  Test.
  #+end_note
 
-**** 日
+**** TODO 人
 
- #+Name:sun
- | 1 | sign    | 日         |
- | 1 | imi     | sun        |
- | 1 | onyomi  | ニチ・ジツ |
- | 1 | kunyomi | ひ・か     |
- | 1 | strokes | 4          |
- | 1 | mnemo   | ..         |
+ #+Name: human
+ | 1 | sign    | 人     |
+ | 1 | imi     |        |
+ | 1 | imi-de  | Mensch |
+ | 1 | on1     | ニン   |
+ | 1 | kun1    | ひと   |
+ | 1 | onyomi  |        |
+ | 1 | kunyomi |        |
+ | 1 | strokes |        |
+ | 1 | mnemo   |        |
  #+TBLFM: $1=1
+
+**** TODO 一
+
+ #+Name: one
+ | 2 | sign    | 一         |
+ | 2 | imi     |            |
+ | 2 | imi-de  | eins       |
+ | 2 | on1     | イチ       |
+ | 2 | kun1    | ひと（つ） |
+ | 2 | onyomi  |            |
+ | 2 | kunyomi |            |
+ | 2 | strokes |            |
+ | 2 | mnemo   |            |
+ #+TBLFM: $1=2
+
+**** TODO 二
+
+ #+Name: two
+ | 3 | sign    | 二         |
+ | 3 | imi     |            |
+ | 3 | imi-de  | zwei       |
+ | 3 | on1     | ニ         |
+ | 3 | kun1    | ふた（つ） |
+ | 3 | onyomi  |            |
+ | 3 | kunyomi |            |
+ | 3 | strokes |            |
+ | 3 | mnemo   | ..         |
+ #+TBLFM: $1=3
+
+**** TODO 日
+
+ #+Name: sun
+ | 5 | sign    | 日         |
+ | 5 | imi     | sun        |
+ | 5 | imi-de  | Sonne      |
+ | 5 | on1     | ニチ       |
+ | 5 | kun1    | ひ         |
+ | 5 | onyomi  | ニチ・ジツ |
+ | 5 | kunyomi | ひ・か     |
+ | 5 | strokes | 4          |
+ | 5 | mnemo   | ..         |
+ #+TBLFM: $1=5
 
  #+Name:sun-ex
  | 日曜日 | 　にちようび | Sunday | \ruby{日曜日}{にちようび}に\ruby{友人}{ゆうじん}に\ruby{会}{あl}う。 |
 
+**** TODO 月
 
-**** 月
-
- #+Name:moon
- | 2 | sign    | 月         |
- | 2 | imi     | moon       |
- | 2 | onyomi  | ゲツ・ガツ |
- | 2 | kunyomi | つき       |
- | 2 | strokes | 4          |
- | 2 | mnemo   | ..         |
- #+TBLFM: $1=2
+ #+Name: moon
+ | 17 | sign    | 月         |
+ | 17 | imi     | moon       |
+ | 17 | imi-de  | Mond       |
+ | 17 | on1     |            |
+ | 17 | kun1    |            |
+ | 17 | onyomi  | ゲツ・ガツ |
+ | 17 | kunyomi | つき       |
+ | 17 | strokes | 4          |
+ | 17 | mnemo   | ..         |
+ #+TBLFM: $1=17
 
 **** TODO 雨
 
- #+Name:rain
- | 3 | sign    | 雨                           |
- | 3 | imi     | rain                         |
- | 3 | onyomi  | ウ                           |
- | 3 | kunyomi | あめ・あま                   |
- | 3 | strokes | 8                            |
- | 3 | mnemo   | Rain falls from a big cloud. |
- #+TBLFM: $1=3
+ #+Name: rain
+ | 30 | sign    | 雨                           |
+ | 30 | imi     | rain                         |
+ | 30 | imi-de  | Regen                        |
+ | 30 | on1     |                              |
+ | 30 | kun1    |                              |
+ | 30 | onyomi  | ウ                           |
+ | 30 | kunyomi | あめ・あま                   |
+ | 30 | strokes | 8                            |
+ | 30 | mnemo   | Rain falls from a big cloud. |
+ #+TBLFM: $1=30
 
 **** TODO 田
 
- #+Name:field
- | 4 | sign    | 田                                            |
- | 4 | imi     | field                                         |
- | 4 | onyomi  | デン                                          |
- | 4 | kunyomi | た                                            |
- | 4 | strokes | 5　                                           |
- | 4 | mnemo   | The rice paddy is laid out to be grid-shaped. |
- #+TBLFM: $1=4
+ #+Name: field
+ | 35 | sign    | 田                                            |
+ | 35 | imi     | field                                         |
+ | 35 | imi-de  | Feld                                          |
+ | 35 | on1     |                                               |
+ | 35 | kun1    |                                               |
+ | 35 | onyomi  | デン                                          |
+ | 35 | kunyomi | た                                            |
+ | 35 | strokes | 5　                                           |
+ | 35 | mnemo   | The rice paddy is laid out to be grid-shaped. |
+ #+TBLFM: $1=35
 
 *** TODO N4
 *** TODO N3
 *** TODO N2
 *** TODO N1
+
 #+Latex: \newpage
-** TODO All                                                        :noexport:
+** TODO COMMENT All                                                        :noexport:
 
 #+name: signs
+- human
+- one
+- two
 - sun
 - moon
 - rain
 - field
 
-#+BEGIN_SRC emacs-lisp :var tables=signs :exports results :cache no
+#+Name: tab-kanji
+#+BEGIN_SRC emacs-lisp :var tables=signs :exports none :cache no :results value table
 (mapcan (lambda (x) (org-babel-ref-resolve (first x))) tables)
 #+END_SRC
 
-#+RESULTS:
-| 1 | sign    | 日                                            |
-| 1 | imi     | sun                                           |
-| 1 | onyomi  | ニチ・ジツ                                    |
-| 1 | kunyomi | ひ・か                                        |
-| 1 | strokes | 4                                             |
-| 1 | mnemo   | ..                                            |
-| 2 | sign    | 月                                            |
-| 2 | imi     | moon                                          |
-| 2 | onyomi  | ゲツ・ガツ                                    |
-| 2 | kunyomi | つき                                          |
-| 2 | strokes | 4                                             |
-| 2 | mnemo   | ..                                            |
-| 3 | sign    | 雨                                            |
-| 3 | imi     | rain                                          |
-| 3 | onyomi  | ウ                                            |
-| 3 | kunyomi | あめ・あま                                    |
-| 3 | strokes | 8                                             |
-| 3 | mnemo   | Rain falls from a big cloud.                  |
-| 4 | sign    | 田                                            |
-| 4 | imi     | field                                         |
-| 4 | onyomi  | デン                                          |
-| 4 | kunyomi | た                                            |
-| 4 | strokes | 5　                                           |
-| 4 | mnemo   | The rice paddy is laid out to be grid-shaped. |
+#+RESULTS: tab-kanji
+|  1 | sign    | 人                                            |
+|  1 | imi     |                                               |
+|  1 | imi-de  | Mensch                                        |
+|  1 | on1     | ニン                                          |
+|  1 | kun1    | ひと                                          |
+|  1 | onyomi  |                                               |
+|  1 | kunyomi |                                               |
+|  1 | strokes |                                               |
+|  1 | mnemo   |                                               |
+|  2 | sign    | 一                                            |
+|  2 | imi     |                                               |
+|  2 | imi-de  | eins                                          |
+|  2 | on1     | イチ                                          |
+|  2 | kun1    | ひと（つ）                                    |
+|  2 | onyomi  |                                               |
+|  2 | kunyomi |                                               |
+|  2 | strokes |                                               |
+|  2 | mnemo   |                                               |
+|  3 | sign    | 二                                            |
+|  3 | imi     |                                               |
+|  3 | imi-de  | zwei                                          |
+|  3 | on1     | ニ                                            |
+|  3 | kun1    | ふた（つ）                                    |
+|  3 | onyomi  |                                               |
+|  3 | kunyomi |                                               |
+|  3 | strokes |                                               |
+|  3 | mnemo   | ..                                            |
+|  5 | sign    | 日                                            |
+|  5 | imi     | sun                                           |
+|  5 | imi-de  | Sonne                                         |
+|  5 | on1     | ニチ                                          |
+|  5 | kun1    | ひ                                            |
+|  5 | onyomi  | ニチ・ジツ                                    |
+|  5 | kunyomi | ひ・か                                        |
+|  5 | strokes | 4                                             |
+|  5 | mnemo   | ..                                            |
+| 17 | sign    | 月                                            |
+| 17 | imi     | moon                                          |
+| 17 | imi-de  | Mond                                          |
+| 17 | on1     |                                               |
+| 17 | kun1    |                                               |
+| 17 | onyomi  | ゲツ・ガツ                                    |
+| 17 | kunyomi | つき                                          |
+| 17 | strokes | 4                                             |
+| 17 | mnemo   | ..                                            |
+| 30 | sign    | 雨                                            |
+| 30 | imi     | rain                                          |
+| 30 | imi-de  | Regen                                         |
+| 30 | on1     |                                               |
+| 30 | kun1    |                                               |
+| 30 | onyomi  | ウ                                            |
+| 30 | kunyomi | あめ・あま                                    |
+| 30 | strokes | 8                                             |
+| 30 | mnemo   | Rain falls from a big cloud.                  |
+| 35 | sign    | 田                                            |
+| 35 | imi     | field                                         |
+| 35 | imi-de  | Feld                                          |
+| 35 | on1     |                                               |
+| 35 | kun1    |                                               |
+| 35 | onyomi  | デン                                          |
+| 35 | kunyomi | た                                            |
+| 35 | strokes | 5　                                           |
+| 35 | mnemo   | The rice paddy is laid out to be grid-shaped. |
+
+
+#+BEGIN_SRC elisp :var x=tab-kanji :file kanji.csv :sep ";" :cache no
+(orgtbl-to-generic x (org-combine-plists '(:sep ";") nil)))
+#+END_SRC
+
+#+RESULTS[83ad9d3e70722e66d751fe41ee5cce2ced66a4a2]:
+[[file:kanji.csv]]
 
 #+Latex: \newpage
+
+
+
 * Mnemonics
 
 ** Piktogramme
